@@ -24,7 +24,9 @@ export const useAttributeLinksStore = defineStore('attributeLinks', {
     },
     deleteLinks(targetAttrs: CustomAttribute[]): void {
       this.content.attributes = this.content.attributes.filter(
-        (attribute) => !targetAttrs.find((targetAttr) => targetAttr.id === attribute.id),
+        (attribute) => !targetAttrs.find(
+          (targetAttr) => targetAttr.id === attribute.id,
+        ),
       );
     },
   },
