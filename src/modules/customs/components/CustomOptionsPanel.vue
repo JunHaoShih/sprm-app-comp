@@ -82,6 +82,7 @@
 import { QDialog, QTableProps, useQuasar } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
+import ValidationInput from 'src/components/ValidationInput.vue';
 import { availableLocales } from 'src/models/Locale';
 import { DialogType } from 'src/models/DialogType';
 import { customOptionValidateService } from '../services/CustomOptionValidateService';
