@@ -128,7 +128,7 @@ async function reloadPanel(): Promise<void> {
   $q.loading.hide();
 }
 
-watch(() => props.objectTypeId, (oldValue, newValue) => {
+watch(() => props.objectTypeId, () => {
   reloadPanel();
 });
 

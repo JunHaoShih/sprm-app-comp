@@ -134,7 +134,7 @@ onBeforeMount(async () => {
   await customAttributesStore.initialize();
 });
 
-watch(prompt, (oldValue, newValue) => {
+watch(prompt, () => {
   selected.value = [];
   patternInput.value = '';
   pattern.value = '';

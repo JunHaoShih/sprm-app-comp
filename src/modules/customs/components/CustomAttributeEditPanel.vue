@@ -74,7 +74,7 @@ function initialize(): void {
   defaultAttr.value = JSON.parse(JSON.stringify(inputAttr.value));
 }
 
-watch(() => inputAttr.value.id, (oldValue, newValue) => {
+watch(() => inputAttr.value.id, () => {
   initialize();
 });
 
