@@ -90,9 +90,11 @@ const viewedCustomAttribute = ref<CustomAttribute>({} as CustomAttribute);
 
 const selectedAttributes = ref<CustomAttribute[]>([]);
 
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   objectTypeId: number,
-}>();
+}>(), {
+  objectTypeId: 0,
+});
 
 const columns = computed(
   (): QTableProps['columns'] => [
