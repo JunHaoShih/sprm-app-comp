@@ -62,7 +62,7 @@
                 :key="attribute.id"
               >
                 <div class="q-ma-sm">
-                  {{ attribute.languages[i18n.locale.toString()] }}
+                  {{ attribute.languages[i18n.locale.value] }}
                 </div>
                 <q-select
                   v-if="attribute.displayType === DisplayType.SingleSelect"
@@ -94,6 +94,7 @@ import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
+import ValidationInput from 'src/components/ValidationInput.vue';
 import { SelectOption } from 'src/models/SelectOption';
 import { partValidationService } from '../services/PartValidateService';
 import { useViewTypeOptionsStore } from '../stores/ViewTypeOptionsStore';
@@ -152,7 +153,7 @@ function viewTypeInit(): void {
 
 function getSelectOption(customOptions: CustomOption[], attributeNumber: string) {
   return customOptions.map((option): SelectOption<string> => ({
-    label: option.languages[i18n.locale.toString()],
+    label: option.languages[i18n.locale.value],
     value: option.key,
     attributeNumber,
   }));

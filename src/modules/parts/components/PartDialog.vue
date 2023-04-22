@@ -66,7 +66,7 @@
                 :key="attribute.id"
               >
                 <div class="q-ma-sm">
-                  {{ attribute.languages[i18n.locale.toString()] }}
+                  {{ attribute.languages[i18n.locale.value] }}
                 </div>
                 <q-select
                   v-if="attribute.displayType === DisplayType.SingleSelect"
@@ -173,7 +173,7 @@ async function onDialogConfirm(): Promise<void> {
 
 function getSelectOption(customOptions: CustomOption[], attributeNumber: string) {
   return customOptions.map((option): SelectOption<string> => ({
-    label: option.languages[i18n.locale.toString()],
+    label: option.languages[i18n.locale.value],
     value: option.key,
     attributeNumber,
   }));

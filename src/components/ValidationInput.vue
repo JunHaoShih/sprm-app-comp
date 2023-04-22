@@ -23,10 +23,10 @@ const props = defineProps<{
   modelValue: string,
 }>();
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
-}>();
+type Emit = {
+  (e: 'update:modelValue', value: string): void,
+}
+const emit = defineEmits<Emit>();
 
 const inputValue = computed({
   get: () => props.modelValue,
@@ -48,6 +48,9 @@ function isValueError(): boolean {
 }
 
 const i18nErrorMessage = computed(
-  () => i18n.t(errorMessage.value),
+  (): string => {
+    const message = errorMessage.value ? i18n.t(errorMessage.value) : '';
+    return message;
+  },
 );
 </script>
