@@ -6,7 +6,7 @@ export interface ViewTypeOptionContainer {
   viewTypes: ViewTypeOption[],
 }
 
-export const viewTypeOptionsStore = defineStore('viewTypeOptions', {
+export const useViewTypeOptionsStore = defineStore('viewTypeOptions', {
   state: (): ViewTypeOptionContainer => ({
     viewTypes: [
       { label: useI18n().t('parts.views.design'), value: ViewType.Design, attributeNumber: '' },

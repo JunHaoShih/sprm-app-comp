@@ -154,7 +154,7 @@ function initialize(): void {
   displayTypeOption.value = displayType;
 }
 
-watch(() => inputAttr.value.id, (newValue, oldValue) => {
+watch(() => inputAttr.value.id, () => {
   initialize();
 });
 

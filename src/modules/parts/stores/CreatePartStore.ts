@@ -6,7 +6,7 @@ import { CreatePartDTO } from '../dtos/CreatePartDTO';
 import { Part, ViewType } from '../models/Part';
 import { partValidationService } from '../services/PartValidateService';
 
-export const createPartStore = defineStore('createPart', {
+export const useCreatePartStore = defineStore('createPart', {
   state: (): CreatePartDTO => ({
     number: '',
     name: '',

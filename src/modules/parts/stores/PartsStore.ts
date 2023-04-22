@@ -5,16 +5,16 @@ export interface PartsContainer {
   parts: Part[],
 }
 
-export const partsStore = defineStore('parts', {
+export const usePartsStore = defineStore('parts', {
   state: (): PartsContainer => ({
     parts: [],
   }),
   getters: {
-    getVersion: (state) => (partVersion: PartVersionInfo): string => {
+    getVersion: () => (partVersion: PartVersionInfo): string => {
       const versionStr = `${partVersion.version}`;
       return versionStr;
     },
-    isInitialized: (state) => (part: Part): boolean => {
+    isInitialized: () => (part: Part): boolean => {
       if (!part.checkoutId) {
         return false;
       }
