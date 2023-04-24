@@ -9,7 +9,8 @@ interface PartUsageUsesContainer {
 }
 
 export interface BomTreeNode extends QTreeNode {
-  id: number,
+  nodeId: number,
+  parentId: number,
   versionId: number,
   childId: number,
 }
@@ -20,9 +21,10 @@ const getSubTreeNodes = (mapValue: Map<number, PartUsageChild>, wholeMap: Map<nu
   const nodes = [] as QTreeNode[];
   mapValue.forEach((value) => {
     const currentNode: BomTreeNode = {
-      id: idCounter,
+      nodeId: idCounter,
       label: `${value.uses.number} - ${value.uses.version.version}`,
       icon: 'settings',
+      parentId: value.usedBy,
       versionId: value.uses.version.id,
       childId: value.id,
       lazy: true,
@@ -42,18 +44,20 @@ const getTreeNodes = (uses: Map<number, Map<number, PartUsageChild>>, root: Part
   idCounter = 0;
   if (!root.master) {
     return [{
-      id: idCounter,
+      nodeId: idCounter,
       label: '',
+      parentId: 0,
       versionId: 0,
-      usageId: 0,
+      childId: 0,
       icon: 'settings',
-    }];
+    } as BomTreeNode];
   }
-  const rootNode: QTreeNode = {
-    id: idCounter,
+  const rootNode: BomTreeNode = {
+    nodeId: idCounter,
     label: `${root.master.number} - ${root.version}`,
+    parentId: 0,
     versionId: root.id,
-    usageId: 0,
+    childId: 0,
     icon: 'settings',
   };
   idCounter += 1;
@@ -123,6 +127,13 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       const children = [] as PartUsageChild[];
       childrenMap.forEach((value) => children.push(value));
       return children;
+    },
+    deleteUses(parentId: number, childId: number) {
+      if (this.uses.has(parentId)) {
+        if (this.uses.get(parentId)?.has(childId)) {
+          this.uses.get(parentId)?.delete(childId);
+        }
+      }
     },
   },
 });

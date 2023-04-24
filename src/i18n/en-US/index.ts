@@ -98,6 +98,7 @@ export default {
       invalidChar: 'Only number, alphabets, dash and underscore are valid',
     },
   },
+  quantity: 'Quantity',
   remarks: 'Remarks',
   language: 'Language',
   key: 'Key',

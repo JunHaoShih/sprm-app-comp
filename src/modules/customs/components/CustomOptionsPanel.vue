@@ -102,10 +102,10 @@ const props = withDefaults(defineProps<{
   readonly: true,
 });
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: CustomOption[]): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const inputOptions = computed({
   get: () => props.modelValue,

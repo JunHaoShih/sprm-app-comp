@@ -99,6 +99,7 @@ export default {
       invalidChar: '不可含有任何非法字元',
     },
   },
+  quantity: '數量',
   remarks: '備註',
   language: '語言',
   info: '資訊',

@@ -10,7 +10,9 @@
           <q-tree
           ref="qtree"
             :nodes="partUsaeChildrenStore.treeNodes"
-            node-key="id"
+            v-model:selected="selected"
+            selected-color="primary"
+            node-key="versionId"
             @lazy-load="onLazyLoad"
             :default-expand-all="true"
           />
@@ -19,7 +21,7 @@
 
       <template v-slot:after>
         <div class="q-pa-md">
-          Infos
+          <PartUsageRightPanel />
         </div>
       </template>
     </q-splitter>
@@ -28,6 +30,7 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref } from 'vue';
+import PartUsageRightPanel from './PartUsageRightPanel.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import { BomTreeNode, usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
 import { partUsageService } from './services/PartUsageService';
@@ -38,6 +41,8 @@ const partVersionStore = usePartVersionStore();
 const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const splitterModel = ref(50);
+
+const selected = ref(0);
 
 const props = withDefaults(defineProps<{
   id: string,
