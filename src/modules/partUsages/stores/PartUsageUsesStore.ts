@@ -98,7 +98,13 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       }
       this.root = partVersion;
     },
-    addUses(usages: PartUsageChild[]) {
+    addUses(usages: PartUsageChild[], parentId: number) {
+      if (usages.length === 0) {
+        if (!this.uses.has(parentId)) {
+          this.uses.set(parentId, new Map<number, PartUsageChild>());
+        }
+        return;
+      }
       for (let i = 0; i < usages.length; i += 1) {
         const usage = usages[i];
         if (!this.uses.has(usage.usedBy)) {

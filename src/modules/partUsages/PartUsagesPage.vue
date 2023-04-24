@@ -57,8 +57,9 @@ async function onLazyLoad(details: {
     return;
   }
   const uses = await partUsageService.getByParentVersionId(details.node.versionId);
+  console.log(uses);
   if (uses) {
-    partUsaeChildrenStore.addUses(uses);
+    partUsaeChildrenStore.addUses(uses, details.node.versionId);
     details.done([]);
   }
 }
