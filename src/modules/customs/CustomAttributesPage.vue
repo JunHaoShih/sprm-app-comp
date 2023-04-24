@@ -118,7 +118,7 @@ function onDeleteClicked(): void {
   });
 }
 
-watch(() => attributes.value.length, (newValue, oldValue) => {
+watch(() => attributes.value.length, () => {
   const firstAttr = attributes.value[0];
   if (firstAttr) {
     defaultAttr.value = firstAttr;
