@@ -10,18 +10,22 @@
           <q-tree
           ref="qtree"
             :nodes="partUsaeChildrenStore.treeNodes"
-            v-model:selected="selected"
+            v-model:selected="selectedNodeId"
             selected-color="primary"
-            node-key="versionId"
+            node-key="nodeId"
             @lazy-load="onLazyLoad"
+            @update:selected="onSelected"
             :default-expand-all="true"
           />
         </div>
       </template>
 
       <template v-slot:after>
-        <div class="q-pa-md">
-          <PartUsageRightPanel />
+        <div class="q-gutter-sm">
+          <PartUsageRightPanel
+            :id="selectedParentId"
+            :readonly="true"
+          />
         </div>
       </template>
     </q-splitter>
@@ -29,12 +33,16 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
+import { useQuasar } from 'quasar';
 import PartUsageRightPanel from './PartUsageRightPanel.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
-import { BomTreeNode, usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
+import { usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
 import { partUsageService } from './services/PartUsageService';
 import 'src/extensions/date.extensions';
+import { BomTreeNode } from './stores/BomTreeStore';
+
+const $q = useQuasar();
 
 const partVersionStore = usePartVersionStore();
 
@@ -42,7 +50,17 @@ const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const splitterModel = ref(50);
 
-const selected = ref(0);
+const selectedNodeId = ref(0);
+
+const selectedParentId = computed(
+  (): number => {
+    const node = partUsaeChildrenStore.selectedTreeNode(selectedNodeId.value);
+    if (!node) {
+      return 0;
+    }
+    return node.versionId;
+  },
+);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -50,22 +68,45 @@ const props = withDefaults(defineProps<{
   id: '',
 });
 
+async function updateChildrenStore(parentId: number) {
+  $q.loading.show({
+    delay: 400,
+  });
+  const uses = await partUsageService.getByParentVersionId(parentId);
+  if (uses) {
+    partUsaeChildrenStore.addUses(uses, parentId);
+  }
+  $q.loading.hide();
+}
+
 async function onLazyLoad(details: {
   node: BomTreeNode,
   key: string,
   done: (children?: readonly BomTreeNode[] | undefined) => void,
   fail: () => void,
 }) {
-  const exist = partUsaeChildrenStore.getChildren(details.node.versionId);
+  const exist = partUsaeChildrenStore.children(details.node.versionId);
   if (exist) {
     details.done([]);
     return;
   }
-  const uses = await partUsageService.getByParentVersionId(details.node.versionId);
-  if (uses) {
-    partUsaeChildrenStore.addUses(uses, details.node.versionId);
-    details.done([]);
+  await updateChildrenStore(details.node.versionId);
+  details.done([]);
+}
+
+async function onSelected(nodeId: number) {
+  if (!nodeId) {
+    return;
   }
+  const targetNode = partUsaeChildrenStore.selectedTreeNode(nodeId);
+  if (!targetNode) {
+    return;
+  }
+  const exist = partUsaeChildrenStore.children(targetNode.versionId);
+  if (exist) {
+    return;
+  }
+  await updateChildrenStore(targetNode.versionId);
 }
 
 onBeforeMount(async () => {
@@ -78,5 +119,5 @@ onBeforeMount(async () => {
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 200px)
+  height: calc(100vh - 190px)
 </style>

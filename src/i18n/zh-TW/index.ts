@@ -40,6 +40,7 @@ export default {
       design: '設計',
       manufacturing: '製造',
     },
+    usage: '使用關係',
     bom: 'BOM',
     info: '資訊',
     new: '新增料件',

@@ -1,74 +1,13 @@
 import { defineStore } from 'pinia';
-import { QTreeNode, QTreeProps } from 'quasar';
+import { QTreeProps } from 'quasar';
 import { PartVersion } from 'src/modules/parts/models/PartVersion';
 import { PartUsageChild } from '../models/PartUsageUses';
+import { BomTreeNode, useBomTreeStore } from './BomTreeStore';
 
 interface PartUsageUsesContainer {
   uses: Map<number, Map<number, PartUsageChild>>,
   root: PartVersion,
 }
-
-export interface BomTreeNode extends QTreeNode {
-  nodeId: number,
-  parentId: number,
-  versionId: number,
-  childId: number,
-}
-
-let idCounter = 0;
-
-const getSubTreeNodes = (mapValue: Map<number, PartUsageChild>, wholeMap: Map<number, Map<number, PartUsageChild>>): QTreeProps['nodes'] => {
-  const nodes = [] as QTreeNode[];
-  mapValue.forEach((value) => {
-    const currentNode: BomTreeNode = {
-      nodeId: idCounter,
-      label: `${value.uses.number} - ${value.uses.version.version}`,
-      icon: 'settings',
-      parentId: value.usedBy,
-      versionId: value.uses.version.id,
-      childId: value.id,
-      lazy: true,
-    };
-    idCounter += 1;
-    const children = wholeMap.get(value.uses.version.id);
-    if (children) {
-      currentNode.children = getSubTreeNodes(children, wholeMap);
-      currentNode.lazy = false;
-    }
-    nodes.push(currentNode);
-  });
-  return nodes;
-};
-
-const getTreeNodes = (uses: Map<number, Map<number, PartUsageChild>>, root: PartVersion): QTreeProps['nodes'] => {
-  idCounter = 0;
-  if (!root.master) {
-    return [{
-      nodeId: idCounter,
-      label: '',
-      parentId: 0,
-      versionId: 0,
-      childId: 0,
-      icon: 'settings',
-    } as BomTreeNode];
-  }
-  const rootNode: BomTreeNode = {
-    nodeId: idCounter,
-    label: `${root.master.number} - ${root.version}`,
-    parentId: 0,
-    versionId: root.id,
-    childId: 0,
-    icon: 'settings',
-  };
-  idCounter += 1;
-  if (root.id) {
-    const children = uses.get(root.id);
-    if (children) {
-      rootNode.children = getSubTreeNodes(children, uses);
-    }
-  }
-  return [rootNode];
-};
 
 export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
   state: (): PartUsageUsesContainer => ({
@@ -83,8 +22,22 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
           icon: 'room_service',
         }];
       }
-      const rootNode = getTreeNodes(state.uses, state.root);
+      const treeNodeStore = useBomTreeStore();
+      const rootNode = treeNodeStore.getTreeNodes(state.uses, state.root);
       return rootNode;
+    },
+    selectedTreeNode: () => (nodeId: number): BomTreeNode | undefined => {
+      const treeNodeStore = useBomTreeStore();
+      return treeNodeStore.getByNodeId(nodeId);
+    },
+    children: (state) => (parentId: number): PartUsageChild[] | null => {
+      const childrenMap = state.uses.get(parentId);
+      if (!childrenMap) {
+        return null;
+      }
+      const children = [] as PartUsageChild[];
+      childrenMap.forEach((value) => children.push(value));
+      return children;
     },
   },
   actions: {
@@ -118,15 +71,6 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
           this.uses.get(usage.usedBy)?.set(usage.uses.version.id, usage);
         }
       }
-    },
-    getChildren(parentId: number): PartUsageChild[] | null {
-      const childrenMap = this.uses.get(parentId);
-      if (!childrenMap) {
-        return null;
-      }
-      const children = [] as PartUsageChild[];
-      childrenMap.forEach((value) => children.push(value));
-      return children;
     },
     deleteUses(parentId: number, childId: number) {
       if (this.uses.has(parentId)) {
