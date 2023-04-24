@@ -109,5 +109,14 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
         }
       }
     },
+    getChildren(parentId: number): PartUsageChild[] | null {
+      const childrenMap = this.uses.get(parentId);
+      if (!childrenMap) {
+        return null;
+      }
+      const children = [] as PartUsageChild[];
+      childrenMap.forEach((value) => children.push(value));
+      return children;
+    },
   },
 });

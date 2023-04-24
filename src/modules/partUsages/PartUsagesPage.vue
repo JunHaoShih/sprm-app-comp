@@ -51,6 +51,11 @@ async function onLazyLoad(details: {
   done: (children?: readonly BomTreeNode[] | undefined) => void,
   fail: () => void,
 }) {
+  const exist = partUsaeChildrenStore.getChildren(details.node.versionId);
+  if (exist) {
+    details.done([]);
+    return;
+  }
   const uses = await partUsageService.getByParentVersionId(details.node.versionId);
   if (uses) {
     partUsaeChildrenStore.addUses(uses);
