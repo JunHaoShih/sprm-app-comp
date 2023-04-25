@@ -26,9 +26,9 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       const rootNode = treeNodeStore.getTreeNodes(state.uses, state.root);
       return rootNode;
     },
-    selectedTreeNode: () => (nodeId: number): BomTreeNode | undefined => {
+    selectedTreeNode: () => (usageId: number): BomTreeNode | undefined => {
       const treeNodeStore = useBomTreeStore();
-      return treeNodeStore.getByNodeId(nodeId);
+      return treeNodeStore.getByNodeId(usageId);
     },
     children: (state) => (parentId: number): PartUsageChild[] | null => {
       const childrenMap = state.uses.get(parentId);
