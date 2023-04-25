@@ -10,9 +10,9 @@
           <q-tree
           ref="qtree"
             :nodes="partUsaeChildrenStore.treeNodes"
-            v-model:selected="selectedNodeId"
+            v-model:selected="selectedUsageId"
             selected-color="primary"
-            node-key="nodeId"
+            node-key="usageId"
             @lazy-load="onLazyLoad"
             @update:selected="onSelected"
             :default-expand-all="true"
@@ -50,11 +50,13 @@ const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const splitterModel = ref(50);
 
-const selectedNodeId = ref(0);
+const selectedUsageId = ref(0);
+
+const previousSelectedUsageId = ref(0);
 
 const selectedParentId = computed(
   (): number => {
-    const node = partUsaeChildrenStore.selectedTreeNode(selectedNodeId.value);
+    const node = partUsaeChildrenStore.selectedTreeNode(selectedUsageId.value);
     if (!node) {
       return 0;
     }
@@ -95,9 +97,11 @@ async function onLazyLoad(details: {
 }
 
 async function onSelected(nodeId: number) {
-  if (!nodeId) {
+  if (!nodeId && nodeId !== 0) {
+    selectedUsageId.value = previousSelectedUsageId.value;
     return;
   }
+  previousSelectedUsageId.value = nodeId;
   const targetNode = partUsaeChildrenStore.selectedTreeNode(nodeId);
   if (!targetNode) {
     return;
