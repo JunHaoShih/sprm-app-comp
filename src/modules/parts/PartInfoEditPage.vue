@@ -1,7 +1,6 @@
 <template>
   <div class="q-pa-sm main-panel">
     <PartInfoPanel
-      :id="id"
       :readonly="false"
       v-model="partVersionStore.content"
     />

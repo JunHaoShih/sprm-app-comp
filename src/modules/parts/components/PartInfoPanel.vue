@@ -121,11 +121,9 @@ const middleCustomOptions = ref<Record<number, string>>({} as Record<number, str
  * Define props with default value
  */
 const props = withDefaults(defineProps<{
-  id: string,
   readonly: boolean,
   modelValue: PartVersion,
 }>(), {
-  id: '',
   readonly: true,
 });
 
