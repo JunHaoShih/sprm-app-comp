@@ -1,17 +1,21 @@
 import { defineStore } from 'pinia';
 import { QTreeProps } from 'quasar';
 import { PartVersion } from 'src/modules/parts/models/PartVersion';
+import { partVersionService } from 'src/modules/parts/services/PartVersionService';
+import { ViewType } from 'src/modules/parts/models/Part';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { BomTreeNode, useBomTreeStore } from './BomTreeStore';
 
 interface PartUsageUsesContainer {
   uses: Map<number, Map<number, PartUsageChild>>,
+  partVersionMap: Map<number, PartVersion>,
   root: PartVersion,
 }
 
 export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
   state: (): PartUsageUsesContainer => ({
     uses: new Map<number, Map<number, PartUsageChild>>(),
+    partVersionMap: new Map<number, PartVersion>(),
     root: {} as PartVersion,
   }),
   getters: {
@@ -39,6 +43,9 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       childrenMap.forEach((value) => children.push(value));
       return children;
     },
+    partVersion: (state) => (
+      (versionId: number): PartVersion | undefined => state.partVersionMap.get(versionId)
+    ),
   },
   actions: {
     initialize(usages: PartUsageChild[], partVersion: PartVersion) {
@@ -77,6 +84,16 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
         if (this.uses.get(parentId)?.has(childId)) {
           this.uses.get(parentId)?.delete(childId);
         }
+      }
+    },
+    async partVersionInit(versionId: number) {
+      const storedVersion = this.partVersionMap.get(versionId);
+      if (storedVersion) {
+        return;
+      }
+      const targetVersion = await partVersionService.getById(versionId);
+      if (targetVersion) {
+        this.partVersionMap.set(versionId, targetVersion);
       }
     },
   },

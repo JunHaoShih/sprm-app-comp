@@ -10,14 +10,14 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="info" :label="$t('parts.usage')" />
-      <q-tab name="dummy" label="Dummy" />
+      <q-tab name="usage" :label="$t('parts.usage')" />
+      <q-tab name="info" :label="$t('parts.info')" />
     </q-tabs>
 
     <q-separator />
 
     <q-tab-panels v-model="tab" animated>
-      <q-tab-panel name="info">
+      <q-tab-panel name="usage">
         <q-table
           :rows="partUsageChildren"
           :columns="fileredColumns"
@@ -57,21 +57,29 @@
         </q-table>
       </q-tab-panel>
 
-      <q-tab-panel name="dummy">
-        <div class="text-h6">Dummy</div>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+      <q-tab-panel name="info">
+        <part-info-panel
+          v-if="partVersion"
+          :readonly="true"
+          v-model="partVersion"
+        />
+        <div v-else class="row justify-center items-center">
+          <span class="loader"></span>
+        </div>
       </q-tab-panel>
     </q-tab-panels>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QTableProps } from 'quasar';
+import PartInfoPanel from '../parts/components/PartInfoPanel.vue';
 import { usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
 import { PartUsageChild } from './models/PartUsageUses';
+import { PartVersion } from '../parts/models/PartVersion';
 
 const i18n = useI18n();
 
@@ -90,6 +98,10 @@ const partUsageChildren = computed(
     const children = partUsaeChildrenStore.children(props.id);
     return children || [];
   },
+);
+
+const partVersion = computed(
+  (): PartVersion | undefined => partUsaeChildrenStore.partVersion(props.id),
 );
 
 const columns = computed(
@@ -118,6 +130,10 @@ const fileredColumns = computed(
   },
 );
 
+watch(() => props.id, () => {
+  partUsaeChildrenStore.partVersionInit(props.id);
+});
+
 const pagination: QTableProps['pagination'] = {
   sortBy: 'desc',
   descending: false,
@@ -125,7 +141,7 @@ const pagination: QTableProps['pagination'] = {
   rowsPerPage: 20,
 };
 
-const tab = ref('info');
+const tab = ref('usage');
 </script>
 
 <style lang="sass" scoped>

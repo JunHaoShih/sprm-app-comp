@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-card style="min-width: 700px">
+    <q-card style="min-width: 400px">
       <q-card-section class="scroll dialog-inner-max">
         <div>
           <q-expansion-item
