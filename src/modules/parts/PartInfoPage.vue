@@ -13,12 +13,6 @@ import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import 'src/extensions/date.extensions';
 
 const partVersionStore = usePartVersionStore();
-
-const props = withDefaults(defineProps<{
-  id: string,
-}>(), {
-  id: '',
-});
 </script>
 
 <style lang="sass" scoped>

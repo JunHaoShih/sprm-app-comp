@@ -20,7 +20,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('src/modules/parts/PartVersionCenterPage.vue'),
         props: true,
         children: [
-          { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue'), props: true },
+          { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue') },
           { path: '/parts/version/:id/usages', component: () => import('src/modules/partUsages/PartUsagesPage.vue'), props: true },
         ],
       },
