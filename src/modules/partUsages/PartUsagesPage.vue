@@ -33,7 +33,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue';
+import {
+  computed, onBeforeMount, ref, watch,
+} from 'vue';
 import { useQuasar } from 'quasar';
 import PartUsageRightPanel from './PartUsageRightPanel.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
@@ -113,11 +115,22 @@ async function onSelected(nodeId: number) {
   await updateChildrenStore(targetNode.versionId);
 }
 
-onBeforeMount(async () => {
-  const uses = await partUsageService.getByParentVersionId(Number(props.id));
+async function initializePage(partVersionId: number) {
+  const uses = await partUsageService.getByParentVersionId(partVersionId);
   if (uses) {
-    partUsaeChildrenStore.initialize(uses, partVersionStore.content);
+    await partVersionStore.partVersionInit(partVersionId);
+    partUsaeChildrenStore.initialize(uses, partVersionStore.partVersion);
+    selectedUsageId.value = 0;
+    previousSelectedUsageId.value = 0;
   }
+}
+
+watch(() => props.id, async (newValue) => {
+  await initializePage(Number(newValue));
+});
+
+onBeforeMount(async () => {
+  await initializePage(Number(props.id));
 });
 </script>
 

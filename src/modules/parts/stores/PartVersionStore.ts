@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { PartVersion } from '../models/PartVersion';
 import { ViewType } from '../models/Part';
+import { partVersionService } from '../services/PartVersionService';
 
 interface PartVersionContainer {
   content: PartVersion
@@ -27,9 +28,15 @@ export const usePartVersionStore = defineStore('partVersion', {
       remarks: '',
     },
   }),
+  getters: {
+    partVersion: (state): PartVersion => state.content,
+  },
   actions: {
-    setPartVersion(partVersion: PartVersion): void {
-      this.content = partVersion;
+    async partVersionInit(versionId: number): Promise<void> {
+      const targetVersion = await partVersionService.getById(versionId);
+      if (targetVersion) {
+        this.content = targetVersion;
+      }
     },
   },
 });

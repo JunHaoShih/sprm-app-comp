@@ -1,25 +1,30 @@
 <template>
   <div class="q-pa-sm main-panel">
-    <PartInfoPanel
-      :readonly="false"
-      v-model="partVersionStore.content"
-    />
-    <q-footer elevated>
-      <q-toolbar>
-        <q-space />
-        <q-btn
-          color="deep-orange"
-          glossy
-          label="Save"
-          @click="onSaveClicked"
-        />
-      </q-toolbar>
-    </q-footer>
+    <div v-if="partVersionStore.partVersion.id">
+      <PartInfoPanel
+        :readonly="false"
+        v-model="partVersionStore.partVersion"
+      />
+      <q-footer elevated>
+        <q-toolbar>
+          <q-space />
+          <q-btn
+            color="deep-orange"
+            glossy
+            label="Save"
+            @click="onSaveClicked"
+          />
+        </q-toolbar>
+      </q-footer>
+    </div>
+    <div v-else class="row justify-center items-center outer-max">
+      <span class="loader"></span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
+import { onBeforeMount, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import PartInfoPanel from './components/PartInfoPanel.vue';
@@ -27,6 +32,7 @@ import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import { partVersionService } from './services/PartVersionService';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import 'src/extensions/date.extensions';
+import { ObjectTypeId } from '../objectTypes/models/ObjectType';
 
 const i18n = useI18n();
 
@@ -55,16 +61,18 @@ async function onSaveClicked(): Promise<void> {
   }
 }
 
+watch(() => props.id, async (newValue) => {
+  await partVersionStore.partVersionInit(Number(newValue));
+});
+
 onBeforeMount(async () => {
   partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.content.attributes.map((attr) => [attr.number, '']));
-  const targetVersion = await partVersionService.getById(Number(props.id));
-  if (targetVersion) {
-    partVersionStore.content = targetVersion;
-  }
+  attrLinksStore.initialize(ObjectTypeId.PartVersion);
+  await partVersionStore.partVersionInit(Number(props.id));
 });
 </script>
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 70px)
+  height: calc(100vh - 200px)
 </style>

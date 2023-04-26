@@ -2,7 +2,6 @@ import { defineStore } from 'pinia';
 import { QTreeProps } from 'quasar';
 import { PartVersion } from 'src/modules/parts/models/PartVersion';
 import { partVersionService } from 'src/modules/parts/services/PartVersionService';
-import { ViewType } from 'src/modules/parts/models/Part';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { BomTreeNode, useBomTreeStore } from './BomTreeStore';
 
@@ -50,7 +49,8 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
   actions: {
     initialize(usages: PartUsageChild[], partVersion: PartVersion) {
       this.root = partVersion;
-      this.uses = new Map<number, Map<number, PartUsageChild>>();
+      this.uses.clear();
+      this.partVersionMap.clear();
       for (let i = 0; i < usages.length; i += 1) {
         const usage = usages[i];
         if (!this.uses.has(usage.usedBy)) {
@@ -60,7 +60,6 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
           this.uses.get(usage.usedBy)?.set(usage.uses.version.id, usage);
         }
       }
-      this.root = partVersion;
     },
     addUses(usages: PartUsageChild[], parentId: number) {
       if (usages.length === 0) {

@@ -1,9 +1,13 @@
 <template>
   <div class="q-pa-sm main-panel">
     <PartInfoPanel
+      v-if="partVersionStore.content.id"
       :readonly="true"
       v-model="partVersionStore.content"
     />
+    <div v-else class="row justify-center items-center outer-max">
+      <span class="loader"></span>
+    </div>
   </div>
 </template>
 
@@ -17,5 +21,5 @@ const partVersionStore = usePartVersionStore();
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 70px)
+  height: calc(100vh - 200px)
 </style>

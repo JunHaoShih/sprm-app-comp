@@ -45,14 +45,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { partService } from './services/PartService';
-import { partVersionService } from './services/PartVersionService';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import { usePartVersionStore } from './stores/PartVersionStore';
 import { Part, ViewType } from './models/Part';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
 import 'src/extensions/date.extensions';
+import { ObjectTypeId } from '../objectTypes/models/ObjectType';
 
 const attrLinksStore = useAttributeLinksStore();
 
@@ -66,17 +65,22 @@ const props = withDefaults(defineProps<{
   id: '',
 });
 
+async function updatePartAndVersion(partVersionId: number) {
+  await partVersionStore.partVersionInit(partVersionId);
+  const targetPart = await partService.getById(Number(partVersionStore.partVersion.master.id));
+  if (targetPart) {
+    part.value = targetPart;
+  }
+}
+
+watch(() => props.id, async (newValue) => {
+  await updatePartAndVersion(Number(newValue));
+});
+
 onBeforeMount(async () => {
   partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.content.attributes.map((attr) => [attr.number, '']));
   attrLinksStore.initialize(ObjectTypeId.PartVersion);
-  const targetVersion = await partVersionService.getById(Number(props.id));
-  if (targetVersion) {
-    partVersionStore.content = targetVersion;
-    const targetPart = await partService.getById(Number(targetVersion.master.id));
-    if (targetPart) {
-      part.value = targetPart;
-    }
-  }
+  await updatePartAndVersion(Number(props.id));
 });
 </script>
 

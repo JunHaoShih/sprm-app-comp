@@ -72,7 +72,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue';
+import {
+  computed, onBeforeMount, ref, watch,
+} from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QTableProps } from 'quasar';
 import PartInfoPanel from '../parts/components/PartInfoPanel.vue';
@@ -130,8 +132,8 @@ const fileredColumns = computed(
   },
 );
 
-watch(() => props.id, () => {
-  partUsaeChildrenStore.partVersionInit(props.id);
+watch(() => props.id, async () => {
+  await partUsaeChildrenStore.partVersionInit(props.id);
 });
 
 const pagination: QTableProps['pagination'] = {
@@ -141,6 +143,9 @@ const pagination: QTableProps['pagination'] = {
   rowsPerPage: 20,
 };
 
+onBeforeMount(async () => {
+  await partUsaeChildrenStore.partVersionInit(props.id);
+});
 const tab = ref('usage');
 </script>
 

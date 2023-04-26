@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { partService } from './services/PartService';
 import { partVersionService } from './services/PartVersionService';
@@ -75,9 +75,8 @@ const props = withDefaults(defineProps<{
   id: '',
 });
 
-onBeforeMount(async () => {
-  attrLinksStore.initialize(ObjectTypeId.PartVersion);
-  const targetPart = await partService.getById(Number(props.id));
+async function updatePartAndVersion(partId: number) {
+  const targetPart = await partService.getById(partId);
   if (targetPart) {
     part.value = targetPart;
     if (!targetPart.checkoutId) {
@@ -88,6 +87,15 @@ onBeforeMount(async () => {
       partVersion.value = targetVersion;
     }
   }
+}
+
+watch(() => props.id, async (newValue) => {
+  await updatePartAndVersion(Number(newValue));
+});
+
+onBeforeMount(async () => {
+  attrLinksStore.initialize(ObjectTypeId.PartVersion);
+  await updatePartAndVersion(Number(props.id));
 });
 </script>
 
