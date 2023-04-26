@@ -20,6 +20,20 @@ export const usePartsStore = defineStore('parts', {
       }
       return part.checkoutId !== part.version.id;
     },
+    records: (state): Record<string, unknown>[] => {
+      const newRecords = state.parts.map((part) => {
+        const record: Record<string, unknown> = part;
+        if (part.version.customValues) {
+          Object.keys(part.version.customValues).forEach((key) => {
+            // TODO check if single select, get display value
+            const currentValue = part.version.customValues[key];
+            record[key] = currentValue;
+          });
+        }
+        return record;
+      });
+      return newRecords;
+    },
   },
   actions: {
     addPart(part: Part): void {

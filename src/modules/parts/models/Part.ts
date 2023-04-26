@@ -13,6 +13,7 @@ export interface PartVersionInfo extends ReturnBase {
   version: number,
   isLatest: boolean,
   checkout: boolean,
+  customValues: Record<string, string>,
 }
 
 export interface Part extends ReturnBase {
@@ -22,5 +23,4 @@ export interface Part extends ReturnBase {
   checkout: boolean,
   checkoutId: number | null,
   version: PartVersionInfo,
-  customValues: Record<string, string>,
 }

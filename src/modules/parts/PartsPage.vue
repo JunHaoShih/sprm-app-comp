@@ -3,7 +3,7 @@
     <!-- product files table -->
     <q-table
       title="Parts"
-      :rows="partsStore.parts"
+      :rows="partsStore.records"
       :columns="columns"
       v-model:selected="selected"
       selection="multiple"
@@ -184,6 +184,9 @@ const columns = computed(
     },
     {
       name: 'updateDate', label: i18n.t('base.modifiedDate'), field: '', align: 'left', sortable: true,
+    },
+    {
+      name: 'weight', label: '1234', field: 'WEIGHT', align: 'left', sortable: true,
     },
   ],
 );
