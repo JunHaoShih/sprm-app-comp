@@ -53,10 +53,10 @@ const props = defineProps<{
   modelValue: boolean,
 }>();
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: boolean): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const prompt = computed({
   get: (): boolean => props.modelValue,

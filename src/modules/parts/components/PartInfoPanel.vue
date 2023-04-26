@@ -58,7 +58,7 @@
           >
             <div class="q-pa-sm">
               <div
-                v-for="attribute in attrLinksStore.content.attributes"
+                v-for="attribute in targetAttributes"
                 :key="attribute.id"
               >
                 <div class="q-ma-sm">
@@ -93,9 +93,10 @@ import {
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
-import { CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
+import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import ValidationInput from 'src/components/ValidationInput.vue';
 import { SelectOption } from 'src/models/SelectOption';
+import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
 import { partValidationService } from '../services/PartValidateService';
 import { useViewTypeOptionsStore } from '../stores/ViewTypeOptionsStore';
 import { ViewTypeOption } from '../models/Part';
@@ -137,6 +138,10 @@ const partVersion = computed({
   set: (value) => emit('update:modelValue', value),
 });
 
+const targetAttributes = computed(
+  (): CustomAttribute[] => attrLinksStore.attributes(ObjectTypeId.PartVersion),
+);
+
 function viewTypeInit(): void {
   const targetViewType = viewTypeOptionsStore.i18nOptions.find(
     (viewType) => viewType.value === partVersion.value.master.viewType,
@@ -166,8 +171,8 @@ onBeforeMount(() => {
     delay: 300,
   });
   viewTypeInit();
-  for (let i = 0; i < attrLinksStore.content.attributes.length; i += 1) {
-    const attr = attrLinksStore.content.attributes[i];
+  for (let i = 0; i < targetAttributes.value.length; i += 1) {
+    const attr = targetAttributes.value[i];
     if (attr.displayType === DisplayType.SingleSelect) {
       const firstOption = attr.options[0];
       middleCustomOptions.value[attr.id] = firstOption.key;

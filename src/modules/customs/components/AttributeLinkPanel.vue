@@ -3,7 +3,7 @@
     <q-table
       dense
       :title="$t('customs.attributeLinks.title')"
-      :rows="attrLinksStore.content.attributes"
+      :rows="targetAttributes"
       :columns="columns"
       :pagination="pagination"
       v-model:selected="selectedAttributes"
@@ -55,8 +55,8 @@
     </q-dialog>
     <AttributeLinksAddDialog
       v-model="searchPrompt"
-      :excludedAttributes="attrLinksStore.content.attributes"
-      :objectTypeId="attrLinksStore.content.objectTypeId"
+      :excludedAttributes="targetAttributes"
+      :objectTypeId="props.objectTypeId"
     />
   </div>
 </template>
@@ -95,6 +95,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   objectTypeId: 0,
 });
+
+const targetAttributes = computed(
+  (): CustomAttribute[] => attrLinksStore.attributes(props.objectTypeId),
+);
 
 const columns = computed(
   (): QTableProps['columns'] => [
@@ -149,7 +153,7 @@ async function onSingleDelete(attribute: CustomAttribute) {
       attributeIds: [attribute.id],
     });
     if (code === 0) {
-      attrLinksStore.deleteLinks([attribute]);
+      attrLinksStore.deleteLinks([attribute], props.objectTypeId);
       $q.notify({
         message: i18n.t('actions.deletes.success'),
         color: 'secondary',
@@ -177,7 +181,7 @@ async function onMultiDelete(): Promise<void> {
       attributeIds: selectedAttributes.value.map((attr) => attr.id),
     });
     if (code === 0) {
-      attrLinksStore.deleteLinks(selectedAttributes.value);
+      attrLinksStore.deleteLinks(selectedAttributes.value, props.objectTypeId);
       selectedAttributes.value.length = 0;
       $q.notify({
         message: i18n.t('actions.deletes.success'),

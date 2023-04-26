@@ -81,10 +81,10 @@ const props = withDefaults(defineProps<{
   excludedAttributes: () => [] as CustomAttribute[],
 });
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: boolean): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const prompt = computed({
   get: (): boolean => props.modelValue,
@@ -149,7 +149,7 @@ async function onConfirm(): Promise<void> {
   if (!newLinks) {
     return;
   }
-  newLinks.attributes.forEach((newLink) => attrLinksStore.content.attributes.push(newLink));
+  newLinks.attributes.forEach((newLink) => attrLinksStore.addLink(newLink, props.objectTypeId));
   $q.notify({
     message: `${i18n.t('actions.inserts.success')}`,
     color: 'secondary',

@@ -62,7 +62,7 @@
           >
             <div class="q-pa-sm">
               <div
-                v-for="attribute in attrLinksStore.content.attributes"
+                v-for="attribute in targetAttributes"
                 :key="attribute.id"
               >
                 <div class="q-ma-sm">
@@ -100,8 +100,9 @@ import {
 import { useI18n } from 'vue-i18n';
 import { QDialog, useQuasar } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
-import { CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
+import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import { SelectOption } from 'src/models/SelectOption';
+import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
 import ValidationInput from 'src/components/ValidationInput.vue';
 import { partValidationService } from '../services/PartValidateService';
 import { useCreatePartStore } from '../stores/CreatePartStore';
@@ -150,6 +151,10 @@ const prompt = computed({
   set: (value) => emit('update:modelValue', value),
 });
 
+const targetAttributes = computed(
+  (): CustomAttribute[] => attrLinksStore.attributes(ObjectTypeId.PartVersion),
+);
+
 function onViewTypeUpdated(value: ViewTypeOption) {
   createPartStore.viewType = value.value;
 }
@@ -186,9 +191,9 @@ function onSelectOptionUpdated(selectOption: SelectOption<string>) {
 onBeforeMount(async () => {
   const option = viewTypeOptionsStore.i18nOptions[0];
   viewTypeOption.value = option;
-  createPartStore.customValues = Object.fromEntries(attrLinksStore.content.attributes.map((attr) => [attr.number, '']));
-  for (let i = 0; i < attrLinksStore.content.attributes.length; i += 1) {
-    const attr = attrLinksStore.content.attributes[i];
+  createPartStore.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
+  for (let i = 0; i < targetAttributes.value.length; i += 1) {
+    const attr = targetAttributes.value[i];
     if (attr.displayType === DisplayType.SingleSelect) {
       const firstOption = attr.options[0];
       middleCustomOptions.value[attr.id] = firstOption.key;

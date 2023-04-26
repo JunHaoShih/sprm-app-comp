@@ -78,7 +78,7 @@ watch(() => props.id, async (newValue) => {
 });
 
 onBeforeMount(async () => {
-  partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.content.attributes.map((attr) => [attr.number, '']));
+  partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.attributes(ObjectTypeId.PartVersion).map((attr) => [attr.number, '']));
   attrLinksStore.initialize(ObjectTypeId.PartVersion);
   await updatePartAndVersion(Number(props.id));
 });
