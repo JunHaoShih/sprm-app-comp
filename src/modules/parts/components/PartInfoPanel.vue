@@ -166,18 +166,30 @@ function onSelectOptionUpdated(selectOption: SelectOption<string>) {
   partVersion.value.customValues[selectOption.attributeNumber] = selectOption.value;
 }
 
-onBeforeMount(() => {
+onBeforeMount(async () => {
   $q.loading.show({
     delay: 300,
   });
+  await attrLinksStore.initialize(ObjectTypeId.PartVersion);
   viewTypeInit();
-  for (let i = 0; i < targetAttributes.value.length; i += 1) {
-    const attr = targetAttributes.value[i];
+  targetAttributes.value.forEach((attr) => {
     if (attr.displayType === DisplayType.SingleSelect) {
-      const firstOption = attr.options[0];
-      middleCustomOptions.value[attr.id] = firstOption.key;
+      // Get single select value
+      const targetValue = partVersion.value.customValues[attr.number];
+      // Get option by single select value
+      const targetOption = attr.options.find(
+        (option) => option.key === targetValue,
+      );
+      if (targetOption) {
+        // Display language or default display if option exist
+        middleCustomOptions.value[attr.id] = targetOption.languages[i18n.locale.value]
+          || targetOption.value;
+      } else {
+        // Display raw value if option not exist
+        middleCustomOptions.value[attr.id] = targetValue;
+      }
     }
-  }
+  });
   $q.loading.hide();
 });
 </script>

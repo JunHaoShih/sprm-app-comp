@@ -154,41 +154,51 @@ const selected = ref<Part[]>([]);
 const prompt = ref(false);
 
 const columns = computed(
-  (): QTableProps['columns'] => [
-    {
-      name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
-    },
-    {
-      name: 'isCheckout', label: '', field: '', align: 'left', sortable: false,
-    },
-    {
-      name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
-    },
-    {
-      name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
-    },
-    {
-      name: 'view', label: i18n.t('parts.view'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'version', label: i18n.t('iterable.version'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
-    },
-    {
-      name: 'createDate', label: i18n.t('base.createDate'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'updateUser', label: i18n.t('base.modifier'), field: 'updateUser', align: 'left', sortable: true,
-    },
-    {
-      name: 'updateDate', label: i18n.t('base.modifiedDate'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'weight', label: '1234', field: 'WEIGHT', align: 'left', sortable: true,
-    },
-  ],
+  (): QTableProps['columns'] => {
+    const defaultColumns: QTableProps['columns'] = [
+      {
+        name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
+      },
+      {
+        name: 'isCheckout', label: '', field: '', align: 'left', sortable: false,
+      },
+      {
+        name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
+      },
+      {
+        name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
+      },
+      {
+        name: 'view', label: i18n.t('parts.view'), field: '', align: 'left', sortable: true,
+      },
+      {
+        name: 'version', label: i18n.t('iterable.version'), field: '', align: 'left', sortable: true,
+      },
+      {
+        name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
+      },
+      {
+        name: 'createDate', label: i18n.t('base.createDate'), field: '', align: 'left', sortable: true,
+      },
+      {
+        name: 'updateUser', label: i18n.t('base.modifier'), field: 'updateUser', align: 'left', sortable: true,
+      },
+      {
+        name: 'updateDate', label: i18n.t('base.modifiedDate'), field: '', align: 'left', sortable: true,
+      },
+    ];
+    attrLinksStore.attributes(ObjectTypeId.PartVersion).forEach((attr) => {
+      const currentLabel = attr.languages[i18n.locale.value] || attr.name;
+      defaultColumns.push({
+        name: attr.number,
+        label: currentLabel,
+        field: attr.number,
+        align: 'left',
+        sortable: true,
+      });
+    });
+    return defaultColumns;
+  },
 );
 
 const pagination: QTableProps['pagination'] = {
