@@ -17,6 +17,22 @@
       <template v-slot:top>
         <q-btn color="primary" :label="$t('actions.add')" @click="prompt=true"></q-btn>
         <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
+        <q-btn-dropdown
+          color="primary"
+          :label="$t('columns.display')"
+        >
+        <div class="row no-wrap q-pa-md">
+          <div class="column">
+            <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
+            <q-toggle
+              v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
+              v-bind:key="attr.number"
+              v-model="canDisplay[attr.number]"
+              :label="attr.languages[i18n.locale.value] || attr.name"
+            />
+          </div>
+        </div>
+        </q-btn-dropdown>
         <q-space />
         <q-input v-model="patternInput" type="text" label="Search"
           v-on:keyup.enter="onSearchEnter"
@@ -153,6 +169,8 @@ const selected = ref<Part[]>([]);
 
 const prompt = ref(false);
 
+const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
 const columns = computed(
   (): QTableProps['columns'] => {
     const defaultColumns: QTableProps['columns'] = [
@@ -188,6 +206,9 @@ const columns = computed(
       },
     ];
     attrLinksStore.attributes(ObjectTypeId.PartVersion).forEach((attr) => {
+      if (!canDisplay.value[attr.number]) {
+        return;
+      }
       const currentLabel = attr.languages[i18n.locale.value] || attr.name;
       defaultColumns.push({
         name: attr.number,
@@ -258,6 +279,10 @@ onBeforeMount(async () => {
   await Promise.all([
     attrLinksStore.initialize(ObjectTypeId.PartVersion),
   ]);
+  const attributes = attrLinksStore.attributes(ObjectTypeId.PartVersion);
+  attributes.forEach((attr) => {
+    canDisplay.value[attr.number] = true;
+  });
 });
 </script>
 

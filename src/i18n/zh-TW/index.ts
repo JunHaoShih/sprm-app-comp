@@ -100,6 +100,9 @@ export default {
       invalidChar: '不可含有任何非法字元',
     },
   },
+  columns: {
+    display: '欄位顯示',
+  },
   quantity: '數量',
   remarks: '備註',
   language: '語言',
