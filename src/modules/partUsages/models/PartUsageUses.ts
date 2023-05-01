@@ -5,4 +5,5 @@ export interface PartUsageChild extends ReturnBase {
   usedBy: number,
   uses: Part,
   quantity: number,
+  customValues: Record<string, string>,
 }

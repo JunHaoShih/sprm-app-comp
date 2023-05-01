@@ -28,9 +28,25 @@
           style="position: sticky; top: 0"
         >
           <!-- button at table header -->
-          <template v-if="!readonly" v-slot:top>
-            <q-btn color="primary" :label="$t('actions.add')"></q-btn>
-            <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
+          <template v-slot:top>
+            <q-btn v-if="!readonly" color="primary" :label="$t('actions.add')"></q-btn>
+            <q-btn v-if="!readonly" color="primary" :label="$t('actions.delete')"></q-btn>
+            <q-btn-dropdown
+              color="primary"
+              :label="$t('columns.display')"
+            >
+            <div class="row no-wrap q-pa-md">
+              <div class="column">
+                <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
+                <q-toggle
+                  v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartUsage)"
+                  v-bind:key="attr.number"
+                  v-model="canDisplay[attr.number]"
+                  :label="attr.languages[i18n.locale.value] || attr.name"
+                />
+              </div>
+            </div>
+            </q-btn-dropdown>
             <q-space />
           </template>
           <!-- action buttons -->
@@ -59,9 +75,9 @@
 
       <q-tab-panel name="info">
         <part-info-panel
-          v-if="partVersion"
+          v-if="selectedPartVersion"
           :readonly="true"
-          v-model="partVersion"
+          v-model="selectedPartVersion"
         />
         <div v-else class="row justify-center items-center">
           <span class="loader"></span>
@@ -80,12 +96,18 @@ import { QTableProps } from 'quasar';
 import PartInfoPanel from '../parts/components/PartInfoPanel.vue';
 import { usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
-import { PartUsageChild } from './models/PartUsageUses';
 import { PartVersion } from '../parts/models/PartVersion';
+import { partUsageService } from './services/PartUsageService';
+import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
+import { ObjectTypeId } from '../objectTypes/models/ObjectType';
 
 const i18n = useI18n();
 
 const partUsaeChildrenStore = usePartUsageChildrenStore();
+
+const attrLinksStore = useAttributeLinksStore();
+
+const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
@@ -96,31 +118,50 @@ const props = withDefaults(defineProps<{
 });
 
 const partUsageChildren = computed(
-  (): PartUsageChild[] => {
+  () => {
     const children = partUsaeChildrenStore.children(props.id);
-    return children || [];
+    if (children) {
+      return partUsageService.toRecords(children);
+    }
+    return [];
   },
 );
 
-const partVersion = computed(
+const selectedPartVersion = computed(
   (): PartVersion | undefined => partUsaeChildrenStore.partVersion(props.id),
 );
 
 const columns = computed(
-  (): QTableProps['columns'] => [
-    {
-      name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
-    },
-    {
-      name: 'usesNumber', required: true, label: i18n.t('parts.number'), align: 'left', field: '', sortable: true,
-    },
-    {
-      name: 'usesName', required: true, label: i18n.t('parts.name'), align: 'left', field: '', sortable: true,
-    },
-    {
-      name: 'quantity', label: i18n.t('quantity'), field: 'quantity', align: 'left', sortable: true,
-    },
-  ],
+  (): QTableProps['columns'] => {
+    const defaultColumns: QTableProps['columns'] = [
+      {
+        name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
+      },
+      {
+        name: 'usesNumber', required: true, label: i18n.t('parts.number'), align: 'left', field: '', sortable: true,
+      },
+      {
+        name: 'usesName', required: true, label: i18n.t('parts.name'), align: 'left', field: '', sortable: true,
+      },
+      {
+        name: 'quantity', label: i18n.t('quantity'), field: 'quantity', align: 'left', sortable: true,
+      },
+    ];
+    attrLinksStore.attributes(ObjectTypeId.PartUsage).forEach((attr) => {
+      if (!canDisplay.value[attr.number]) {
+        return;
+      }
+      const currentLabel = attr.languages[i18n.locale.value] || attr.name;
+      defaultColumns.push({
+        name: attr.number,
+        label: currentLabel,
+        field: attr.number,
+        align: 'left',
+        sortable: true,
+      });
+    });
+    return defaultColumns;
+  },
 );
 
 const fileredColumns = computed(
@@ -144,7 +185,14 @@ const pagination: QTableProps['pagination'] = {
 };
 
 onBeforeMount(async () => {
-  await partUsaeChildrenStore.partVersionInit(props.id);
+  await Promise.all([
+    partUsaeChildrenStore.partVersionInit(props.id),
+    attrLinksStore.initialize(ObjectTypeId.PartUsage),
+  ]);
+  const attributes = attrLinksStore.attributes(ObjectTypeId.PartUsage);
+  attributes.forEach((attr) => {
+    canDisplay.value[attr.number] = true;
+  });
 });
 const tab = ref('usage');
 </script>
