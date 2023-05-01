@@ -1,37 +1,39 @@
 <template>
   <div>
-    <!-- action bar -->
-    <div class="row shadow-1 q-mb-sm q-pa-sm"
-      style="border-radius: 10px"
-    >
-      <q-btn v-if="readonly" dense round flat color="grey" icon="edit"
-        @click="readonly = !readonly"
-      />
-      <div v-else class="row">
-        <q-btn dense round flat color="red" icon="close"
-          class="bg-grey-4 q-mr-sm"
-          @click="onCancelClicked"
-        />
-        <q-btn dense round flat color="green" icon="done"
-          class="bg-grey-4"
-          @click="onConfirmClicked"
-        />
-      </div>
-      <q-space/>
-      <div class="q-ma-sm">
-        Last edited: {{ new Date(defaultAttr.updateDate).getDateStr() }}
-        <q-tooltip>
-          <div>{{ new Date(defaultAttr.updateDate).toString() }}</div>
-          <div>By {{ defaultAttr.updateUser }}</div>
-        </q-tooltip>
-      </div>
-    </div>
-
     <!-- info area -->
     <CustomAttributePanel
       v-model="defaultAttr"
       :readonly="readonly"
-    />
+    >
+      <template v-slot:before>
+        <!-- action bar -->
+        <div class="row shadow-1 q-mb-sm q-pa-sm"
+          style="border-radius: 10px"
+        >
+          <q-btn v-if="readonly" dense round flat color="grey" icon="edit"
+            @click="readonly = !readonly"
+          />
+          <div v-else class="row">
+            <q-btn dense round flat color="red" icon="close"
+              class="bg-grey-4 q-mr-sm"
+              @click="onCancelClicked"
+            />
+            <q-btn dense round flat color="green" icon="done"
+              class="bg-grey-4"
+              @click="onConfirmClicked"
+            />
+          </div>
+          <q-space/>
+          <div class="q-ma-sm">
+            Last edited: {{ new Date(defaultAttr.updateDate).getDateStr() }}
+            <q-tooltip>
+              <div>{{ new Date(defaultAttr.updateDate).toString() }}</div>
+              <div>By {{ defaultAttr.updateUser }}</div>
+            </q-tooltip>
+          </div>
+        </div>
+      </template>
+    </CustomAttributePanel>
   </div>
 </template>
 

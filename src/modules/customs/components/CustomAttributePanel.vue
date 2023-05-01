@@ -1,5 +1,6 @@
 <template>
   <div>
+    <slot name="before"></slot>
     <!-- info area -->
     <q-expansion-item
       v-model="infoExpanded"
