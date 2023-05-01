@@ -4,18 +4,21 @@
       <PartInfoPanel
         :readonly="false"
         v-model="partVersionStore.partVersion"
-      />
-      <q-footer elevated>
-        <q-toolbar>
-          <q-space />
-          <q-btn
-            color="deep-orange"
-            glossy
-            label="Save"
-            @click="onSaveClicked"
-          />
-        </q-toolbar>
-      </q-footer>
+      >
+        <template v-slot:after>
+          <q-footer elevated>
+            <q-toolbar>
+              <q-space />
+              <q-btn
+                color="deep-orange"
+                glossy
+                label="Save"
+                @click="onSaveClicked"
+              />
+            </q-toolbar>
+          </q-footer>
+        </template>
+      </PartInfoPanel>
     </div>
     <div v-else class="row justify-center items-center outer-max">
       <span class="loader"></span>

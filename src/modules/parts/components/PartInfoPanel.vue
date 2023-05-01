@@ -2,6 +2,7 @@
   <div>
     <q-card style="min-width: 400px">
       <q-card-section class="scroll dialog-inner-max">
+        <slot name="before"></slot>
         <div>
           <q-expansion-item
             v-model="infoExpanded"
@@ -81,6 +82,7 @@
             </div>
           </q-expansion-item>
         </div>
+        <slot name="after"></slot>
       </q-card-section>
     </q-card>
   </div>
