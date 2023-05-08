@@ -24,6 +24,7 @@ const getAll = async (): Promise<ObjectType[] | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

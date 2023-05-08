@@ -26,6 +26,7 @@ Promise<Part[] | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -54,6 +55,7 @@ const getById = async (id: number): Promise<Part | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

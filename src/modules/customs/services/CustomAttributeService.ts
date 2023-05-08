@@ -32,6 +32,7 @@ const create = async (createDto: CreateCustomAttributeDTO)
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -66,6 +67,7 @@ const update = async (id: number, updateDto: UpdateCustomAttributeDTO)
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -97,6 +99,7 @@ const getAll = async () : Promise<CustomAttribute[] | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -129,6 +132,7 @@ const remove = async (id: number): Promise<number | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

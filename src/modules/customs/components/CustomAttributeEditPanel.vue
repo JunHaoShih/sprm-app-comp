@@ -90,6 +90,7 @@ async function onConfirmClicked(): Promise<void> {
     $q.notify({
       message: `Error: ${i18n.t(result)}`,
       color: 'red',
+      icon: 'error',
     });
     return;
   }
@@ -119,6 +120,7 @@ async function onConfirmClicked(): Promise<void> {
     $q.notify({
       message: `${inputAttr.value.number}: ${i18n.t('actions.updates.success')}`,
       color: 'secondary',
+      icon: 'check_circle',
     });
   }
 }

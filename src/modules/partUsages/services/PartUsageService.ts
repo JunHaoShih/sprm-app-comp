@@ -29,6 +29,7 @@ const getByParentVersionId = async (parentVersionId: number): Promise<PartUsageC
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

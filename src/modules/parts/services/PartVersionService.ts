@@ -26,6 +26,7 @@ const getById = async (id: number): Promise<PartVersion | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -54,6 +55,7 @@ const update = async (id: number, dto: UpdatePartVersionDTO): Promise<number | n
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

@@ -168,6 +168,7 @@ function onDialogConfirm(): void {
     $q.notify({
       message: `Error: ${i18n.t(error)}`,
       color: 'red',
+      icon: 'error',
     });
     return;
   }

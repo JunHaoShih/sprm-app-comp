@@ -98,6 +98,7 @@ function onDeleteClicked(): void {
     $q.notify({
       message: `${i18n.t('actions.deletes.atLeastOne')}`,
       color: 'red',
+      icon: 'error',
     });
     return;
   }
@@ -112,6 +113,7 @@ function onDeleteClicked(): void {
       $q.notify({
         message: `${defaultAttr.value.number}: ${i18n.t('actions.deletes.success')}`,
         color: 'secondary',
+        icon: 'check_circle',
       });
       customAttributesStore.removeAttribute(defaultAttr.value.id);
     }

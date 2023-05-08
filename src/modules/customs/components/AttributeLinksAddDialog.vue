@@ -153,6 +153,7 @@ async function onConfirm(): Promise<void> {
   $q.notify({
     message: `${i18n.t('actions.inserts.success')}`,
     color: 'secondary',
+    icon: 'check_circle',
   });
   dialogRef.value.hide();
 }

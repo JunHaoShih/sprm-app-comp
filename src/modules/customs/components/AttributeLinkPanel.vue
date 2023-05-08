@@ -157,6 +157,7 @@ async function onSingleDelete(attribute: CustomAttribute) {
       $q.notify({
         message: i18n.t('actions.deletes.success'),
         color: 'secondary',
+        icon: 'check_circle',
       });
     }
   });
@@ -167,6 +168,7 @@ async function onMultiDelete(): Promise<void> {
     $q.notify({
       message: i18n.t('actions.deletes.atLeastOne'),
       color: 'red',
+      icon: 'error',
     });
     return;
   }
@@ -186,6 +188,7 @@ async function onMultiDelete(): Promise<void> {
       $q.notify({
         message: i18n.t('actions.deletes.success'),
         color: 'secondary',
+        icon: 'check_circle',
       });
     }
   });

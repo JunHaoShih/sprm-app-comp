@@ -31,6 +31,7 @@ Promise<SPRMResponse<AuthenticationResponse> | null> => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

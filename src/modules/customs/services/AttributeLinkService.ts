@@ -32,6 +32,7 @@ const getByObjectTypeId = async (objectTypeId: ObjectTypeId): Promise<AttributeL
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -64,6 +65,7 @@ const insert = async (createDTO: CreateAttributeLinksDTO) => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });
@@ -91,6 +93,7 @@ const deleteMultiple = async (deleteDTO: DeleteAttributeLinksDTO) => {
       Notify.create({
         message,
         color: 'red',
+        icon: 'error',
       });
       return null;
     });

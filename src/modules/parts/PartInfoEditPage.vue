@@ -60,6 +60,7 @@ async function onSaveClicked(): Promise<void> {
     $q.notify({
       message: i18n.t('actions.updates.success'),
       color: 'secondary',
+      icon: 'check_circle',
     });
   }
 }

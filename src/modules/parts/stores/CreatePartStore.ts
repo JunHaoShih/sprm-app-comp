@@ -21,6 +21,7 @@ export const useCreatePartStore = defineStore('createPart', {
         Notify.create({
           message: result,
           color: 'red',
+          icon: 'error',
         });
         return false;
       }
@@ -47,6 +48,7 @@ export const useCreatePartStore = defineStore('createPart', {
           Notify.create({
             message,
             color: 'red',
+            icon: 'error',
           });
           return null;
         });
