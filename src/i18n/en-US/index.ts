@@ -21,6 +21,8 @@ export default {
       atLeastOne: 'You need to select at least one',
     },
     search: 'Search',
+    checkout: 'Check out',
+    merge: 'Check in',
   },
   base: {
     creator: 'Creater',
@@ -44,6 +46,7 @@ export default {
     bom: 'BOM',
     info: 'Information',
     new: 'New part',
+    versionMustCheckout: 'This part version does not checkout',
   },
   customs: {
     title: 'Customization',

@@ -21,6 +21,8 @@ export default {
       atLeastOne: '至少要選擇一筆',
     },
     search: '搜尋',
+    checkout: '簽出',
+    checkin: '簽入',
   },
   base: {
     creator: '建立者',
@@ -44,6 +46,7 @@ export default {
     bom: 'BOM',
     info: '資訊',
     new: '新增料件',
+    versionMustCheckout: '料件版本尚未簽出',
   },
   customs: {
     title: '自定義',
