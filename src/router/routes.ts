@@ -11,9 +11,6 @@ const routes: RouteRecordRaw[] = [
         path: '/parts/:id',
         component: () => import('src/modules/parts/PartCenterPage.vue'),
         props: true,
-        children: [
-          { path: '/parts/:id/info', component: () => import('src/modules/parts/PartInfoEditPage.vue'), props: true },
-        ],
       },
       {
         path: '/parts/version/:id',
@@ -21,7 +18,16 @@ const routes: RouteRecordRaw[] = [
         props: true,
         children: [
           { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue') },
+          { path: '/parts/version/:id/infoEdit', component: () => import('src/modules/parts/PartInfoEditPage.vue') },
           { path: '/parts/version/:id/usages', component: () => import('src/modules/partUsages/PartUsagesPage.vue'), props: true },
+        ],
+      },
+      {
+        path: '/parts/version/edit/:id',
+        component: () => import('src/modules/parts/PartVersionEditCenterPage.vue'),
+        props: true,
+        children: [
+          { path: '/parts/version/edit/:id/info', component: () => import('src/modules/parts/PartInfoEditPage.vue'), props: true },
         ],
       },
       {

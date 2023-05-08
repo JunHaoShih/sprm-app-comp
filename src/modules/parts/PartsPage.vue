@@ -237,7 +237,8 @@ function onEditClicked(part: Part): void {
   if (!part.checkout) {
     // TODO show dialog to checkout
   }
-  router.push(`parts/${part.id}/info`);
+  // router.push(`parts/${part.id}/info`);
+  router.push(`parts/version/edit/${part.version.id}/info`);
 }
 
 function onSearchEnter(): void {
