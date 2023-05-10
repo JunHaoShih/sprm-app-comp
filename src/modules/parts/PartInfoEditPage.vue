@@ -27,29 +27,18 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import PartInfoPanel from './components/PartInfoPanel.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import { partVersionService } from './services/PartVersionService';
-import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import 'src/extensions/date.extensions';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
 
 const i18n = useI18n();
 
 const $q = useQuasar();
 
 const partVersionStore = usePartVersionStore();
-
-const attrLinksStore = useAttributeLinksStore();
-
-const props = withDefaults(defineProps<{
-  id: string,
-}>(), {
-  id: '',
-});
 
 async function onSaveClicked(): Promise<void> {
   const code = await partVersionService.update(partVersionStore.content.id, {
@@ -64,16 +53,6 @@ async function onSaveClicked(): Promise<void> {
     });
   }
 }
-
-watch(() => props.id, async (newValue) => {
-  await partVersionStore.partVersionInit(Number(newValue));
-});
-
-onBeforeMount(async () => {
-  partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.attributes(ObjectTypeId.PartVersion).map((attr) => [attr.number, '']));
-  attrLinksStore.initialize(ObjectTypeId.PartVersion);
-  await partVersionStore.partVersionInit(Number(props.id));
-});
 </script>
 
 <style lang="sass" scoped>

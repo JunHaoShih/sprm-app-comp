@@ -3,7 +3,7 @@
     <PartInfoPanel
       v-if="partVersionStore.content.id"
       :readonly="true"
-      v-model="partVersionStore.content"
+      v-model="partVersionStore.partVersion"
     />
     <div v-else class="row justify-center items-center outer-max">
       <span class="loader"></span>

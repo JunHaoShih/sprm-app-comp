@@ -16,7 +16,11 @@
           [{{ $t('parts.views.manufacturing') }}]
         </div>
         <div class="q-ml-sm">
-          <q-icon v-if="part.checkout" name="warning" color="orange" size="8px">
+          <q-icon
+            v-if="partVersionStore.content.master.checkout"
+            name="warning"
+            color="orange"
+            size="8px">
             <q-tooltip>
               {{ $t('iterable.checkout') }}
             </q-tooltip>
@@ -45,16 +49,13 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import { partService } from './services/PartService';
-import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import { usePartVersionStore } from './stores/PartVersionStore';
-import { Part, ViewType } from './models/Part';
+import { ViewType } from './models/Part';
 import 'src/extensions/date.extensions';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
 
 const $q = useQuasar();
 
@@ -62,11 +63,7 @@ const i18n = useI18n();
 
 const router = useRouter();
 
-const attrLinksStore = useAttributeLinksStore();
-
 const partVersionStore = usePartVersionStore();
-
-const part = ref<Part>({} as Part);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -76,7 +73,6 @@ const props = withDefaults(defineProps<{
 
 async function updatePartAndVersion(partVersionId: number) {
   await partVersionStore.partVersionInit(partVersionId);
-  const targetPart = await partService.getById(Number(partVersionStore.partVersion.master.id));
   if (!partVersionStore.content.checkout) {
     $q.notify({
       message: i18n.t('parts.versionMustCheckout'),
@@ -84,10 +80,6 @@ async function updatePartAndVersion(partVersionId: number) {
       icon: 'error',
     });
     router.back();
-    return;
-  }
-  if (targetPart) {
-    part.value = targetPart;
   }
 }
 
@@ -96,8 +88,6 @@ watch(() => props.id, async (newValue) => {
 });
 
 onBeforeMount(async () => {
-  partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.attributes(ObjectTypeId.PartVersion).map((attr) => [attr.number, '']));
-  attrLinksStore.initialize(ObjectTypeId.PartVersion);
   await updatePartAndVersion(Number(props.id));
 });
 </script>
