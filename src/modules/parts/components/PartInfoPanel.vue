@@ -90,10 +90,9 @@
 
 <script setup lang="ts">
 import {
-  computed, onBeforeMount, ref,
+  computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { useQuasar } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import ValidationInput from 'src/components/ValidationInput.vue';
@@ -105,8 +104,6 @@ import { ViewTypeOption } from '../models/Part';
 import { PartVersion } from '../models/PartVersion';
 
 const i18n = useI18n();
-
-const $q = useQuasar();
 
 const attrLinksStore = useAttributeLinksStore();
 
@@ -168,12 +165,7 @@ function onSelectOptionUpdated(selectOption: SelectOption<string>) {
   partVersion.value.customValues[selectOption.attributeNumber] = selectOption.value;
 }
 
-onBeforeMount(async () => {
-  $q.loading.show({
-    delay: 300,
-  });
-  await attrLinksStore.initialize(ObjectTypeId.PartVersion);
-  viewTypeInit();
+function updateSingleSelectAttribute() {
   targetAttributes.value.forEach((attr) => {
     if (attr.displayType === DisplayType.SingleSelect) {
       // Get single select value
@@ -192,7 +184,16 @@ onBeforeMount(async () => {
       }
     }
   });
-  $q.loading.hide();
+}
+
+watch(() => partVersion.value.id, () => {
+  updateSingleSelectAttribute();
+});
+
+onBeforeMount(async () => {
+  await attrLinksStore.initialize(ObjectTypeId.PartVersion);
+  viewTypeInit();
+  updateSingleSelectAttribute();
 });
 </script>
 
