@@ -8,7 +8,7 @@
       <template v-slot:before>
         <div class="q-pa-md q-gutter-sm">
           <q-tree
-          ref="qtree"
+            ref="qtree"
             :nodes="partUsaeChildrenStore.treeNodes"
             v-model:selected="selectedUsageId"
             selected-color="primary"
