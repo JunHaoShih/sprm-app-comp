@@ -60,6 +60,7 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
           this.uses.get(usage.usedBy)?.set(usage.uses.version.id, usage);
         }
       }
+      return this.treeNodes;
     },
     addUses(usages: PartUsageChild[], parentId: number) {
       if (usages.length === 0) {
