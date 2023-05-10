@@ -5,6 +5,10 @@ export default {
   actions: {
     action: 'Action',
     add: 'Add',
+    adds: {
+      newPart: 'Add new part',
+      existingPart: 'Add existing part',
+    },
     edit: 'Edit',
     delete: 'Delete',
     cancel: 'Cancel',

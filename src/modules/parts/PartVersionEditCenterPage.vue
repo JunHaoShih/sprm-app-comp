@@ -40,7 +40,7 @@
       />
       <q-route-tab
         :label="$t('parts.bom')"
-        :to="'/parts/version/' + id + '/usages'"
+        :to="'/parts/version/edit/' + id + '/usages'"
         exact
       />
     </q-tabs>

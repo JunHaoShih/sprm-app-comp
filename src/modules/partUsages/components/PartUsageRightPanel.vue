@@ -93,13 +93,13 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QTableProps } from 'quasar';
-import PartInfoPanel from '../parts/components/PartInfoPanel.vue';
-import { usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
+import PartInfoPanel from '../../parts/components/PartInfoPanel.vue';
+import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
-import { PartVersion } from '../parts/models/PartVersion';
-import { partUsageService } from './services/PartUsageService';
-import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
+import { PartVersion } from '../../parts/models/PartVersion';
+import { partUsageService } from '../services/PartUsageService';
+import { useAttributeLinksStore } from '../../customs/stores/AttributeLinksStore';
+import { ObjectTypeId } from '../../objectTypes/models/ObjectType';
 
 const i18n = useI18n();
 

@@ -11,6 +11,11 @@
           :id="Number(props.id)"
           v-model:selectedNode="selectedNode"
         >
+          <template v-slot:before>
+            <q-btn color="primary" :label="$t('actions.adds.newPart')"></q-btn>
+            <q-btn color="primary" :label="$t('actions.adds.existingPart')"></q-btn>
+            <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
+          </template>
         </PartUsageTreePanel>
       </template>
 
@@ -18,7 +23,7 @@
         <div class="q-gutter-sm">
           <PartUsageRightPanel
             :id="selectedParentId"
-            :readonly="true"
+            :readonly="false"
           />
         </div>
       </template>

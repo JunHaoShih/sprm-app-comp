@@ -5,6 +5,10 @@ export default {
   actions: {
     action: '動作',
     add: '新增',
+    adds: {
+      newPart: '加入新料件',
+      existingPart: '加入現有料件',
+    },
     edit: '編輯',
     delete: '刪除',
     cancel: '取消',

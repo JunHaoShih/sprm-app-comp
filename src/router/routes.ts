@@ -18,7 +18,6 @@ const routes: RouteRecordRaw[] = [
         props: true,
         children: [
           { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue') },
-          { path: '/parts/version/:id/infoEdit', component: () => import('src/modules/parts/PartInfoEditPage.vue') },
           { path: '/parts/version/:id/usages', component: () => import('src/modules/partUsages/PartUsagesPage.vue'), props: true },
         ],
       },
@@ -28,6 +27,7 @@ const routes: RouteRecordRaw[] = [
         props: true,
         children: [
           { path: '/parts/version/edit/:id/info', component: () => import('src/modules/parts/PartInfoEditPage.vue'), props: true },
+          { path: '/parts/version/edit/:id/usages', component: () => import('src/modules/partUsages/PartUsagesEditPage.vue'), props: true },
         ],
       },
       {

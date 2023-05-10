@@ -1,5 +1,6 @@
 <template>
   <div>
+    <slot name="before"></slot>
     <q-tree
       ref="qtree"
       :nodes="partUsaeChildrenStore.treeNodes"
