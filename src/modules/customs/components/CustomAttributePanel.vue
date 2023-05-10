@@ -102,6 +102,7 @@
 import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { availableLocales } from 'src/models/Locale';
 import ValidationInput from 'src/components/ValidationInput.vue';
 import CustomOptionsPanel from './CustomOptionsPanel.vue';
@@ -110,6 +111,8 @@ import { useAttributeTypesStore } from '../stores/AttributeTypesStore';
 import { useDisplayTypesStore } from '../stores/DisplayTypesStore';
 import { customAttributeValidationService } from '../services/CustomAttributeValidationService';
 import { languageValidateService } from '../services/LanguageValidateService';
+
+const i18n = useI18n();
 
 const attrTypesStore = useAttributeTypesStore();
 
@@ -156,6 +159,10 @@ function initialize(): void {
 }
 
 watch(() => inputAttr.value.id, () => {
+  initialize();
+});
+
+watch(() => i18n.locale.value, () => {
   initialize();
 });
 

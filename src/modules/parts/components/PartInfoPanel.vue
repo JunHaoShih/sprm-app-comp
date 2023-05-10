@@ -190,6 +190,11 @@ watch(() => partVersion.value.id, () => {
   updateSingleSelectAttribute();
 });
 
+watch(() => i18n.locale.value, () => {
+  viewTypeInit();
+  updateSingleSelectAttribute();
+});
+
 onBeforeMount(async () => {
   await attrLinksStore.initialize(ObjectTypeId.PartVersion);
   viewTypeInit();
