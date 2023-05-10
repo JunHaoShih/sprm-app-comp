@@ -33,6 +33,24 @@ export const usePartVersionStore = defineStore('partVersion', {
   },
   actions: {
     async partVersionInit(versionId: number): Promise<void> {
+      this.content = {
+        id: 0,
+        version: 0,
+        checkout: false,
+        master: {
+          id: 0,
+          number: '',
+          name: '',
+          viewType: ViewType.Design,
+          checkout: false,
+        },
+        customValues: {} as Record<string, string>,
+        createUser: '',
+        createDate: new Date(),
+        updateUser: '',
+        updateDate: new Date(),
+        remarks: '',
+      } as PartVersion;
       const targetVersion = await partVersionService.getById(versionId);
       if (targetVersion) {
         this.content = targetVersion;
