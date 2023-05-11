@@ -12,7 +12,10 @@
           v-model:selectedNode="selectedNode"
         >
           <template v-slot:before>
-            <q-btn color="primary" :label="$t('actions.adds.newPart')"></q-btn>
+            <q-btn
+              color="primary"
+              :label="$t('actions.adds.newPart')"
+              @click="prompt = true"></q-btn>
             <q-btn color="primary" :label="$t('actions.adds.existingPart')"></q-btn>
             <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
           </template>
@@ -28,6 +31,7 @@
         </div>
       </template>
     </q-splitter>
+    <CreatePartUsageAndPartDialog v-model="prompt"></CreatePartUsageAndPartDialog>
   </div>
 </template>
 
@@ -35,10 +39,13 @@
 import { computed, ref } from 'vue';
 import PartUsageRightPanel from './components/PartUsageRightPanel.vue';
 import PartUsageTreePanel from './components/PartUsageTreePanel.vue';
+import CreatePartUsageAndPartDialog from './components/CreatePartUsageAndPartDialog.vue';
 import 'src/extensions/date.extensions';
 import { BomTreeNode } from './stores/BomTreeStore';
 
 const splitterModel = ref(50);
+
+const prompt = ref(false);
 
 const selectedNode = ref<BomTreeNode>({} as BomTreeNode);
 
