@@ -27,6 +27,9 @@ export const useCreatePartStore = defineStore('createPart', {
       }
       return true;
     },
+    validateCreatePart(): string | undefined {
+      return partValidationService.checkCreatePartRules(this.$state);
+    },
     async create(): Promise<Part | null> {
       const part = await api.post('/api/Part', this.$state)
         .then((response): Part => {

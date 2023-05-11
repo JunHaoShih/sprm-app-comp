@@ -10,79 +10,9 @@
       </q-card-section>
       <q-separator />
       <q-card-section class="scroll dialog-inner-max">
-        <div>
-          <q-expansion-item
-            v-model="infoExpanded"
-            icon="article"
-            :label="$t('info')"
-            header-class="text-h6 bg-primary text-white"
-            expand-icon-class="text-white"
-            class="expandable shadow-1 overflow-hidden"
-            style="border-radius: 10px"
-          >
-          <div class="q-pa-sm">
-            <div class="q-ma-sm">{{ $t('parts.number') }}</div>
-            <ValidationInput v-model="createPartStore.number"
-              :inputValidator="partValidationService.checkNumberRules"
-            />
-            <div class="q-ma-sm">{{ $t('parts.name') }}</div>
-            <ValidationInput v-model="createPartStore.name"
-              :inputValidator="partValidationService.checkNameRules"
-            />
-            <div>
-              <div class="q-ma-sm">{{ $t('parts.view') }}</div>
-              <q-select
-                filled
-                dense
-                v-model="viewTypeOption"
-                :options="viewTypeOptionsStore.i18nOptions"
-                @update:modelValue="onViewTypeUpdated" />
-            </div>
-            <div class="column">
-              <div class="q-ma-sm">{{ $t('remarks') }}</div>
-              <q-input
-                v-model="createPartStore.remarks"
-                label="remarks" filled
-                type="textarea"
-              />
-            </div>
-          </div>
-          </q-expansion-item>
-
-          <q-separator class="q-mb-md"/>
-
-          <q-expansion-item
-            v-model="customValuesExpanded"
-            icon="language"
-            :label="$t('customs.attributes.title')"
-            header-class="text-h6 bg-primary text-white"
-            expand-icon-class="text-white"
-            class="expandable shadow-1 overflow-hidden"
-            style="border-radius: 10px"
-          >
-            <div class="q-pa-sm">
-              <div
-                v-for="attribute in targetAttributes"
-                :key="attribute.id"
-              >
-                <div class="q-ma-sm">
-                  {{ attribute.languages[i18n.locale.value] }}
-                </div>
-                <q-select
-                  v-if="attribute.displayType === DisplayType.SingleSelect"
-                  filled
-                  dense
-                  v-model="middleCustomOptions[attribute.id]"
-                  :options="getSelectOption(attribute.options, attribute.number)"
-                  @update:modelValue="onSelectOptionUpdated" />
-                <ValidationInput
-                  v-else
-                  v-model="createPartStore.customValues[attribute.number]"
-                />
-              </div>
-            </div>
-          </q-expansion-item>
-        </div>
+        <CreatePartPanel
+          ref="createPartPanelRef"
+        />
       </q-card-section>
       <q-separator />
       <q-card-actions align="right" class="text-primary">
@@ -94,42 +24,19 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed, onBeforeMount, ref,
-} from 'vue';
-import { useI18n } from 'vue-i18n';
+import { computed, ref } from 'vue';
 import { QDialog, useQuasar } from 'quasar';
-import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
-import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
-import { SelectOption } from 'src/models/SelectOption';
-import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
-import ValidationInput from 'src/components/ValidationInput.vue';
-import { partValidationService } from '../services/PartValidateService';
-import { useCreatePartStore } from '../stores/CreatePartStore';
-import { useViewTypeOptionsStore } from '../stores/ViewTypeOptionsStore';
-import { Part, ViewTypeOption } from '../models/Part';
-
-const i18n = useI18n();
+import { useI18n } from 'vue-i18n';
+import CreatePartPanel, { ICreatePartPanel } from './CreatePartPanel.vue';
+import { Part } from '../models/Part';
 
 const $q = useQuasar();
 
-const createPartStore = useCreatePartStore();
-
-const attrLinksStore = useAttributeLinksStore();
-
-const viewTypeOptionsStore = useViewTypeOptionsStore();
-
-const viewTypeOption = ref<ViewTypeOption>({} as ViewTypeOption);
-
-const createdPart = ref<Part>({} as Part);
-
-const infoExpanded = ref(true);
-
-const customValuesExpanded = ref(true);
-
-const middleCustomOptions = ref<Record<number, string>>({} as Record<number, string>);
+const i18n = useI18n();
 
 const dialogRef = ref<QDialog>({} as QDialog);
+
+const createPartPanelRef = ref<ICreatePartPanel>({} as ICreatePartPanel);
 
 /**
  * Define props with default value
@@ -151,56 +58,28 @@ const prompt = computed({
   set: (value) => emit('update:modelValue', value),
 });
 
-const targetAttributes = computed(
-  (): CustomAttribute[] => attrLinksStore.attributes(ObjectTypeId.PartVersion),
-);
-
-function onViewTypeUpdated(value: ViewTypeOption) {
-  createPartStore.viewType = value.value;
-}
-
 async function onDialogConfirm(): Promise<void> {
-  if (!createPartStore.isPartValid()) {
+  const message = createPartPanelRef.value.validate();
+  if (message) {
+    $q.notify({
+      message: i18n.t(message),
+      color: 'red',
+      icon: 'error',
+    });
     return;
   }
-  const newPart = await createPartStore.create();
+  const newPart = await createPartPanelRef.value.createPart();
   if (!newPart) {
     return;
   }
-  createdPart.value = newPart;
-  emit('onPartCreated', createdPart.value);
+  emit('onPartCreated', newPart);
   $q.notify({
-    message: `${createdPart.value.number} ${i18n.t('actions.inserts.success')}`,
+    message: `${newPart.number} ${i18n.t('actions.inserts.success')}`,
     color: 'secondary',
     icon: 'check_circle',
   });
   dialogRef.value.hide();
 }
-
-function getSelectOption(customOptions: CustomOption[], attributeNumber: string) {
-  return customOptions.map((option): SelectOption<string> => ({
-    label: option.languages[i18n.locale.value],
-    value: option.key,
-    attributeNumber,
-  }));
-}
-
-function onSelectOptionUpdated(selectOption: SelectOption<string>) {
-  createPartStore.customValues[selectOption.attributeNumber] = selectOption.value;
-}
-
-onBeforeMount(async () => {
-  const option = viewTypeOptionsStore.i18nOptions[0];
-  viewTypeOption.value = option;
-  createPartStore.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
-  for (let i = 0; i < targetAttributes.value.length; i += 1) {
-    const attr = targetAttributes.value[i];
-    if (attr.displayType === DisplayType.SingleSelect) {
-      const firstOption = attr.options[0];
-      middleCustomOptions.value[attr.id] = firstOption.key;
-    }
-  }
-});
 </script>
 
 <style lang="sass" scoped>
