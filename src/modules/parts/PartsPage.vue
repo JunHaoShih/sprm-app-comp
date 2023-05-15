@@ -1,7 +1,13 @@
 <template>
   <div class="q-pa-sm">
     <!-- product files table -->
+    <div
+      v-if="loading"
+      class="row justify-center items-center center-max outer-max main-panel">
+      <span class="loader"></span>
+    </div>
     <q-table
+      v-else
       title="Parts"
       :rows="partsStore.records"
       :columns="columns"
@@ -10,7 +16,9 @@
       row-key="id"
       class="center-max outer-max main-panel"
       dense
-      :pagination="pagination"
+      v-model:pagination="pagination"
+      hide-pagination
+      :loading="loading"
       style="position: sticky; top: 0"
     >
       <!-- button at table header -->
@@ -34,7 +42,16 @@
         </div>
         </q-btn-dropdown>
         <q-space />
+        <q-select
+          class="q-mr-md"
+          label="records per page"
+          dense
+          v-model="paginationInput.perPage"
+          :options="options"
+          style="min-width: 120px;"
+        />
         <q-input v-model="patternInput" type="text" label="Search"
+          dense
           v-on:keyup.enter="onSearchEnter"
         />
       </template>
@@ -130,6 +147,17 @@
         </q-menu>
       </template>
     </q-table>
+    <div class="q-pa-sm flex flex-center">
+      <q-pagination
+        v-model="paginationInput.page"
+        color="grey"
+        :max="paginationResponse.totalPages"
+        max-pages="6"
+        direction-links
+        boundary-links
+        active-color="primary"
+      />
+    </div>
     <PartDialog v-model="prompt" @onPartCreated="onPartCreated"></PartDialog>
   </div>
 </template>
@@ -144,6 +172,8 @@ import {
 } from 'vue-router';
 import { QTableProps } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
+import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
+import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import PartDialog from './components/PartDialog.vue';
 import { partService } from './services/PartService';
 import { usePartsStore } from './stores/PartsStore';
@@ -169,7 +199,23 @@ const selected = ref<Part[]>([]);
 
 const prompt = ref(false);
 
+const loading = ref(false);
+
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
+const paginationInput = ref<OffsetPaginationInput>({
+  page: 1,
+  perPage: 20,
+});
+
+const paginationResponse = ref<OffsetPaginationResponse>({
+  page: 1,
+  perPage: 20,
+  total: 0,
+  totalPages: 0,
+});
+
+const options = ref<number[]>([20, 50, 100]);
 
 const columns = computed(
   (): QTableProps['columns'] => {
@@ -222,12 +268,9 @@ const columns = computed(
   },
 );
 
-const pagination: QTableProps['pagination'] = {
-  sortBy: 'desc',
-  descending: false,
-  page: 1,
+const pagination = ref<QTableProps['pagination']>({
   rowsPerPage: 20,
-};
+});
 
 function onInfoClicked(part: Part): void {
   router.push(`parts/version/${part.version.id}/info`);
@@ -253,30 +296,39 @@ function onPartCreated(newPart: Part) {
 }
 
 async function searchParts(): Promise<void> {
-  const parts = await partService.getByPattern(patternInput.value);
+  loading.value = true;
+  const parts = await partService.getByPattern(patternInput.value, paginationInput.value);
   if (parts) {
-    partsStore.parts = parts;
+    partsStore.parts = parts.content;
+    paginationResponse.value = parts.pagination;
+    if (pagination.value && pagination.value.rowsPerPage) {
+      pagination.value.rowsPerPage = parts.pagination.perPage;
+    }
   }
+  loading.value = false;
 }
 
-function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {
+async function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {
   const newPattern = Array.isArray(queryValue)
     ? queryValue[0] === null ? '' : queryValue[0]
     : queryValue === null ? '' : queryValue;
   patternInput.value = newPattern;
   pattern.value = newPattern;
+  await searchParts();
 }
 
-onBeforeRouteUpdate((to) => {
-  updatePattern(to.query.pattern);
+onBeforeRouteUpdate(async (to) => {
+  await updatePattern(to.query.pattern);
 });
 
-watch(pattern, async () => {
+watch(paginationInput, async () => {
   await searchParts();
+}, {
+  deep: true,
 });
 
 onBeforeMount(async () => {
-  updatePattern(route.query.pattern);
+  await updatePattern(route.query.pattern);
   await Promise.all([
     attrLinksStore.initialize(ObjectTypeId.PartVersion),
   ]);
@@ -289,5 +341,5 @@ onBeforeMount(async () => {
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 70px)
+  height: calc(100vh - 120px)
 </style>

@@ -1,15 +1,28 @@
 import { api } from 'src/boot/axios';
 import { Notify } from 'quasar';
+import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
+import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationResponse';
 import { SPRMResponse } from 'src/models/SPRMResponse';
+import { paginationService } from 'src/services/PaginationService';
 import { Part } from '../models/Part';
 
-const getByPattern = async (pattern: string):
-Promise<Part[] | null> => {
-  const searchUrl = `/api/Part/Search${pattern ? `?pattern=${pattern}` : ''}`;
-  const partsResponse = await api.get(encodeURI(searchUrl))
-    .then((response): Part[] => {
+const getByPattern = async (pattern: string, pagination: OffsetPaginationInput):
+Promise<OffsetPaginationData<Part[]> | null> => {
+  // const searchUrl = `/api/Part/Search${pattern ? `?pattern=${pattern}` : ''}`;
+  const partsResponse = await api
+    .get(encodeURI('/api/Part/Search'), {
+      params: {
+        pattern,
+        page: pagination.page,
+        perPage: pagination.perPage,
+      },
+    })
+    .then((response): OffsetPaginationData<Part[]> => {
       const data = response.data as SPRMResponse<Part[]>;
-      return data.content;
+      return {
+        pagination: paginationService.getHeaderPagination(response),
+        content: data.content,
+      };
     })
     .catch((error) => {
       let message = '';

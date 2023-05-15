@@ -76,7 +76,7 @@
 
 <script setup lang="ts">
 import {
-  ComponentPublicInstance, computed, onBeforeMount, ref,
+  ComponentPublicInstance, computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { SelectOption } from 'src/models/SelectOption';
@@ -90,7 +90,13 @@ import { useViewTypeOptionsStore } from '../stores/ViewTypeOptionsStore';
 import { Part, ViewTypeOption } from '../models/Part';
 
 export interface ICreatePartPanel extends ComponentPublicInstance {
+  /**
+   * Validate if current user input are valid to create a part data
+   */
   validate: (() => string | undefined),
+  /**
+   * Create part
+   */
   createPart: () => Promise<Part | null>,
 }
 
@@ -139,17 +145,26 @@ function onSelectOptionUpdated(selectOption: SelectOption<string>) {
   createPartStore.customValues[selectOption.attributeNumber] = selectOption.value;
 }
 
+function updateSingleSelectAttribute() {
+  targetAttributes.value.forEach((attr) => {
+    if (attr.displayType === DisplayType.SingleSelect) {
+      // Get option by single select value
+      const targetOption = attr.options[0];
+      middleCustomOptions.value[attr.id] = targetOption.languages[i18n.locale.value]
+          || targetOption.value;
+    }
+  });
+}
+
+watch(() => i18n.locale.value, () => {
+  updateSingleSelectAttribute();
+});
+
 onBeforeMount(async () => {
   const option = viewTypeOptionsStore.i18nOptions[0];
   viewTypeOption.value = option;
   createPartStore.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
-  for (let i = 0; i < targetAttributes.value.length; i += 1) {
-    const attr = targetAttributes.value[i];
-    if (attr.displayType === DisplayType.SingleSelect) {
-      const firstOption = attr.options[0];
-      middleCustomOptions.value[attr.id] = firstOption.key;
-    }
-  }
+  updateSingleSelectAttribute();
 });
 
 defineExpose({
