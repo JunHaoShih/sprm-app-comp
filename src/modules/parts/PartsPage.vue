@@ -150,7 +150,7 @@
     <div class="q-pa-sm flex flex-center">
       <q-pagination
         v-model="paginationInput.page"
-        color="grey"
+        color="grey-7"
         :max="paginationResponse.totalPages"
         max-pages="6"
         direction-links
