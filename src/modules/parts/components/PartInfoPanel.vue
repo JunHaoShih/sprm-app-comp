@@ -14,18 +14,20 @@
             style="border-radius: 10px"
           >
           <div class="q-pa-sm">
-            <div class="q-ma-sm">{{ $t('parts.number') }}</div>
-            <ValidationInput v-model="partVersion.master.number"
+            <ValidationInput
+              v-model="partVersion.master.number"
+              :label="$t('parts.number')"
               :inputValidator="partValidationService.checkNumberRules"
               :readonly="true"
             />
-            <div class="q-ma-sm">{{ $t('parts.name') }}</div>
-            <ValidationInput v-model="partVersion.master.name"
+            <ValidationInput
+              v-model="partVersion.master.name"
+              :label="$t('parts.name')"
               :inputValidator="partValidationService.checkNameRules"
               :readonly="true"
             />
             <div>
-              <div class="q-ma-sm">{{ $t('parts.view') }}</div>
+              <div class="q-mx-sm text-caption">{{ $t('parts.view') }}</div>
               <q-select
                 filled
                 dense
@@ -35,7 +37,7 @@
               />
             </div>
             <div class="column">
-              <div class="q-ma-sm">{{ $t('remarks') }}</div>
+              <div class="q-mx-sm text-caption">{{ $t('remarks') }}</div>
               <q-input
                 v-model="partVersion.remarks"
                 filled
@@ -62,19 +64,25 @@
                 v-for="attribute in targetAttributes"
                 :key="attribute.id"
               >
-                <div class="q-ma-sm">
-                  {{ attribute.languages[i18n.locale.value] }}
-                </div>
-                <q-select
+                <div
                   v-if="attribute.displayType === DisplayType.SingleSelect"
-                  filled
-                  dense
-                  :readonly="readonly"
-                  v-model="middleCustomOptions[attribute.id]"
-                  :options="getSelectOption(attribute.options, attribute.number)"
-                  @update:modelValue="onSelectOptionUpdated" />
+                >
+                  <div class="q-mx-sm text-caption">
+                    {{ attribute.languages[i18n.locale.value] }}
+                  </div>
+                  <q-select
+                    v-if="attribute.displayType === DisplayType.SingleSelect"
+                    filled
+                    dense
+                    :readonly="readonly"
+                    v-model="middleCustomOptions[attribute.id]"
+                    :options="getSelectOption(attribute.options, attribute.number)"
+                    @update:modelValue="onSelectOptionUpdated"
+                  />
+                </div>
                 <ValidationInput
                   v-else
+                  :label="attribute.languages[i18n.locale.value]"
                   v-model="partVersion.customValues[attribute.number]"
                   :readonly="readonly"
                 />

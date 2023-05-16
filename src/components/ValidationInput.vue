@@ -1,13 +1,16 @@
 <template>
-  <q-input
-    :label="label"
-    v-model="inputValue"
-    dense
-    filled
-    :error="isValueError()"
-    :error-message="i18nErrorMessage"
-    :readonly="readonly"
-  />
+  <div>
+    <div class="q-mx-sm text-caption">{{ label }}</div>
+    <q-input
+      v-model="inputValue"
+      dense
+      filled
+      :error="isValueError()"
+      :error-message="i18nErrorMessage"
+      :readonly="readonly"
+      hide-bottom-space
+    />
+  </div>
 </template>
 
 <script setup lang="ts">
