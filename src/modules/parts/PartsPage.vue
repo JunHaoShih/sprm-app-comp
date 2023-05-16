@@ -1,13 +1,7 @@
 <template>
   <div class="q-pa-sm">
     <!-- product files table -->
-    <div
-      v-if="loading"
-      class="row justify-center items-center center-max outer-max main-panel">
-      <span class="loader"></span>
-    </div>
     <q-table
-      v-else
       title="Parts"
       :rows="partsStore.records"
       :columns="columns"
@@ -146,6 +140,9 @@
           </q-list>
         </q-menu>
       </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="red-7" />
+      </template>
     </q-table>
     <div class="q-pa-sm flex flex-center">
       <q-pagination
@@ -156,6 +153,12 @@
         direction-links
         boundary-links
         active-color="primary"
+      />
+      <q-select
+        v-model="paginationInput.page"
+        :options="pageOptions"
+        hide-bottom-space
+        dense
       />
     </div>
     <PartDialog v-model="prompt" @onPartCreated="onPartCreated"></PartDialog>
@@ -214,6 +217,16 @@ const paginationResponse = ref<OffsetPaginationResponse>({
   total: 0,
   totalPages: 0,
 });
+
+const pageOptions = computed(
+  () => {
+    const options: number[] = [];
+    for (let i = 1; i <= paginationResponse.value.totalPages; i += 1) {
+      options.push(i);
+    }
+    return options;
+  },
+);
 
 const options = ref<number[]>([20, 50, 100]);
 
@@ -341,5 +354,5 @@ onBeforeMount(async () => {
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 120px)
+  height: calc(100vh - 125px)
 </style>
