@@ -27,6 +27,8 @@ export default {
     search: '搜尋',
     checkout: '簽出',
     checkin: '簽入',
+    next: '下一步',
+    previous: '上一步',
   },
   base: {
     creator: '建立者',

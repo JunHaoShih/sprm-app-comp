@@ -26,7 +26,9 @@ export default {
     },
     search: 'Search',
     checkout: 'Check out',
-    merge: 'Check in',
+    checkin: 'Check in',
+    next: 'Next',
+    previous: 'Previous',
   },
   base: {
     creator: 'Creater',
