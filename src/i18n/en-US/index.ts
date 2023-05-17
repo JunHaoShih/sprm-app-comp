@@ -49,10 +49,14 @@ export default {
       manufacturing: 'Manufacturing',
     },
     usage: 'Usage',
+    usages: {
+      new: 'New part usage',
+    },
     bom: 'BOM',
     info: 'Information',
     new: 'New part',
     versionMustCheckout: 'This part version does not checkout',
+    mustSelectOne: 'Please select a part',
   },
   customs: {
     title: 'Customization',

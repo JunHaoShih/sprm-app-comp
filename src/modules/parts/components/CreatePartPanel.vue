@@ -10,16 +10,18 @@
       style="border-radius: 10px"
     >
     <div class="q-pa-sm">
-      <div class="q-ma-sm">{{ $t('parts.number') }}</div>
-      <ValidationInput v-model="createPartStore.number"
+      <ValidationInput
+        v-model="createPartStore.number"
+        :label="$t('parts.number')"
         :inputValidator="partValidationService.checkNumberRules"
       />
-      <div class="q-ma-sm">{{ $t('parts.name') }}</div>
-      <ValidationInput v-model="createPartStore.name"
+      <ValidationInput
+        v-model="createPartStore.name"
+        :label="$t('parts.name')"
         :inputValidator="partValidationService.checkNameRules"
       />
       <div>
-        <div class="q-ma-sm">{{ $t('parts.view') }}</div>
+        <div class="q-mx-sm text-caption">{{ $t('parts.view') }}</div>
         <q-select
           filled
           dense
@@ -28,7 +30,7 @@
           @update:modelValue="onViewTypeUpdated" />
       </div>
       <div class="column">
-        <div class="q-ma-sm">{{ $t('remarks') }}</div>
+        <div class="q-mx-sm text-caption">{{ $t('remarks') }}</div>
         <q-input
           v-model="createPartStore.remarks"
           label="remarks" filled
@@ -54,18 +56,24 @@
           v-for="attribute in targetAttributes"
           :key="attribute.id"
         >
-          <div class="q-ma-sm">
-            {{ attribute.languages[i18n.locale.value] }}
-          </div>
-          <q-select
+          <div
             v-if="attribute.displayType === DisplayType.SingleSelect"
-            filled
-            dense
-            v-model="middleCustomOptions[attribute.id]"
-            :options="getSelectOption(attribute.options, attribute.number)"
-            @update:modelValue="onSelectOptionUpdated" />
+          >
+            <div class="q-mx-sm text-caption">
+              {{ attribute.languages[i18n.locale.value] }}
+            </div>
+            <q-select
+              v-if="attribute.displayType === DisplayType.SingleSelect"
+              filled
+              dense
+              v-model="middleCustomOptions[attribute.id]"
+              :options="getSelectOption(attribute.options, attribute.number)"
+              @update:modelValue="onSelectOptionUpdated"
+            />
+          </div>
           <ValidationInput
             v-else
+            :label="attribute.languages[i18n.locale.value]"
             v-model="createPartStore.customValues[attribute.number]"
           />
         </div>
@@ -161,6 +169,7 @@ watch(() => i18n.locale.value, () => {
 });
 
 onBeforeMount(async () => {
+  attrLinksStore.initialize(ObjectTypeId.PartVersion);
   const option = viewTypeOptionsStore.i18nOptions[0];
   viewTypeOption.value = option;
   createPartStore.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));

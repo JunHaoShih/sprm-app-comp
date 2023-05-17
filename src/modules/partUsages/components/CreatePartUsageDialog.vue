@@ -26,11 +26,14 @@
               icon="settings"
               :done="isCreatePageDone"
             >
-              <q-scroll-area class="dialog-inner-max" visible>
-                <CreatePartPanel
-                  ref="createPartPanelRef"
-                />
-              </q-scroll-area>
+              <PartsSearchPanel
+                v-model="pattern"
+                :readonly="true"
+                v-model:selected="selected"
+                class="main-panel"
+                table-class="table-max"
+              >
+              </PartsSearchPanel>
             </q-step>
             <q-step
               :name="2"
@@ -47,7 +50,7 @@
         <q-card-actions align="right" class="text-primary">
           <div v-if="isCreatePage">
             <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-            <q-btn flat :label="$t('actions.next')" @click="onCreatePart()"></q-btn>
+            <q-btn flat :label="$t('actions.next')" @click="onNextStep()"></q-btn>
           </div>
           <div v-if="isUsagePage">
             <q-btn flat :label="$t('actions.previous')" @click="stepper.previous()"></q-btn>
@@ -63,7 +66,7 @@
 import { computed, ref, watch } from 'vue';
 import { QStepper, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import CreatePartPanel, { ICreatePartPanel } from 'src/modules/parts/components/CreatePartPanel.vue';
+import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
 import CreatePartUsagePanel from './CreatePartUsagePanel.vue';
 
@@ -72,6 +75,10 @@ const $q = useQuasar();
 const i18n = useI18n();
 
 const step = ref(1);
+
+const pattern = ref('');
+
+const selected = ref<Part[]>([]);
 
 const isCreatePage = computed(
   (): boolean => step.value === 1,
@@ -86,8 +93,6 @@ const isUsagePage = computed(
 );
 
 const targetPart = ref<Part>();
-
-const createPartPanelRef = ref<ICreatePartPanel>({} as ICreatePartPanel);
 
 const stepper = ref<QStepper>({} as QStepper);
 
@@ -116,21 +121,17 @@ watch(prompt, () => {
   }
 });
 
-async function onCreatePart(): Promise<void> {
-  /* const message = createPartPanelRef.value.validate();
-  if (message) {
+async function onNextStep(): Promise<void> {
+  if (selected.value.length !== 1) {
     $q.notify({
-      message: i18n.t(message),
+      message: i18n.t('parts.mustSelectOne'),
       color: 'red',
       icon: 'error',
     });
     return;
   }
-  const newPart = await createPartPanelRef.value.createPart();
-  if (!newPart) {
-    return;
-  }
-  targetPart.value = newPart; */
+  const selectedPart: Part = selected.value[0];
+  targetPart.value = selectedPart;
   stepper.value.next();
 }
 </script>
@@ -138,4 +139,12 @@ async function onCreatePart(): Promise<void> {
 <style lang="sass" scoped>
 .dialog-inner-max
   height: calc(90vh - 250px)
+
+:deep(.table-max)
+  height: calc(90vh - 300px)
+
+.my-custom-paddding
+  .q-stepper
+    &__tab
+      min-width: none
 </style>

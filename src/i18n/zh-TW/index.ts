@@ -49,10 +49,14 @@ export default {
       manufacturing: '製造',
     },
     usage: '使用關係',
+    usages: {
+      new: '新增使用關係',
+    },
     bom: 'BOM',
     info: '資訊',
     new: '新增料件',
     versionMustCheckout: '料件版本尚未簽出',
+    mustSelectOne: '請選擇一個料件',
   },
   customs: {
     title: '自定義',
