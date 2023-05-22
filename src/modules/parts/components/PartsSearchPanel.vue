@@ -22,17 +22,17 @@
           color="primary"
           :label="$t('columns.display')"
         >
-        <div class="row no-wrap q-pa-md">
-          <div class="column">
-            <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
-            <q-toggle
-              v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
-              v-bind:key="attr.number"
-              v-model="canDisplay[attr.number]"
-              :label="attr.languages[i18n.locale.value] || attr.name"
-            />
+          <div class="row no-wrap q-pa-md">
+            <div class="column">
+              <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
+              <q-toggle
+                v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
+                v-bind:key="attr.number"
+                v-model="canDisplay[attr.number]"
+                :label="attr.languages[i18n.locale.value] || attr.name"
+              />
+            </div>
           </div>
-        </div>
         </q-btn-dropdown>
         <q-space />
         <q-select
