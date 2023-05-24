@@ -4,6 +4,7 @@
       v-if="partVersionStore.content.id"
       :readonly="true"
       v-model="partVersionStore.partVersion"
+      panel-class="outer-max"
     />
     <div v-else class="row justify-center items-center outer-max">
       <span class="loader"></span>
@@ -20,6 +21,6 @@ const partVersionStore = usePartVersionStore();
 </script>
 
 <style lang="sass" scoped>
-.outer-max
-  height: calc(100vh - 200px)
+:deep(.outer-max)
+  height: calc(100vh - 220px)
 </style>

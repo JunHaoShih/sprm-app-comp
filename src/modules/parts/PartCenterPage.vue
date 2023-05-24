@@ -60,6 +60,7 @@ const partVersion = ref<PartVersion>({
   id: 0,
   version: 0,
   checkout: false,
+  isLatest: false,
   master: {} as PartMaster,
   customValues: {} as Record<string, string>,
   createUser: '',

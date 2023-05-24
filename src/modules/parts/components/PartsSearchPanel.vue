@@ -7,7 +7,7 @@
       :class="props.tableClass"
       :columns="columns"
       v-model:selected="selected"
-      selection="multiple"
+      :selection="props.selection"
       row-key="id"
       dense
       v-model:pagination="pagination"
@@ -172,6 +172,7 @@ interface Props {
   readonly: boolean;
   tableClass: string;
   selected?: Part[];
+  selection: QTableProps['selection'],
   modelValue: string;
 }
 const props = withDefaults(defineProps<Props>(), {
@@ -179,6 +180,7 @@ const props = withDefaults(defineProps<Props>(), {
   tableClass: '',
   selected: () => [],
   modelValue: '',
+  selection: 'none',
 });
 
 type Emit = {

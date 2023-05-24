@@ -36,8 +36,14 @@
         </div>
       </template>
     </q-splitter>
-    <CreatePartUsageAndPartDialog v-model="createPrompt"></CreatePartUsageAndPartDialog>
-    <CreatePartUsageDialog v-model="searchPrompt"></CreatePartUsageDialog>
+    <CreatePartUsageAndPartDialog
+      v-model="createPrompt"
+      :selectedPartVersionId="selectedParentId"
+    />
+    <CreatePartUsageDialog
+      v-model="searchPrompt"
+      :selectedPartVersionId="selectedParentId"
+    />
   </div>
 </template>
 

@@ -4,6 +4,7 @@
       <PartInfoPanel
         :readonly="false"
         v-model="partVersionStore.partVersion"
+        panel-class="outer-max"
       >
         <template v-slot:after>
           <q-footer elevated>
@@ -56,6 +57,6 @@ async function onSaveClicked(): Promise<void> {
 </script>
 
 <style lang="sass" scoped>
-.outer-max
-  height: calc(100vh - 200px)
+:deep(.outer-max)
+  height: calc(100vh - 270px)
 </style>

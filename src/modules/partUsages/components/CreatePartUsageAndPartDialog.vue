@@ -38,7 +38,10 @@
               icon="data_usage"
             >
               <q-scroll-area class="dialog-inner-max" visible>
-                <CreatePartUsagePanel></CreatePartUsagePanel>
+                <CreatePartUsagePanel
+                  :parent-part-version-id="selectedPartVersionId"
+                  :part-child="targetPart"
+                />
               </q-scroll-area>
             </q-step>
           </q-stepper>
@@ -85,7 +88,7 @@ const isUsagePage = computed(
   (): boolean => step.value === 2,
 );
 
-const targetPart = ref<Part>();
+const targetPart = ref<Part>({} as Part);
 
 const createPartPanelRef = ref<ICreatePartPanel>({} as ICreatePartPanel);
 
@@ -96,8 +99,10 @@ const stepper = ref<QStepper>({} as QStepper);
  */
 const props = withDefaults(defineProps<{
   modelValue: boolean,
+  selectedPartVersionId: number,
 }>(), {
   modelValue: false,
+  selectedPartVersionId: 0,
 });
 
 type Emit = {
@@ -117,7 +122,7 @@ watch(prompt, () => {
 });
 
 async function onCreatePart(): Promise<void> {
-  /* const message = createPartPanelRef.value.validate();
+  const message = createPartPanelRef.value.validate();
   if (message) {
     $q.notify({
       message: i18n.t(message),
@@ -130,7 +135,7 @@ async function onCreatePart(): Promise<void> {
   if (!newPart) {
     return;
   }
-  targetPart.value = newPart; */
+  targetPart.value = newPart;
   stepper.value.next();
 }
 </script>

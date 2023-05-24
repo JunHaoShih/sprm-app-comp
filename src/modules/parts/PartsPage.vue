@@ -5,6 +5,7 @@
       v-model="pattern"
       :readonly="true"
       v-model:selected="selected"
+      selection="multiple"
       class="main-panel"
       table-class="outer-max"
       @on-search="onSearch"

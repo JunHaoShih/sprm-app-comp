@@ -30,6 +30,7 @@
                 v-model="pattern"
                 :readonly="true"
                 v-model:selected="selected"
+                selection="single"
                 class="main-panel"
                 table-class="table-max"
               >
@@ -41,7 +42,10 @@
               icon="data_usage"
             >
               <q-scroll-area class="dialog-inner-max" visible>
-                <CreatePartUsagePanel></CreatePartUsagePanel>
+                <CreatePartUsagePanel
+                  :parent-part-version-id="selectedPartVersionId"
+                  :part-child="selectedSinglePart"
+                ></CreatePartUsagePanel>
               </q-scroll-area>
             </q-step>
           </q-stepper>
@@ -80,6 +84,15 @@ const pattern = ref('');
 
 const selected = ref<Part[]>([]);
 
+const selectedSinglePart = computed(
+  (): Part => {
+    if (selected.value.length === 0) {
+      return {} as Part;
+    }
+    return selected.value[0];
+  },
+);
+
 const isCreatePage = computed(
   (): boolean => step.value === 1,
 );
@@ -101,8 +114,10 @@ const stepper = ref<QStepper>({} as QStepper);
  */
 const props = withDefaults(defineProps<{
   modelValue: boolean,
+  selectedPartVersionId: number,
 }>(), {
   modelValue: false,
+  selectedPartVersionId: 0,
 });
 
 type Emit = {
@@ -131,6 +146,14 @@ async function onNextStep(): Promise<void> {
     return;
   }
   const selectedPart: Part = selected.value[0];
+  if (selectedPart.version.id === props.selectedPartVersionId) {
+    $q.notify({
+      message: i18n.t('parts.usages.selfAddNotAllowed'),
+      color: 'red',
+      icon: 'error',
+    });
+    return;
+  }
   targetPart.value = selectedPart;
   stepper.value.next();
 }

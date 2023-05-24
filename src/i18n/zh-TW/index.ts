@@ -51,6 +51,7 @@ export default {
     usage: '使用關係',
     usages: {
       new: '新增使用關係',
+      selfAddNotAllowed: '不可將自己加入子料件',
     },
     bom: 'BOM',
     info: '資訊',
