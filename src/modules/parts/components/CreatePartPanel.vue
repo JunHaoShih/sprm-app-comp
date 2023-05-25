@@ -101,7 +101,7 @@ export interface ICreatePartPanel extends ComponentPublicInstance {
   /**
    * Validate if current user input are valid to create a part data
    */
-  validate: (() => string | undefined),
+  validate: (() => string[]),
   /**
    * Create part
    */
@@ -132,7 +132,7 @@ function onViewTypeUpdated(value: ViewTypeOption) {
   createPartStore.viewType = value.value;
 }
 
-function validate(): string | undefined {
+function validate(): string[] {
   return createPartStore.validateCreatePart();
 }
 

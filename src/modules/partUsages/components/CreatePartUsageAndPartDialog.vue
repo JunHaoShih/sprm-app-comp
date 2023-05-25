@@ -41,6 +41,7 @@
                 <CreatePartUsagePanel
                   :parent-part-version-id="selectedPartVersionId"
                   :part-child="targetPart"
+                  :readonly="false"
                 />
               </q-scroll-area>
             </q-step>
@@ -122,8 +123,9 @@ watch(prompt, () => {
 });
 
 async function onCreatePart(): Promise<void> {
-  const message = createPartPanelRef.value.validate();
-  if (message) {
+  const messages = createPartPanelRef.value.validate();
+  if (messages.length > 0) {
+    const message = messages[0];
     $q.notify({
       message: i18n.t(message),
       color: 'red',

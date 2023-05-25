@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia';
 import { QTreeNode, QTreeProps } from 'quasar';
+import { Part } from 'src/modules/parts/models/Part';
 import { PartVersion } from 'src/modules/parts/models/PartVersion';
 import { PartUsageChild } from '../models/PartUsageUses';
 
@@ -12,6 +13,16 @@ export interface BomTreeNode extends QTreeNode {
 interface BomTreeContainer {
   nodeMap: Map<number, BomTreeNode>,
 }
+
+const getPartLabel = (part: Part) => {
+  const checkoutState = part.checkout ? '(*) ' : '';
+  return `${checkoutState}${part.number} - ${part.version.version}`;
+};
+
+const getPartVersionLabel = (partVersion: PartVersion) => {
+  const checkoutState = partVersion.master.checkout ? '(*) ' : '';
+  return `${checkoutState}${partVersion.master.number} - ${partVersion.version}`;
+};
 
 export const useBomTreeStore = defineStore('bomTreeStore', {
   state: (): BomTreeContainer => ({
@@ -27,7 +38,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
       const nodes = [] as QTreeNode[];
       mapValue.forEach((value) => {
         const currentNode: BomTreeNode = {
-          label: `${value.uses.number} - ${value.uses.version.version}`,
+          label: getPartLabel(value.uses),
           icon: 'settings',
           parentId: value.usedBy,
           versionId: value.uses.version.id,
@@ -58,7 +69,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
         return [dummyNode];
       }
       const rootNode: BomTreeNode = {
-        label: `${root.master.number} - ${root.version}`,
+        label: getPartVersionLabel(root),
         parentId: 0,
         versionId: root.id,
         usageId: 0,

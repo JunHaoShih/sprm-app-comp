@@ -51,11 +51,14 @@ export default {
     usage: 'Usage',
     usages: {
       new: 'New part usage',
+      quantity: 'Usage quantity',
       selfAddNotAllowed: 'You cannot add yourself as child part',
+      alreadyExist: 'Child part already exist',
     },
     bom: 'BOM',
     info: 'Information',
     new: 'New part',
+    search: 'Search part',
     versionMustCheckout: 'This part version does not checkout',
     mustSelectOne: 'Please select a part',
   },
@@ -98,6 +101,12 @@ export default {
       longerThan50: 'Cannot be longer than 50',
       invalidChar: 'Only number, alphabets, dash and underscore are valid',
     },
+    partUsages: {
+      quantity: {
+        atLeastOne: 'Quantity cannot smaller than 1',
+        mustBeInteger: 'Quantity must be integer',
+      },
+    },
     customAttributes: {
       options: {
         longerThan20: 'Cannot be longer than 20',
@@ -125,5 +134,8 @@ export default {
   lang: {
     zhTW: '繁體中文(Traditional Chinese)',
     enUS: 'English',
+  },
+  errors: {
+    unknown: 'Something went wrong',
   },
 };

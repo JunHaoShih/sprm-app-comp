@@ -1,11 +1,13 @@
 import { api } from 'src/boot/axios';
 import { Notify } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { i18n } from 'src/boot/i18n';
 import { SPRMResponse } from 'src/models/SPRMResponse';
 import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
 import { DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { PartUsageChild } from '../models/PartUsageUses';
+import { CreatePartUsagesDTO } from '../dtos/CreatePartUsagesDTO';
 
 const getByParentVersionId = async (parentVersionId: number): Promise<PartUsageChild[] | null> => {
   const searchUrl = `/api/PartUsage/ByParent/${parentVersionId}`;
@@ -36,10 +38,43 @@ const getByParentVersionId = async (parentVersionId: number): Promise<PartUsageC
   return partUsages;
 };
 
+const insert = async (createDto: CreatePartUsagesDTO): Promise<PartUsageChild[] | null> => {
+  const partUsages = await api.post('/api/PartUsage', createDto)
+    .then((response): PartUsageChild[] => {
+      const data = response.data as SPRMResponse<PartUsageChild[]>;
+      return data.content;
+    })
+    .catch((error) => {
+      let message = '';
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        let bodyMessage = '';
+        if (body.code === 301) {
+          bodyMessage = i18n.global.t('parts.usages.alreadyExist');
+        } else {
+          bodyMessage = body.message;
+        }
+        message = `Error: ${body.code}, ${bodyMessage}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        message = 'Error: No response';
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        message = 'Something went wrong';
+      }
+      Notify.create({
+        message,
+        color: 'red',
+        icon: 'error',
+      });
+      return null;
+    });
+  return partUsages;
+};
+
 const toRecords = (partUsageChildren: PartUsageChild[]): Record<string, unknown>[] => {
   const attrLinksStore = useAttributeLinksStore();
-  const i18n = useI18n();
-  const lang = i18n.locale.value;
+  const lang = i18n.global.locale.value;
   const newRecords = partUsageChildren.map((partUsage) => {
     const record: Record<keyof PartUsageChild, unknown> = partUsage;
     if (!partUsage.customValues) {
@@ -84,4 +119,5 @@ const toRecords = (partUsageChildren: PartUsageChild[]): Record<string, unknown>
 export const partUsageService = {
   getByParentVersionId,
   toRecords,
+  insert,
 };

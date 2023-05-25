@@ -17,9 +17,10 @@ export const useCreatePartStore = defineStore('createPart', {
   actions: {
     isPartValid(): boolean {
       const result = partValidationService.checkCreatePartRules(this.$state);
-      if (result) {
+      if (result.length > 0) {
+        const message = result[0];
         Notify.create({
-          message: result,
+          message,
           color: 'red',
           icon: 'error',
         });
@@ -27,7 +28,7 @@ export const useCreatePartStore = defineStore('createPart', {
       }
       return true;
     },
-    validateCreatePart(): string | undefined {
+    validateCreatePart(): string[] {
       return partValidationService.checkCreatePartRules(this.$state);
     },
     async create(): Promise<Part | null> {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!initializing">
     <q-card style="min-width: 400px">
       <q-card-section>
         <slot name="before"></slot>
@@ -127,6 +127,8 @@ const customValuesExpanded = ref(true);
 
 const middleCustomOptions = ref<Record<number, string>>({} as Record<number, string>);
 
+const initializing = ref(true);
+
 /**
  * Define props with default value
  */
@@ -208,9 +210,12 @@ watch(() => i18n.locale.value, () => {
 });
 
 onBeforeMount(async () => {
+  initializing.value = true;
   await attrLinksStore.initialize(ObjectTypeId.PartVersion);
+  partVersion.value.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
   viewTypeInit();
   updateSingleSelectAttribute();
+  initializing.value = false;
 });
 </script>
 

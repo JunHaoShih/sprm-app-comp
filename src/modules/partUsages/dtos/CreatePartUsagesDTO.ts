@@ -2,7 +2,7 @@ export interface CreatePartUsageChildDTO {
   /**
    * Child part id(not part version)
    */
-  id: number,
+  partId: number,
   /**
    * Quantity of child part
    */

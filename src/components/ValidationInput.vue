@@ -5,6 +5,7 @@
       v-model="inputValue"
       dense
       filled
+      :type="props.type"
       :error="isValueError()"
       :error-message="i18nErrorMessage"
       :readonly="readonly"
@@ -14,6 +15,7 @@
 </template>
 
 <script setup lang="ts">
+import { QInputProps } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -21,13 +23,14 @@ const i18n = useI18n();
 
 const props = defineProps<{
   label?: string,
-  inputValidator?:((val: string) => string | undefined),
+  type?: QInputProps['type'],
+  inputValidator?:((val: string | number | undefined) => string[]),
   readonly?: boolean,
-  modelValue: string,
+  modelValue: string | number | undefined,
 }>();
 
 type Emit = {
-  (e: 'update:modelValue', value: string): void,
+  (e: 'update:modelValue', value: string | number | undefined): void,
 }
 const emit = defineEmits<Emit>();
 
@@ -43,8 +46,9 @@ function isValueError(): boolean {
     return false;
   }
   const result = props.inputValidator(inputValue.value);
-  if (result) {
-    errorMessage.value = result;
+  if (result.length > 0) {
+    const message = result[0];
+    errorMessage.value = message;
     return true;
   }
   return false;

@@ -19,12 +19,14 @@
             ref="stepper"
             color="primary"
             animated
+            header-nav
           >
             <q-step
               :name="1"
-              :title="$t('parts.new')"
+              :title="$t('parts.search')"
               icon="settings"
-              :done="isCreatePageDone"
+              :done="isSearchPageDone"
+              :header-nav="isSearchPageDone"
             >
               <PartsSearchPanel
                 v-model="pattern"
@@ -40,11 +42,15 @@
               :name="2"
               :title="$t('parts.usages.new')"
               icon="data_usage"
+              :header-nav="isUsagePageDone"
             >
               <q-scroll-area class="dialog-inner-max" visible>
                 <CreatePartUsagePanel
+                  ref="createPartUsagePanel"
                   :parent-part-version-id="selectedPartVersionId"
                   :part-child="selectedSinglePart"
+                  :readonly="false"
+                  class="main-panel"
                 ></CreatePartUsagePanel>
               </q-scroll-area>
             </q-step>
@@ -52,13 +58,13 @@
         </q-card-section>
         <q-separator />
         <q-card-actions align="right" class="text-primary">
-          <div v-if="isCreatePage">
+          <div v-if="isSearchPage">
             <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
             <q-btn flat :label="$t('actions.next')" @click="onNextStep()"></q-btn>
           </div>
           <div v-if="isUsagePage">
             <q-btn flat :label="$t('actions.previous')" @click="stepper.previous()"></q-btn>
-            <q-btn flat :label="$t('actions.next')" @click="stepper.next()"></q-btn>
+            <q-btn flat :label="$t('actions.add')" @click="onAddClicked"></q-btn>
           </div>
         </q-card-actions>
       </q-card>
@@ -72,17 +78,22 @@ import { QStepper, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
-import CreatePartUsagePanel from './CreatePartUsagePanel.vue';
+import CreatePartUsagePanel, { ICreatePartUsagePanel } from './CreatePartUsagePanel.vue';
+import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
 
 const $q = useQuasar();
 
 const i18n = useI18n();
+
+const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const step = ref(1);
 
 const pattern = ref('');
 
 const selected = ref<Part[]>([]);
+
+const createPartUsagePanel = ref<ICreatePartUsagePanel>({} as ICreatePartUsagePanel);
 
 const selectedSinglePart = computed(
   (): Part => {
@@ -93,16 +104,20 @@ const selectedSinglePart = computed(
   },
 );
 
-const isCreatePage = computed(
+const isSearchPage = computed(
   (): boolean => step.value === 1,
 );
 
-const isCreatePageDone = computed(
+const isSearchPageDone = computed(
   (): boolean => step.value > 1,
 );
 
 const isUsagePage = computed(
   (): boolean => step.value === 2,
+);
+
+const isUsagePageDone = computed(
+  (): boolean => step.value > 2,
 );
 
 const targetPart = ref<Part>();
@@ -156,6 +171,24 @@ async function onNextStep(): Promise<void> {
   }
   targetPart.value = selectedPart;
   stepper.value.next();
+}
+
+async function onAddClicked() {
+  const errors = createPartUsagePanel.value.validate();
+  if (errors.length > 0) {
+    return;
+  }
+  const usages = await createPartUsagePanel.value.createPartUsage();
+  if (!usages) {
+    return;
+  }
+  partUsaeChildrenStore.addUses(usages, props.selectedPartVersionId);
+  $q.notify({
+    message: i18n.t('actions.inserts.success'),
+    color: 'secondary',
+    icon: 'check_circle',
+  });
+  prompt.value = false;
 }
 </script>
 

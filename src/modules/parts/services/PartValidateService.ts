@@ -8,15 +8,15 @@ export const validateNumberRules: ValidateRule[] = [
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length >= 3,
+    validate: (val) => String(val).length >= 3,
     message: 'validations.parts.shorterThan3',
   },
   {
-    validate: (val) => val.length <= 50,
+    validate: (val) => String(val).length <= 50,
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[a-zA-Z0-9_-]*$/.test(val),
+    validate: (val) => /^[a-zA-Z0-9_-]*$/.test(String(val)),
     message: 'validations.parts.invalidChar',
   },
 ];
@@ -27,53 +27,41 @@ export const validateNameRules: ValidateRule[] = [
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length <= 50,
+    validate: (val) => String(val).length <= 50,
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(val),
+    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.parts.invalidChar',
   },
 ];
 
-const checkNumberRules = (number: string): string | undefined => {
-  const result = validateNumberRules.find((rule) => !rule.validate(number));
-  if (result) {
-    return result.message;
-  }
-  return result;
+const checkNumberRules = (number: string | number | undefined): string[] => {
+  const errors = validateNumberRules
+    .filter((rule) => !rule.validate(number))
+    .map((rule) => rule.message);
+  return errors;
 };
 
-const checkNameRules = (name: string): string | undefined => {
-  const result = validateNameRules.find((rule) => !rule.validate(name));
-  if (result) {
-    return result.message;
-  }
-  return result;
+const checkNameRules = (name: string | number | undefined): string[] => {
+  const errors = validateNameRules
+    .filter((rule) => !rule.validate(name))
+    .map((rule) => rule.message);
+  return errors;
 };
 
-const checkPartRules = (part: Part): string | undefined => {
-  let result = checkNumberRules(part.number);
-  if (result) {
-    return result;
-  }
-  result = checkNameRules(part.name);
-  if (result) {
-    return result;
-  }
-  return result;
+const checkPartRules = (part: Part): string[] => {
+  const errors: string[] = [];
+  errors.push(...checkNumberRules(part.number));
+  errors.push(...checkNameRules(part.name));
+  return errors;
 };
 
-const checkCreatePartRules = (part: CreatePartDTO): string | undefined => {
-  let result = checkNumberRules(part.number);
-  if (result) {
-    return result;
-  }
-  result = checkNameRules(part.name);
-  if (result) {
-    return result;
-  }
-  return result;
+const checkCreatePartRules = (part: CreatePartDTO): string[] => {
+  const errors: string[] = [];
+  errors.push(...checkNumberRules(part.number));
+  errors.push(...checkNameRules(part.name));
+  return errors;
 };
 
 export const partValidationService = {

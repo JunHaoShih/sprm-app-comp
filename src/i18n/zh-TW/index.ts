@@ -51,11 +51,14 @@ export default {
     usage: '使用關係',
     usages: {
       new: '新增使用關係',
+      quantity: '使用數量',
       selfAddNotAllowed: '不可將自己加入子料件',
+      alreadyExist: '子料件已存在',
     },
     bom: 'BOM',
     info: '資訊',
     new: '新增料件',
+    search: '搜尋料件',
     versionMustCheckout: '料件版本尚未簽出',
     mustSelectOne: '請選擇一個料件',
   },
@@ -99,6 +102,12 @@ export default {
       longerThan50: '字數不可大於50',
       invalidChar: '只能含有0-9、aA-zZ、-、_',
     },
+    partUsages: {
+      quantity: {
+        atLeastOne: '使用數量不可小於1',
+        mustBeInteger: '使用數量必須是整數',
+      },
+    },
     customAttributes: {
       options: {
         longerThan20: '字數不可大於20',
@@ -126,5 +135,8 @@ export default {
   lang: {
     zhTW: '繁體中文',
     enUS: 'English(英文)',
+  },
+  errors: {
+    unknown: '不明錯誤',
   },
 };
