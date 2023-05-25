@@ -76,7 +76,6 @@ import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLink
 import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import { SelectOption } from 'src/models/SelectOption';
 import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
-import { number } from '@intlify/core-base';
 import { CreatePartUsageChildDTO, CreatePartUsagesDTO } from '../dtos/CreatePartUsagesDTO';
 import { partUsageService } from '../services/PartUsageService';
 import { PartUsageChild } from '../models/PartUsageUses';
