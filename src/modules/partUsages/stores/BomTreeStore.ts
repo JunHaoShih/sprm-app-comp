@@ -7,6 +7,7 @@ import { PartUsageChild } from '../models/PartUsageUses';
 export interface BomTreeNode extends QTreeNode {
   parentId: number,
   versionId: number,
+  checkout: boolean,
   usageId: number,
 }
 
@@ -42,6 +43,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
           icon: 'settings',
           parentId: value.usedBy,
           versionId: value.uses.version.id,
+          checkout: value.uses.checkout,
           usageId: value.id,
           lazy: true,
         };
@@ -62,6 +64,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
           label: '',
           parentId: 0,
           versionId: 0,
+          checkout: false,
           usageId: 0,
           icon: 'settings',
         };
@@ -72,6 +75,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
         label: getPartVersionLabel(root),
         parentId: 0,
         versionId: root.id,
+        checkout: root.master.checkout,
         usageId: 0,
         icon: 'settings',
       };

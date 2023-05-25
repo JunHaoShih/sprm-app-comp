@@ -29,14 +29,22 @@
               :header-nav="isSearchPageDone"
             >
               <PartsSearchPanel
+                v-if="createType === 'search'"
                 v-model="pattern"
                 :readonly="true"
                 v-model:selected="selected"
                 selection="single"
                 class="main-panel"
                 table-class="table-max"
+              />
+              <q-scroll-area
+                v-if="createType === 'create'"
+                class="dialog-inner-max" visible
               >
-              </PartsSearchPanel>
+                <CreatePartPanel
+                  ref="createPartPanelRef"
+                />
+            </q-scroll-area>
             </q-step>
             <q-step
               :name="2"
@@ -51,7 +59,7 @@
                   :part-child="selectedSinglePart"
                   :readonly="false"
                   class="main-panel"
-                ></CreatePartUsagePanel>
+                />
               </q-scroll-area>
             </q-step>
           </q-stepper>
@@ -76,10 +84,13 @@
 import { computed, ref, watch } from 'vue';
 import { QStepper, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import CreatePartPanel, { ICreatePartPanel } from 'src/modules/parts/components/CreatePartPanel.vue';
 import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
 import CreatePartUsagePanel, { ICreatePartUsagePanel } from './CreatePartUsagePanel.vue';
 import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
+
+export type CreateType = 'create' | 'search' | 'none';
 
 const $q = useQuasar();
 
@@ -92,6 +103,8 @@ const step = ref(1);
 const pattern = ref('');
 
 const selected = ref<Part[]>([]);
+
+const createPartPanelRef = ref<ICreatePartPanel>({} as ICreatePartPanel);
 
 const createPartUsagePanel = ref<ICreatePartUsagePanel>({} as ICreatePartUsagePanel);
 
@@ -120,8 +133,6 @@ const isUsagePageDone = computed(
   (): boolean => step.value > 2,
 );
 
-const targetPart = ref<Part>();
-
 const stepper = ref<QStepper>({} as QStepper);
 
 /**
@@ -130,9 +141,11 @@ const stepper = ref<QStepper>({} as QStepper);
 const props = withDefaults(defineProps<{
   modelValue: boolean,
   selectedPartVersionId: number,
+  createType?: CreateType,
 }>(), {
   modelValue: false,
   selectedPartVersionId: 0,
+  createType: 'search',
 });
 
 type Emit = {
@@ -151,7 +164,7 @@ watch(prompt, () => {
   }
 });
 
-async function onNextStep(): Promise<void> {
+async function onSelectDone(): Promise<void> {
   if (selected.value.length !== 1) {
     $q.notify({
       message: i18n.t('parts.mustSelectOne'),
@@ -169,8 +182,35 @@ async function onNextStep(): Promise<void> {
     });
     return;
   }
-  targetPart.value = selectedPart;
   stepper.value.next();
+}
+
+async function onCreatePart(): Promise<void> {
+  const messages = createPartPanelRef.value.validate();
+  if (messages.length > 0) {
+    const message = messages[0];
+    $q.notify({
+      message: i18n.t(message),
+      color: 'red',
+      icon: 'error',
+    });
+    return;
+  }
+  const newPart = await createPartPanelRef.value.createPart();
+  if (!newPart) {
+    return;
+  }
+  selected.value.length = 0;
+  selected.value.push(newPart);
+  stepper.value.next();
+}
+
+async function onNextStep(): Promise<void> {
+  if (props.createType === 'create') {
+    onCreatePart();
+  } else {
+    onSelectDone();
+  }
 }
 
 async function onAddClicked() {

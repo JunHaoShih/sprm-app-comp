@@ -31,18 +31,20 @@
         <div class="q-gutter-sm">
           <PartUsageRightPanel
             :id="selectedParentId"
-            :readonly="false"
+            :readonly="!isSelectedNodeCheckout"
           />
         </div>
       </template>
     </q-splitter>
-    <CreatePartUsageAndPartDialog
+    <CreatePartUsageDialog
       v-model="createPrompt"
       :selectedPartVersionId="selectedParentId"
+      createType="create"
     />
     <CreatePartUsageDialog
       v-model="searchPrompt"
       :selectedPartVersionId="selectedParentId"
+      createType="search"
     />
   </div>
 </template>
@@ -51,7 +53,6 @@
 import { computed, ref } from 'vue';
 import PartUsageRightPanel from './components/PartUsageRightPanel.vue';
 import PartUsageTreePanel from './components/PartUsageTreePanel.vue';
-import CreatePartUsageAndPartDialog from './components/CreatePartUsageAndPartDialog.vue';
 import CreatePartUsageDialog from './components/CreatePartUsageDialog.vue';
 import 'src/extensions/date.extensions';
 import { BomTreeNode } from './stores/BomTreeStore';
@@ -71,6 +72,10 @@ const selectedParentId = computed(
     }
     return selectedNode.value.versionId;
   },
+);
+
+const isSelectedNodeCheckout = computed(
+  (): boolean => selectedNode.value.checkout,
 );
 
 const props = withDefaults(defineProps<{

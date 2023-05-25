@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!loading">
+  <div v-if="!initializing">
     <q-expansion-item
       v-model="infoExpanded"
       icon="article"
@@ -102,7 +102,7 @@ const customValuesExpanded = ref(true);
 
 const middleCustomOptions = ref<Record<number, string>>({} as Record<number, string>);
 
-const loading = ref(false);
+const initializing = ref(false);
 
 const targetAttributes = computed(
   (): CustomAttribute[] => attrLinksStore.attributes(ObjectTypeId.PartUsage),
@@ -172,12 +172,12 @@ watch(() => i18n.locale.value, () => {
 });
 
 onBeforeMount(async () => {
-  loading.value = true;
+  initializing.value = true;
   usageChildDTO.value.partId = props.partChild.id;
   await attrLinksStore.initialize(ObjectTypeId.PartUsage);
   usageChildDTO.value.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
   updateSingleSelectAttribute();
-  loading.value = false;
+  initializing.value = false;
 });
 
 defineExpose({

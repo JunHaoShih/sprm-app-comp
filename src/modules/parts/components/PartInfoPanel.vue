@@ -135,7 +135,7 @@ const initializing = ref(true);
 const props = withDefaults(defineProps<{
   readonly: boolean,
   modelValue: PartVersion,
-  panelClass: string,
+  panelClass?: string,
 }>(), {
   readonly: true,
   panelClass: 'default-height',
