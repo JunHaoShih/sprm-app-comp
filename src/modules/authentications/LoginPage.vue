@@ -19,6 +19,7 @@
                 <q-card-section>
                   <q-form class="q-gutter-md">
                     <q-input ref="inputRef" square filled v-model="username"
+                      data-cy="username-input"
                       label="username" style="width: 300px;"
                     >
                       <template v-if="username" v-slot:append>
@@ -28,6 +29,7 @@
                     </q-input>
                     <q-input square filled v-model="password" type="password"
                       v-on:keyup.enter="onSubmit"
+                      data-cy="password-input"
                       label="password" style="width: 300px;"
                     >
                       <template v-if="password" v-slot:append>
@@ -41,7 +43,8 @@
                 </q-card-section>
                 <q-card-actions class="q-px-md">
                   <q-btn unelevated color="light-green-7" size="lg" class="full-width"
-                  label="Login" @click="onSubmit" />
+                    data-cy="login-btn"
+                    label="Login" @click="onSubmit" />
                 </q-card-actions>
               </q-card>
             </div>
