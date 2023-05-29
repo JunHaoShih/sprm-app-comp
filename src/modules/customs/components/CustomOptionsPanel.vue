@@ -163,10 +163,10 @@ function onEdit(customOption: CustomOption): void {
 }
 
 function onDialogConfirm(): void {
-  const error = customOptionValidateService.checkOptionRules(editedOption.value);
-  if (error) {
+  const errors = customOptionValidateService.checkOptionRules(editedOption.value);
+  if (errors.length > 0) {
     $q.notify({
-      message: `Error: ${i18n.t(error)}`,
+      message: `Error: ${i18n.t(errors[0])}`,
       color: 'red',
       icon: 'error',
     });

@@ -13,6 +13,7 @@ export const usePartVersionStore = defineStore('partVersion', {
       id: 0,
       version: 0,
       checkout: false,
+      isLatest: false,
       master: {
         id: 0,
         number: '',
@@ -32,7 +33,7 @@ export const usePartVersionStore = defineStore('partVersion', {
     partVersion: (state): PartVersion => state.content,
   },
   actions: {
-    async partVersionInit(versionId: number): Promise<void> {
+    async partVersionInit(versionId: number): Promise<boolean> {
       this.content = {
         id: 0,
         version: 0,
@@ -52,9 +53,11 @@ export const usePartVersionStore = defineStore('partVersion', {
         remarks: '',
       } as PartVersion;
       const targetVersion = await partVersionService.getById(versionId);
-      if (targetVersion) {
-        this.content = targetVersion;
+      if (!targetVersion) {
+        return false;
       }
+      this.content = targetVersion;
+      return true;
     },
   },
 });

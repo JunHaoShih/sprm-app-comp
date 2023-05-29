@@ -96,10 +96,10 @@ watch(prompt, (newValue, oldValue) => {
 
 async function onConfirmClicked(): Promise<void> {
   const createDTO: CreateCustomAttributeDTO = JSON.parse(JSON.stringify(defaultAttr.value));
-  const result = customAttributeValidationService.checkCreateAttributeRules(createDTO);
-  if (result) {
+  const errors = customAttributeValidationService.checkCreateAttributeRules(createDTO);
+  if (errors.length > 0) {
     $q.notify({
-      message: `Error: ${i18n.t(result)}`,
+      message: `Error: ${i18n.t(errors[0])}`,
       color: 'red',
       icon: 'error',
     });

@@ -8,11 +8,11 @@ const validateOptionKeyRules: ValidateRule[] = [
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length <= 20,
+    validate: (val) => String(val).length <= 20,
     message: 'validations.customAttributes.options.longerThan20',
   },
   {
-    validate: (val) => /^[A-Z0-9_-]*$/.test(val),
+    validate: (val) => /^[A-Z0-9_-]*$/.test(String(val)),
     message: 'validations.customAttributes.options.keyInvalidChar',
   },
 ];
@@ -23,48 +23,38 @@ export const validateOptionValueRules: ValidateRule[] = [
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length <= 20,
+    validate: (val) => String(val).length <= 20,
     message: 'validations.customAttributes.options.longerThan20',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(val),
+    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.customAttributes.options.valueInvalidChar',
   },
 ];
 
-const checkOptionKeyRules = (number: string): string | undefined => {
-  const result = validateOptionKeyRules.find((rule) => !rule.validate(number));
-  if (result) {
-    return result.message;
-  }
-  return result;
+const checkOptionKeyRules = (optionKey: string | number | undefined): string[] => {
+  const errors = validateOptionKeyRules
+    .filter((rule) => !rule.validate(optionKey))
+    .map((rule) => rule.message);
+  return errors;
 };
 
-const checkOptionValueRules = (number: string): string | undefined => {
-  const result = validateOptionValueRules.find((rule) => !rule.validate(number));
-  if (result) {
-    return result.message;
-  }
-  return result;
+const checkOptionValueRules = (optionValue: string | number | undefined): string[] => {
+  const errors = validateOptionValueRules
+    .filter((rule) => !rule.validate(optionValue))
+    .map((rule) => rule.message);
+  return errors;
 };
 
-const checkOptionRules = (option: CustomOption): string | undefined => {
-  let result = checkOptionKeyRules(option.key);
-  if (result) {
-    return result;
-  }
-  result = checkOptionValueRules(option.value);
-  if (result) {
-    return result;
-  }
+const checkOptionRules = (option: CustomOption): string[] => {
+  const errors: string[] = [];
   const keys = Object.keys(option.languages);
-  for (let i = 0; i < keys.length; i += 1) {
-    result = languageValidateService.checkLanguageRules(option.languages[keys[i]]);
-    if (result) {
-      return result;
-    }
-  }
-  return result;
+  errors.push(...checkOptionKeyRules(option.key));
+  errors.push(...checkOptionValueRules(option.value));
+  keys.forEach((key) => {
+    errors.push(...languageValidateService.checkLanguageRules(option.languages[key]));
+  });
+  return errors;
 };
 
 export const customOptionValidateService = {

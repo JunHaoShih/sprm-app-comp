@@ -10,11 +10,11 @@ const validateAttributeNumberRules: ValidateRule[] = [
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length <= 20,
+    validate: (val) => String(val).length <= 20,
     message: 'validations.customAttributes.longerThan20',
   },
   {
-    validate: (val) => /^[A-Z0-9_-]*$/.test(val),
+    validate: (val) => /^[A-Z0-9_-]*$/.test(String(val)),
     message: 'validations.customAttributes.numberInvalidChar',
   },
 ];
@@ -25,79 +25,55 @@ export const validateAttributeNameRules: ValidateRule[] = [
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length <= 20,
+    validate: (val) => String(val).length <= 20,
     message: 'validations.customAttributes.longerThan20',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(val),
+    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.customAttributes.nameInvalidChar',
   },
 ];
 
-const checkAttributeNumberRules = (number: string): string | undefined => {
-  const result = validateAttributeNumberRules.find((rule) => !rule.validate(number));
-  if (result) {
-    return result.message;
-  }
-  return result;
+const checkAttributeNumberRules = (number: string | number | undefined): string[] => {
+  const errors = validateAttributeNumberRules
+    .filter((rule) => !rule.validate(number))
+    .map((rule) => rule.message);
+  return errors;
 };
 
-const checkAttributeNameRules = (number: string): string | undefined => {
-  const result = validateAttributeNameRules.find((rule) => !rule.validate(number));
-  if (result) {
-    return result.message;
-  }
-  return result;
+const checkAttributeNameRules = (name: string | number | undefined): string[] => {
+  const errors = validateAttributeNameRules
+    .filter((rule) => !rule.validate(name))
+    .map((rule) => rule.message);
+  return errors;
 };
 
-const checkAttributeRules = (attribute: CustomAttribute): string | undefined => {
-  let result = checkAttributeNumberRules(attribute.number);
-  if (result) {
-    return result;
-  }
-  result = checkAttributeNameRules(attribute.name);
-  if (result) {
-    return result;
-  }
-  for (let i = 0; i < attribute.options.length; i += 1) {
-    result = customOptionValidateService.checkOptionRules(attribute.options[i]);
-    if (result) {
-      return result;
-    }
-  }
+const checkAttributeRules = (attribute: CustomAttribute): string[] => {
+  const errors: string[] = [];
+  errors.push(...checkAttributeNumberRules(attribute.number));
+  errors.push(...checkAttributeNameRules(attribute.name));
+  attribute.options.forEach((option) => {
+    errors.push(...customOptionValidateService.checkOptionRules(option));
+  });
   const keys = Object.keys(attribute.languages);
-  for (let i = 0; i < keys.length; i += 1) {
-    result = languageValidateService.checkLanguageRules(attribute.languages[keys[i]]);
-    if (result) {
-      return result;
-    }
-  }
-  return result;
+  keys.forEach((key) => {
+    errors.push(...languageValidateService.checkLanguageRules(attribute.languages[key]));
+  });
+  return errors;
 };
 
-const checkCreateAttributeRules = (attribute: CreateCustomAttributeDTO): string | undefined => {
-  let result = checkAttributeNumberRules(attribute.number);
-  if (result) {
-    return result;
-  }
-  result = checkAttributeNameRules(attribute.name);
-  if (result) {
-    return result;
-  }
-  for (let i = 0; i < attribute.options.length; i += 1) {
-    result = customOptionValidateService.checkOptionRules(attribute.options[i]);
-    if (result) {
-      return result;
-    }
-  }
+const checkCreateAttributeRules = (attribute: CreateCustomAttributeDTO): string[] => {
+  const errors: string[] = [];
+  errors.push(...checkAttributeNumberRules(attribute.number));
+  errors.push(...checkAttributeNameRules(attribute.name));
+  attribute.options.forEach((option) => {
+    errors.push(...customOptionValidateService.checkOptionRules(option));
+  });
   const keys = Object.keys(attribute.languages);
-  for (let i = 0; i < keys.length; i += 1) {
-    result = languageValidateService.checkLanguageRules(attribute.languages[keys[i]]);
-    if (result) {
-      return result;
-    }
-  }
-  return result;
+  keys.forEach((key) => {
+    errors.push(...languageValidateService.checkLanguageRules(attribute.languages[key]));
+  });
+  return errors;
 };
 
 export const customAttributeValidationService = {

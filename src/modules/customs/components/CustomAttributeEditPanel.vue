@@ -85,10 +85,10 @@ function onCancelClicked(): void {
 }
 
 async function onConfirmClicked(): Promise<void> {
-  const result = customAttributeValidationService.checkAttributeRules(defaultAttr.value);
-  if (result) {
+  const errors = customAttributeValidationService.checkAttributeRules(defaultAttr.value);
+  if (errors.length > 0) {
     $q.notify({
-      message: `Error: ${i18n.t(result)}`,
+      message: `Error: ${i18n.t(errors[0])}`,
       color: 'red',
       icon: 'error',
     });
