@@ -16,6 +16,7 @@
             >
             <div class="q-pa-sm">
               <ValidationInput
+                data-cy="info-part-number"
                 v-model="partVersion.master.number"
                 :label="$t('parts.number')"
                 :inputValidator="partValidationService.checkNumberRules"
