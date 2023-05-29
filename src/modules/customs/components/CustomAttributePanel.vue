@@ -13,16 +13,16 @@
     >
       <div class="q-pa-sm">
         <!-- number -->
-        <div class="q-ma-sm">{{ $t('customs.generic.number') }}</div>
         <ValidationInput
           v-model="inputAttr.number"
+          :label="$t('customs.generic.number')"
           :readonly="props.readonly"
           :inputValidator="customAttributeValidationService.checkAttributeNumberRules"
         />
         <!-- name -->
-        <div class="q-ma-sm">{{ $t('customs.generic.name') }}</div>
         <ValidationInput
           v-model="inputAttr.name"
+          :label="$t('customs.generic.name')"
           :readonly="props.readonly"
           :inputValidator="customAttributeValidationService.checkAttributeNameRules"
         />
@@ -30,27 +30,29 @@
         <div class="row">
           <q-checkbox
             left-label
-            class="q-ma-sm"
+            class="q-ml-sm"
             v-model="inputAttr.isDisabled"
             :disable="props.readonly"
             :label="$t('customs.generic.disable')"
           />
         </div>
         <!-- attribute type -->
-        <div class="q-ma-sm">{{ $t('customs.attributes.attribteType') }}</div>
         <q-select
           filled
           dense
           v-model="attrTypeOption"
+          class="q-mb-md"
+          :label="$t('customs.attributes.attribteType')"
           :options="attrTypesStore.i18nOptions"
           :readonly="props.readonly"
           @update:modelValue="onAttrTypeUpdated" />
         <!-- display type -->
-        <div class="q-ma-sm">{{ $t('customs.attributes.displayType') }}</div>
         <q-select
           filled
           dense
           v-model="displayTypeOption"
+          class="q-mb-md"
+          :label="$t('customs.attributes.displayType')"
           :options="displayTypesStore.i18nOptions"
           :readonly="props.readonly"
           @update:modelValue="onDisplayTypeUpdated" />
@@ -60,9 +62,9 @@
           :readonly="props.readonly"
         />
         <!-- remarks -->
-        <div class="q-ma-sm">{{ $t('remarks') }}</div>
         <q-input
           v-model="inputAttr.remarks"
+          :label="$t('remarks')"
           :readonly="props.readonly"
           filled
           type="textarea"
@@ -87,8 +89,9 @@
           v-for="locale in availableLocales"
           :key="locale"
         >
-          <div class="q-ma-sm">{{ locale }}</div>
-          <ValidationInput v-model="inputAttr.languages[locale]"
+          <ValidationInput
+            v-model="inputAttr.languages[locale]"
+            :label="locale"
             :readonly="props.readonly"
             :inputValidator="languageValidateService.checkLanguageRules"
           />

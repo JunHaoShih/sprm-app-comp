@@ -16,10 +16,21 @@
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round flat
-            color="grey" icon="edit" @click="onEdit(props.row as CustomOption)"></q-btn>
-          <q-btn dense round flat
-            color="grey" icon="delete"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="edit"
+            size="10px"
+            @click="onEdit(props.row as CustomOption)"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="delete"
+            size="10px"></q-btn>
         </q-td>
       </template>
       <!-- languages -->
@@ -39,21 +50,31 @@
     </q-table>
   </div>
   <!-- dialog -->
-  <q-dialog ref="dialogRef" v-model="prompt" persistent>
+  <q-dialog
+    ref="dialogRef"
+    v-model="prompt"
+    persistent
+  >
     <q-card style="min-width: 700px">
-      <q-card-section>
+      <q-card-section class="bg-primary text-white row items-center" >
         <div class="text-h6">File</div>
+        <q-space></q-space>
+        <q-btn icon="close" flat round dense v-close-popup />
       </q-card-section>
       <!-- key input -->
-      <q-card-section class="q-pt-none">
-        <ValidationInput v-model="editedOption.key" :label="$t('key')"
+      <q-card-section class="q-pt-sm" >
+        <ValidationInput
+          v-model="editedOption.key"
+          :label="$t('key')"
           :inputValidator="customOptionValidateService.checkOptionKeyRules"
           :readonly="dialogMode === 2"
         />
       </q-card-section>
       <!-- value input -->
       <q-card-section class="q-pt-none">
-        <ValidationInput v-model="editedOption.value" :label="$t('value')"
+        <ValidationInput
+          v-model="editedOption.value"
+          :label="$t('value')"
           :inputValidator="customOptionValidateService.checkOptionValueRules"
         />
       </q-card-section>
@@ -63,8 +84,9 @@
           v-for="locale in availableLocales"
           :key="locale"
         >
-          <div class="q-ma-sm">{{ locale }}</div>
-          <ValidationInput v-model="editedOption.languages[locale]"
+          <ValidationInput
+            v-model="editedOption.languages[locale]"
+            :label="locale"
             :inputValidator="languageValidateService.checkLanguageRules"
           />
         </div>
@@ -151,6 +173,9 @@ function onAddClick(): void {
     value: '',
     languages: {},
   };
+  availableLocales.forEach((locale) => {
+    editedOption.value.languages[locale] = '';
+  });
   prompt.value = true;
 }
 
