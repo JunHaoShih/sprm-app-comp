@@ -18,13 +18,21 @@
       <!-- button at table header -->
       <template v-slot:top>
         <slot name="table-top"></slot>
+        <!-- column display switch -->
         <q-btn-dropdown
           color="primary"
           :label="$t('columns.display')"
         >
           <div class="row no-wrap q-pa-md">
             <div class="column">
-              <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
+              <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
+              <q-toggle
+                v-for="column in defaultColumns"
+                v-bind:key="column.name"
+                v-model="displayMap[column.name]"
+                :label="column.label"
+              />
+              <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
               <q-toggle
                 v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
                 v-bind:key="attr.number"
@@ -57,9 +65,9 @@
       <!-- is checkout -->
       <template v-slot:body-cell-isCheckout="props">
         <q-td :props="props">
-          <q-icon v-if="props.row.checkout" name="warning" color="orange" size="8px">
+          <q-icon v-if="props.row.checkout" name="stop_circle" color="orange" size="16px">
             <q-tooltip>
-              {{ $t('iterable.checkout') }}
+              {{ $t('actions.checkout') }}
             </q-tooltip>
           </q-icon>
         </q-td>
@@ -168,6 +176,8 @@ const loading = ref(false);
 
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
+const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
 interface Props {
   readonly: boolean;
   tableClass: string;
@@ -226,46 +236,50 @@ const pageOptions = computed(
 
 const options = ref<number[]>([20, 50, 100]);
 
+const defaultColumns = computed(
+  (): QTableProps['columns'] => [
+    {
+      name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
+    },
+    {
+      name: 'isCheckout', label: i18n.t('actions.checkout'), field: '', align: 'center', sortable: false,
+    },
+    {
+      name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
+    },
+    {
+      name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
+    },
+    {
+      name: 'view', label: i18n.t('parts.view'), field: '', align: 'left', sortable: true,
+    },
+    {
+      name: 'version', label: i18n.t('iterable.version'), field: '', align: 'left', sortable: true,
+    },
+    {
+      name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
+    },
+    {
+      name: 'createDate', label: i18n.t('base.createDate'), field: '', align: 'left', sortable: true,
+    },
+    {
+      name: 'updateUser', label: i18n.t('base.modifier'), field: 'updateUser', align: 'left', sortable: true,
+    },
+    {
+      name: 'updateDate', label: i18n.t('base.modifiedDate'), field: '', align: 'left', sortable: true,
+    },
+  ],
+);
+
 const columns = computed(
   (): QTableProps['columns'] => {
-    const defaultColumns: QTableProps['columns'] = [
-      {
-        name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
-      },
-      {
-        name: 'isCheckout', label: '', field: '', align: 'left', sortable: false,
-      },
-      {
-        name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
-      },
-      {
-        name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
-      },
-      {
-        name: 'view', label: i18n.t('parts.view'), field: '', align: 'left', sortable: true,
-      },
-      {
-        name: 'version', label: i18n.t('iterable.version'), field: '', align: 'left', sortable: true,
-      },
-      {
-        name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
-      },
-      {
-        name: 'createDate', label: i18n.t('base.createDate'), field: '', align: 'left', sortable: true,
-      },
-      {
-        name: 'updateUser', label: i18n.t('base.modifier'), field: 'updateUser', align: 'left', sortable: true,
-      },
-      {
-        name: 'updateDate', label: i18n.t('base.modifiedDate'), field: '', align: 'left', sortable: true,
-      },
-    ];
+    const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
     attrLinksStore.attributes(ObjectTypeId.PartVersion).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
       const currentLabel = attr.languages[i18n.locale.value] || attr.name;
-      defaultColumns.push({
+      filteredColumns?.push({
         name: attr.number,
         label: currentLabel,
         field: attr.number,
@@ -273,7 +287,7 @@ const columns = computed(
         sortable: true,
       });
     });
-    return defaultColumns;
+    return filteredColumns;
   },
 );
 
@@ -325,6 +339,9 @@ onBeforeMount(async () => {
   const attributes = attrLinksStore.attributes(ObjectTypeId.PartVersion);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
+  });
+  defaultColumns.value?.forEach((column) => {
+    displayMap.value[column.name] = true;
   });
 });
 </script>

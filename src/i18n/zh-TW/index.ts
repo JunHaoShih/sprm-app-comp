@@ -92,7 +92,6 @@ export default {
   },
   iterable: {
     version: '版本',
-    checkout: '出庫',
   },
   validations: {
     notNull: '不可為空',
@@ -125,6 +124,7 @@ export default {
   },
   columns: {
     display: '欄位顯示',
+    defaultColumn: '預設欄位',
   },
   quantity: '數量',
   remarks: '備註',

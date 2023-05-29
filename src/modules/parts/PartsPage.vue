@@ -21,6 +21,7 @@
           flat
           color="grey"
           icon="edit"
+          size="12px"
           @click="onEditClicked(props.part)"
         />
         <q-btn
@@ -29,6 +30,7 @@
           flat
           color="grey"
           icon="delete"
+          size="12px"
         />
         <q-btn
           dense
@@ -36,6 +38,7 @@
           flat
           color="grey"
           icon="info"
+          size="12px"
           @click="onInfoClicked(props.part)"
         />
       </template>

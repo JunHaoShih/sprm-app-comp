@@ -92,7 +92,6 @@ export default {
   },
   iterable: {
     version: 'Version',
-    checkout: 'Checkout',
   },
   validations: {
     notNull: 'Cannot be empty',
@@ -124,6 +123,7 @@ export default {
   },
   columns: {
     display: 'Columns display',
+    defaultColumn: 'Default column',
   },
   quantity: 'Quantity',
   remarks: 'Remarks',
