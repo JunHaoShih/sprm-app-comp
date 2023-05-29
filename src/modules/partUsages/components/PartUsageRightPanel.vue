@@ -29,33 +29,58 @@
         >
           <!-- button at table header -->
           <template v-slot:top>
-            <q-btn v-if="!readonly" color="primary" :label="$t('actions.add')"></q-btn>
-            <q-btn v-if="!readonly" color="primary" :label="$t('actions.delete')"></q-btn>
-            <q-btn-dropdown
-              color="primary"
-              :label="$t('columns.display')"
-            >
-            <div class="row no-wrap q-pa-md">
-              <div class="column">
-                <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
-                <q-toggle
-                  v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartUsage)"
-                  v-bind:key="attr.number"
-                  v-model="canDisplay[attr.number]"
-                  :label="attr.languages[i18n.locale.value] || attr.name"
-                />
-              </div>
+            <div class="q-gutter-xs">
+              <q-btn
+                push
+                v-if="!readonly"
+                color="primary"
+                :label="$t('actions.add')"
+              />
+              <q-btn
+                push
+                v-if="!readonly"
+                color="primary"
+                :label="$t('actions.delete')"
+              />
+              <q-btn-dropdown
+                push
+                color="primary"
+                :label="$t('columns.display')"
+              >
+                <div class="row no-wrap q-pa-md">
+                  <div class="column">
+                    <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
+                    <q-toggle
+                      v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartUsage)"
+                      v-bind:key="attr.number"
+                      v-model="canDisplay[attr.number]"
+                      :label="attr.languages[i18n.locale.value] || attr.name"
+                    />
+                  </div>
+                </div>
+              </q-btn-dropdown>
             </div>
-            </q-btn-dropdown>
             <q-space />
           </template>
           <!-- action buttons -->
           <template v-slot:body-cell-actions="props">
             <q-td :props="props">
-              <q-btn dense round flat
-                color="grey" icon="edit"></q-btn>
-              <q-btn dense round flat
-                color="grey" icon="delete"></q-btn>
+              <q-btn
+                dense
+                round
+                flat
+                color="grey"
+                icon="edit"
+                size="12px"
+              />
+              <q-btn
+                dense
+                round
+                flat
+                color="grey"
+                icon="delete"
+                size="12px"
+              />
             </q-td>
           </template>
           <!-- child number -->

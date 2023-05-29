@@ -18,30 +18,45 @@
               <q-card square bordered class="q-pa-lg shadow-1">
                 <q-card-section>
                   <q-form class="q-gutter-md">
-                    <q-input ref="inputRef" square filled v-model="username"
-                      label="username" style="width: 300px;"
+                    <q-input
+                      ref="inputRef"
+                      filled
+                      v-model="username"
+                      label="username"
+                      style="width: 300px;"
                     >
                       <template v-if="username" v-slot:append>
-                        <q-icon name="cancel" @click.stop.prevent="username = ''"
-                          class="cursor-pointer" />
+                        <q-icon
+                          name="cancel"
+                          class="cursor-pointer"
+                          @click.stop.prevent="username = ''"
+                        />
                       </template>
                     </q-input>
-                    <q-input square filled v-model="password" type="password"
+                    <q-input
+                      filled
+                      v-model="password"
+                      type="password"
                       v-on:keyup.enter="onSubmit"
                       label="password" style="width: 300px;"
                     >
                       <template v-if="password" v-slot:append>
-                        <q-icon name="cancel"
-                          @click.stop.prevent="password = ''"
+                        <q-icon
+                          name="cancel"
                           class="cursor-pointer"
+                          @click.stop.prevent="password = ''"
                         />
                       </template>
                     </q-input>
                   </q-form>
                 </q-card-section>
                 <q-card-actions class="q-px-md">
-                  <q-btn unelevated color="light-green-7" size="lg" class="full-width"
-                  label="Login" @click="onSubmit" />
+                  <q-btn
+                    push
+                    color="light-green-7"
+                    size="lg"
+                    class="full-width"
+                    label="Login" @click="onSubmit" />
                 </q-card-actions>
               </q-card>
             </div>

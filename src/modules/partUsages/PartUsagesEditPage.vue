@@ -7,22 +7,28 @@
     >
       <template v-slot:before>
         <PartUsageTreePanel
-          class="q-pa-md q-gutter-sm"
+          class="q-pa-md q-gutter-xs"
           :id="Number(props.id)"
           v-model:selectedNode="selectedNode"
         >
           <template v-slot:before>
             <q-btn
+              push
               color="primary"
               :label="$t('actions.adds.newPart')"
               @click="createPrompt = true"
             />
             <q-btn
+              push
               color="primary"
               :label="$t('actions.adds.existingPart')"
               @click="searchPrompt = true"
             />
-            <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
+            <q-btn
+              push
+              color="primary"
+              :label="$t('actions.delete')"
+            />
           </template>
         </PartUsageTreePanel>
       </template>

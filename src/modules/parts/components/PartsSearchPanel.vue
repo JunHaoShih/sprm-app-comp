@@ -17,31 +17,34 @@
     >
       <!-- button at table header -->
       <template v-slot:top>
-        <slot name="table-top"></slot>
-        <!-- column display switch -->
-        <q-btn-dropdown
-          color="primary"
-          :label="$t('columns.display')"
-        >
-          <div class="row no-wrap q-pa-md">
-            <div class="column">
-              <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
-              <q-toggle
-                v-for="column in defaultColumns"
-                v-bind:key="column.name"
-                v-model="displayMap[column.name]"
-                :label="column.label"
-              />
-              <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
-              <q-toggle
-                v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
-                v-bind:key="attr.number"
-                v-model="canDisplay[attr.number]"
-                :label="attr.languages[i18n.locale.value] || attr.name"
-              />
+        <div class="q-gutter-xs">
+          <slot name="table-top"></slot>
+          <!-- column display switch -->
+          <q-btn-dropdown
+            push
+            color="primary"
+            :label="$t('columns.display')"
+          >
+            <div class="row no-wrap q-pa-md">
+              <div class="column">
+                <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
+                <q-toggle
+                  v-for="column in defaultColumns"
+                  v-bind:key="column.name"
+                  v-model="displayMap[column.name]"
+                  :label="column.label"
+                />
+                <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
+                <q-toggle
+                  v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
+                  v-bind:key="attr.number"
+                  v-model="canDisplay[attr.number]"
+                  :label="attr.languages[i18n.locale.value] || attr.name"
+                />
+              </div>
             </div>
-          </div>
-        </q-btn-dropdown>
+          </q-btn-dropdown>
+        </div>
         <q-space />
         <q-select
           class="q-mr-md"

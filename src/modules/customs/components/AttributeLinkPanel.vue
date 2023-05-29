@@ -14,17 +14,42 @@
     >
       <!-- button at table header -->
       <template v-slot:top>
-        <q-btn color="primary" :label="$t('actions.add')" @click="searchPrompt = !searchPrompt"/>
-        <q-btn color="primary" :label="$t('actions.delete')" @click="onMultiDelete" />
-        <q-space />
+        <div class="q-gutter-xs">
+          <q-btn
+            push
+            color="primary"
+            :label="$t('actions.add')"
+            @click="searchPrompt = !searchPrompt"
+          />
+          <q-btn
+            push
+            color="primary"
+            :label="$t('actions.delete')"
+            @click="onMultiDelete"
+          />
+          <q-space />
+        </div>
       </template>
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round flat
-            color="grey" icon="delete" @click="onSingleDelete(props.row as CustomAttribute)" />
-          <q-btn dense round flat
-            color="grey" icon="info" @click="onInfoClicked(props.row as CustomAttribute)" />
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="delete"
+            size="12px"
+            @click="onSingleDelete(props.row as CustomAttribute)"
+          />
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="info"
+            size="12px"
+            @click="onInfoClicked(props.row as CustomAttribute)" />
         </q-td>
       </template>
       <!-- display type -->

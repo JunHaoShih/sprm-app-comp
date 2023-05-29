@@ -11,8 +11,17 @@
       @on-search="onSearch"
     >
       <template v-slot:table-top>
-        <q-btn color="primary" :label="$t('actions.add')" @click="prompt=true"></q-btn>
-        <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
+        <q-btn
+          push
+          color="primary"
+          :label="$t('actions.add')"
+          @click="prompt=true"
+        />
+        <q-btn
+          push
+          color="primary"
+          :label="$t('actions.delete')"
+        />
       </template>
       <template v-slot:row-actions="props">
         <q-btn

@@ -9,9 +9,20 @@
     >
       <!-- button at table header -->
       <template v-if="!readonly" v-slot:top>
-        <q-btn color="primary" :label="$t('actions.add')" @click="onAddClick"></q-btn>
-        <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
-        <q-space />
+        <div class="q-gutter-xs">
+          <q-btn
+            push
+            color="primary"
+            :label="$t('actions.add')"
+            @click="onAddClick"
+          />
+          <q-btn
+            push
+            color="primary"
+            :label="$t('actions.delete')"
+          />
+          <q-space />
+        </div>
       </template>
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">

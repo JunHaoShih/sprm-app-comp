@@ -1,8 +1,18 @@
 <template>
   <div class="main-panel">
-    <div class="row q-pa-md">
-      <q-btn color="primary" :label="$t('actions.add')" @click="onAddClicked"></q-btn>
-      <q-btn color="primary" :label="$t('actions.delete')" @click="onDeleteClicked"></q-btn>
+    <div class="row q-pa-md q-gutter-xs">
+      <q-btn
+        push
+        color="primary"
+        :label="$t('actions.add')"
+        @click="onAddClicked"
+      />
+      <q-btn
+        push
+        color="primary"
+        :label="$t('actions.delete')"
+        @click="onDeleteClicked"
+      />
       <q-space/>
       <q-input
         dense

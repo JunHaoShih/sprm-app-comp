@@ -28,19 +28,20 @@
                 :readonly="true"
               />
               <div>
-                <div class="q-mx-sm text-caption">{{ $t('parts.view') }}</div>
                 <q-select
                   filled
                   dense
                   v-model="viewTypeOption"
+                  :label="$t('parts.view')"
                   :options="viewTypeOptionsStore.i18nOptions"
                   :readonly="true"
+                  class="q-my-md"
                 />
               </div>
               <div class="column">
-                <div class="q-mx-sm text-caption">{{ $t('remarks') }}</div>
                 <q-input
                   v-model="partVersion.remarks"
+                  :label="$t('remarks')"
                   filled
                   type="textarea"
                   :readonly="readonly"
