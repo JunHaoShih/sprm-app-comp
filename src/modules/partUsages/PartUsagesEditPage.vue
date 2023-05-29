@@ -28,6 +28,7 @@
               push
               color="primary"
               :label="$t('actions.delete')"
+              @click="onDeleteButtonClicked"
             />
           </template>
         </PartUsageTreePanel>
@@ -89,6 +90,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   id: '',
 });
+
+function onDeleteButtonClicked() {
+  // TODO delete bom
+}
 </script>
 
 <style lang="sass" scoped>

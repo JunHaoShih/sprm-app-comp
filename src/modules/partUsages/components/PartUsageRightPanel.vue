@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="!initializing">
     <!-- tabs -->
     <q-tabs
       v-model="tab"
@@ -132,6 +132,8 @@ const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const attrLinksStore = useAttributeLinksStore();
 
+const initializing = ref(true);
+
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const props = withDefaults(defineProps<{
@@ -210,6 +212,7 @@ const pagination: QTableProps['pagination'] = {
 };
 
 onBeforeMount(async () => {
+  initializing.value = true;
   await Promise.all([
     partUsaeChildrenStore.partVersionInit(props.id),
     attrLinksStore.initialize(ObjectTypeId.PartUsage),
@@ -218,6 +221,7 @@ onBeforeMount(async () => {
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
+  initializing.value = false;
 });
 const tab = ref('usage');
 </script>
