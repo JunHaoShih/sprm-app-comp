@@ -53,7 +53,7 @@
                 <q-card-actions class="q-px-md">
                   <q-btn
                     push
-                    color="light-green-7"
+                    color="secondary"
                     size="lg"
                     class="full-width"
                     label="Login" @click="onSubmit" />
