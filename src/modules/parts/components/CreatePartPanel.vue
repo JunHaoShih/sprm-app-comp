@@ -13,12 +13,12 @@
       <ValidationInput
         v-model="createPartStore.number"
         :label="$t('parts.number')"
-        :inputValidator="partValidationService.checkNumberRules"
+        :inputValidator="partValidationService.numberRules"
       />
       <ValidationInput
         v-model="createPartStore.name"
         :label="$t('parts.name')"
-        :inputValidator="partValidationService.checkNameRules"
+        :inputValidator="partValidationService.nameRules"
       />
       <div>
         <div class="q-mx-sm text-caption">{{ $t('parts.view') }}</div>
@@ -99,10 +99,6 @@ import { Part, ViewTypeOption } from '../models/Part';
 
 export interface ICreatePartPanel extends ComponentPublicInstance {
   /**
-   * Validate if current user input are valid to create a part data
-   */
-  validate: (() => string[]),
-  /**
    * Create part
    */
   createPart: () => Promise<Part | null>,
@@ -132,10 +128,6 @@ const targetAttributes = computed(
 
 function onViewTypeUpdated(value: ViewTypeOption) {
   createPartStore.viewType = value.value;
-}
-
-function validate(): string[] {
-  return createPartStore.validateCreatePart();
 }
 
 async function createPart(): Promise<Part | null> {
@@ -181,7 +173,6 @@ onBeforeMount(async () => {
 });
 
 defineExpose({
-  validate,
   createPart,
 });
 </script>

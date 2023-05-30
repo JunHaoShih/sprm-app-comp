@@ -6,8 +6,9 @@
       dense
       filled
       :type="props.type"
-      :error="isValueError()"
-      :error-message="i18nErrorMessage"
+      :rules="[
+        val => inputValidator ? inputValidator(val) : true
+      ]"
       :readonly="readonly"
       hide-bottom-space
     />
@@ -16,15 +17,12 @@
 
 <script setup lang="ts">
 import { QInputProps } from 'quasar';
-import { computed, ref } from 'vue';
-import { useI18n } from 'vue-i18n';
-
-const i18n = useI18n();
+import { computed } from 'vue';
 
 const props = defineProps<{
   label?: string,
   type?: QInputProps['type'],
-  inputValidator?:((val: string | number | undefined) => string[]),
+  inputValidator?:((val: string) => string | boolean),
   readonly?: boolean,
   modelValue: string | number | undefined,
 }>();
@@ -38,26 +36,4 @@ const inputValue = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 });
-
-const errorMessage = ref('');
-
-function isValueError(): boolean {
-  if (!props.inputValidator) {
-    return false;
-  }
-  const result = props.inputValidator(inputValue.value);
-  if (result.length > 0) {
-    const message = result[0];
-    errorMessage.value = message;
-    return true;
-  }
-  return false;
-}
-
-const i18nErrorMessage = computed(
-  (): string => {
-    const message = errorMessage.value ? i18n.t(errorMessage.value) : '';
-    return message;
-  },
-);
 </script>

@@ -18,13 +18,13 @@
               <ValidationInput
                 v-model="partVersion.master.number"
                 :label="$t('parts.number')"
-                :inputValidator="partValidationService.checkNumberRules"
+                :inputValidator="partValidationService.numberRules"
                 :readonly="true"
               />
               <ValidationInput
                 v-model="partVersion.master.name"
                 :label="$t('parts.name')"
-                :inputValidator="partValidationService.checkNameRules"
+                :inputValidator="partValidationService.nameRules"
                 :readonly="true"
               />
               <div>

@@ -3,22 +3,26 @@
     transition-show="rotate" transition-hide="rotate"
   >
     <q-card style="min-width: 700px">
-      <q-card-section class="bg-primary text-white row items-center">
-        <div class="text-h6">{{ $t('parts.new') }}</div>
-        <q-space></q-space>
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="scroll dialog-inner-max">
-        <CreatePartPanel
-          ref="createPartPanelRef"
-        />
-      </q-card-section>
-      <q-separator />
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-        <q-btn flat :label="$t('actions.confirm')" @click="onDialogConfirm"></q-btn>
-      </q-card-actions>
+      <q-form
+        @submit="onDialogConfirm"
+      >
+        <q-card-section class="bg-primary text-white row items-center">
+          <div class="text-h6">{{ $t('parts.new') }}</div>
+          <q-space></q-space>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-separator />
+        <q-card-section class="scroll dialog-inner-max">
+          <CreatePartPanel
+            ref="createPartPanelRef"
+          />
+        </q-card-section>
+        <q-separator />
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
+          <q-btn flat :label="$t('actions.confirm')" type="submit"></q-btn>
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
@@ -59,16 +63,6 @@ const prompt = computed({
 });
 
 async function onDialogConfirm(): Promise<void> {
-  const messages = createPartPanelRef.value.validate();
-  if (messages.length > 0) {
-    const message = messages[0];
-    $q.notify({
-      message: i18n.t(message),
-      color: 'red',
-      icon: 'error',
-    });
-    return;
-  }
   const newPart = await createPartPanelRef.value.createPart();
   if (!newPart) {
     return;

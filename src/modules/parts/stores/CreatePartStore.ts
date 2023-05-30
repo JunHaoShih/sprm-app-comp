@@ -15,22 +15,6 @@ export const useCreatePartStore = defineStore('createPart', {
     customValues: {},
   }),
   actions: {
-    isPartValid(): boolean {
-      const result = partValidationService.checkCreatePartRules(this.$state);
-      if (result.length > 0) {
-        const message = result[0];
-        Notify.create({
-          message,
-          color: 'red',
-          icon: 'error',
-        });
-        return false;
-      }
-      return true;
-    },
-    validateCreatePart(): string[] {
-      return partValidationService.checkCreatePartRules(this.$state);
-    },
     async create(): Promise<Part | null> {
       const part = await api.post('/api/Part', this.$state)
         .then((response): Part => {

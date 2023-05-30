@@ -1,8 +1,7 @@
 import { ValidateRule } from 'src/models/ValidateRule';
-import { Part } from '../models/Part';
-import { CreatePartDTO } from '../dtos/CreatePartDTO';
+import { i18n } from 'src/boot/i18n';
 
-export const validateNumberRules: ValidateRule[] = [
+const validateNumberRules: ValidateRule[] = [
   {
     validate: (val) => !!val,
     message: 'validations.notNull',
@@ -21,7 +20,7 @@ export const validateNumberRules: ValidateRule[] = [
   },
 ];
 
-export const validateNameRules: ValidateRule[] = [
+const validateNameRules: ValidateRule[] = [
   {
     validate: (val) => !!val,
     message: 'validations.notNull',
@@ -36,37 +35,27 @@ export const validateNameRules: ValidateRule[] = [
   },
 ];
 
-const checkNumberRules = (number: string | number | undefined): string[] => {
-  const errors = validateNumberRules
-    .filter((rule) => !rule.validate(number))
-    .map((rule) => rule.message);
-  return errors;
-};
-
-const checkNameRules = (name: string | number | undefined): string[] => {
-  const errors = validateNameRules
-    .filter((rule) => !rule.validate(name))
-    .map((rule) => rule.message);
-  return errors;
-};
-
-const checkPartRules = (part: Part): string[] => {
+const genericRulesCheck = (val: string, rules: ValidateRule[]) => {
   const errors: string[] = [];
-  errors.push(...checkNumberRules(part.number));
-  errors.push(...checkNameRules(part.name));
-  return errors;
+  rules
+    .filter((rule) => !rule.validate(val))
+    .forEach((rule) => errors.push(rule.message));
+  if (errors.length > 0) {
+    const error = errors[0];
+    return i18n.global.t(error);
+  }
+  return true;
 };
 
-const checkCreatePartRules = (part: CreatePartDTO): string[] => {
-  const errors: string[] = [];
-  errors.push(...checkNumberRules(part.number));
-  errors.push(...checkNameRules(part.name));
-  return errors;
-};
+const numberRules = (val: string) => (
+  genericRulesCheck(val, validateNumberRules)
+);
+
+const nameRules = (val: string) => (
+  genericRulesCheck(val, validateNameRules)
+);
 
 export const partValidationService = {
-  checkNumberRules,
-  checkNameRules,
-  checkPartRules,
-  checkCreatePartRules,
+  numberRules,
+  nameRules,
 };

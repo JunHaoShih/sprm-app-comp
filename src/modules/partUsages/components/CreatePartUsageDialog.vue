@@ -7,74 +7,78 @@
       transition-hide="rotate"
     >
       <q-card style="min-width: 700px">
-        <q-card-section class="bg-primary text-white row items-center">
-          <div class="text-h6">{{ $t('parts.usages.new') }}</div>
-          <q-space></q-space>
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
-        <q-card-section>
-          <q-stepper
-            v-model="step"
-            ref="stepper"
-            color="primary"
-            animated
-            header-nav
-          >
-            <q-step
-              :name="1"
-              :title="$t('parts.search')"
-              icon="settings"
-              :done="isSearchPageDone"
-              :header-nav="isSearchPageDone"
+        <q-form
+          @submit="onNextStep"
+        >
+          <q-card-section class="bg-primary text-white row items-center">
+            <div class="text-h6">{{ $t('parts.usages.new') }}</div>
+            <q-space></q-space>
+            <q-btn icon="close" flat round dense v-close-popup />
+          </q-card-section>
+          <q-separator />
+          <q-card-section>
+            <q-stepper
+              v-model="step"
+              ref="stepper"
+              color="primary"
+              animated
+              header-nav
             >
-              <PartsSearchPanel
-                v-if="createType === 'search'"
-                v-model="pattern"
-                :readonly="true"
-                v-model:selected="selected"
-                selection="single"
-                class="main-panel"
-                table-class="table-max"
-              />
-              <q-scroll-area
-                v-if="createType === 'create'"
-                class="dialog-inner-max" visible
+              <q-step
+                :name="1"
+                :title="$t('parts.search')"
+                icon="settings"
+                :done="isSearchPageDone"
+                :header-nav="isSearchPageDone"
               >
-                <CreatePartPanel
-                  ref="createPartPanelRef"
-                />
-            </q-scroll-area>
-            </q-step>
-            <q-step
-              :name="2"
-              :title="$t('parts.usages.new')"
-              icon="data_usage"
-              :header-nav="isUsagePageDone"
-            >
-              <q-scroll-area class="dialog-inner-max" visible>
-                <CreatePartUsagePanel
-                  ref="createPartUsagePanel"
-                  :parent-part-version-id="selectedPartVersionId"
-                  :part-child="selectedSinglePart"
-                  :readonly="false"
+                <PartsSearchPanel
+                  v-if="createType === 'search'"
+                  v-model="pattern"
+                  :readonly="true"
+                  v-model:selected="selected"
+                  selection="single"
                   class="main-panel"
+                  table-class="table-max"
                 />
+                <q-scroll-area
+                  v-if="createType === 'create'"
+                  class="dialog-inner-max" visible
+                >
+                  <CreatePartPanel
+                    ref="createPartPanelRef"
+                  />
               </q-scroll-area>
-            </q-step>
-          </q-stepper>
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right" class="text-primary">
-          <div v-if="isSearchPage">
-            <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-            <q-btn flat :label="$t('actions.next')" @click="onNextStep()"></q-btn>
-          </div>
-          <div v-if="isUsagePage">
-            <q-btn flat :label="$t('actions.previous')" @click="stepper.previous()"></q-btn>
-            <q-btn flat :label="$t('actions.add')" @click="onAddClicked"></q-btn>
-          </div>
-        </q-card-actions>
+              </q-step>
+              <q-step
+                :name="2"
+                :title="$t('parts.usages.new')"
+                icon="data_usage"
+                :header-nav="isUsagePageDone"
+              >
+                <q-scroll-area class="dialog-inner-max" visible>
+                  <CreatePartUsagePanel
+                    ref="createPartUsagePanel"
+                    :parent-part-version-id="selectedPartVersionId"
+                    :part-child="selectedSinglePart"
+                    :readonly="false"
+                    class="main-panel"
+                  />
+                </q-scroll-area>
+              </q-step>
+            </q-stepper>
+          </q-card-section>
+          <q-separator />
+          <q-card-actions align="right" class="text-primary">
+            <div v-if="isSearchPage">
+              <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
+              <q-btn flat :label="$t('actions.next')" type="submit"></q-btn>
+            </div>
+            <div v-if="isUsagePage">
+              <q-btn flat :label="$t('actions.previous')" @click="stepper.previous()"></q-btn>
+              <q-btn flat :label="$t('actions.add')" @click="onAddClicked"></q-btn>
+            </div>
+          </q-card-actions>
+        </q-form>
       </q-card>
     </q-dialog>
   </div>
@@ -186,16 +190,6 @@ async function onSelectDone(): Promise<void> {
 }
 
 async function onCreatePart(): Promise<void> {
-  const messages = createPartPanelRef.value.validate();
-  if (messages.length > 0) {
-    const message = messages[0];
-    $q.notify({
-      message: i18n.t(message),
-      color: 'red',
-      icon: 'error',
-    });
-    return;
-  }
   const newPart = await createPartPanelRef.value.createPart();
   if (!newPart) {
     return;
