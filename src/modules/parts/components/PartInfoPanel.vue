@@ -1,100 +1,104 @@
 <template>
   <div v-if="!initializing">
     <q-card style="min-width: 400px">
-      <q-card-section>
-        <slot name="before"></slot>
-        <q-scroll-area :class="props.panelClass" visible>
-          <div>
-            <q-expansion-item
-              v-model="infoExpanded"
-              icon="article"
-              :label="$t('info')"
-              header-class="text-h6 bg-primary text-white"
-              expand-icon-class="text-white"
-              class="expandable shadow-1 overflow-hidden"
-              style="border-radius: 10px"
-            >
-            <div class="q-pa-sm">
-              <ValidationInput
-                v-model="partVersion.master.number"
-                :label="$t('parts.number')"
-                :inputValidator="partValidationService.numberRules"
-                :readonly="true"
-              />
-              <ValidationInput
-                v-model="partVersion.master.name"
-                :label="$t('parts.name')"
-                :inputValidator="partValidationService.nameRules"
-                :readonly="true"
-              />
-              <div>
-                <q-select
-                  filled
-                  dense
-                  v-model="viewTypeOption"
-                  :label="$t('parts.view')"
-                  :options="viewTypeOptionsStore.i18nOptions"
-                  :readonly="true"
-                  class="q-my-md"
-                />
-              </div>
-              <div class="column">
-                <q-input
-                  v-model="partVersion.remarks"
-                  :label="$t('remarks')"
-                  filled
-                  type="textarea"
-                  :readonly="readonly"
-                />
-              </div>
-            </div>
-            </q-expansion-item>
-
-            <q-separator class="q-mb-md"/>
-
-            <q-expansion-item
-              v-model="customValuesExpanded"
-              icon="language"
-              :label="$t('customs.attributes.title')"
-              header-class="text-h6 bg-primary text-white"
-              expand-icon-class="text-white"
-              class="expandable shadow-1 overflow-hidden"
-              style="border-radius: 10px"
-            >
+      <q-form
+        @submit="props.onSubmit"
+      >
+        <q-card-section>
+          <slot name="before"></slot>
+          <q-scroll-area :class="props.panelClass" visible>
+            <div>
+              <q-expansion-item
+                v-model="infoExpanded"
+                icon="article"
+                :label="$t('info')"
+                header-class="text-h6 bg-primary text-white"
+                expand-icon-class="text-white"
+                class="expandable shadow-1 overflow-hidden"
+                style="border-radius: 10px"
+              >
               <div class="q-pa-sm">
-                <div
-                  v-for="attribute in targetAttributes"
-                  :key="attribute.id"
-                >
-                  <div
-                    v-if="attribute.displayType === DisplayType.SingleSelect"
-                  >
-                    <div class="q-mx-sm text-caption">
-                      {{ attribute.languages[i18n.locale.value] }}
-                    </div>
-                    <q-select
-                      v-if="attribute.displayType === DisplayType.SingleSelect"
-                      filled
-                      dense
-                      :readonly="readonly"
-                      v-model="middleCustomOptions[attribute.id]"
-                      :options="getSelectOption(attribute.options, attribute.number)"
-                      @update:modelValue="onSelectOptionUpdated"
-                    />
-                  </div>
-                  <ValidationInput
-                    v-else
-                    :label="attribute.languages[i18n.locale.value]"
-                    v-model="partVersion.customValues[attribute.number]"
+                <ValidationInput
+                  v-model="partVersion.master.number"
+                  :label="$t('parts.number')"
+                  :inputValidator="partValidationService.numberRules"
+                  :readonly="true"
+                />
+                <ValidationInput
+                  v-model="partVersion.master.name"
+                  :label="$t('parts.name')"
+                  :inputValidator="partValidationService.nameRules"
+                  :readonly="true"
+                />
+                <div>
+                  <q-select
+                    filled
+                    dense
+                    v-model="viewTypeOption"
+                    :label="$t('parts.view')"
+                    :options="viewTypeOptionsStore.i18nOptions"
+                    :readonly="true"
+                    class="q-my-md"
+                  />
+                </div>
+                <div class="column">
+                  <q-input
+                    v-model="partVersion.remarks"
+                    :label="$t('remarks')"
+                    filled
+                    type="textarea"
                     :readonly="readonly"
                   />
                 </div>
               </div>
-            </q-expansion-item>
-          </div>
-        </q-scroll-area>
-        <slot name="after"></slot>
-      </q-card-section>
+              </q-expansion-item>
+
+              <q-separator class="q-mb-md"/>
+
+              <q-expansion-item
+                v-model="customValuesExpanded"
+                icon="language"
+                :label="$t('customs.attributes.title')"
+                header-class="text-h6 bg-primary text-white"
+                expand-icon-class="text-white"
+                class="expandable shadow-1 overflow-hidden"
+                style="border-radius: 10px"
+              >
+                <div class="q-pa-sm">
+                  <div
+                    v-for="attribute in targetAttributes"
+                    :key="attribute.id"
+                  >
+                    <div
+                      v-if="attribute.displayType === DisplayType.SingleSelect"
+                    >
+                      <div class="q-mx-sm text-caption">
+                        {{ attribute.languages[i18n.locale.value] }}
+                      </div>
+                      <q-select
+                        v-if="attribute.displayType === DisplayType.SingleSelect"
+                        filled
+                        dense
+                        :readonly="readonly"
+                        v-model="middleCustomOptions[attribute.id]"
+                        :options="getSelectOption(attribute.options, attribute.number)"
+                        @update:modelValue="onSelectOptionUpdated"
+                      />
+                    </div>
+                    <ValidationInput
+                      v-else
+                      :label="attribute.languages[i18n.locale.value]"
+                      v-model="partVersion.customValues[attribute.number]"
+                      :readonly="readonly"
+                    />
+                  </div>
+                </div>
+              </q-expansion-item>
+            </div>
+          </q-scroll-area>
+          <slot name="after"></slot>
+        </q-card-section>
+      </q-form>
     </q-card>
   </div>
 </template>
@@ -103,6 +107,7 @@
 import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
+import { QForm } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
@@ -120,6 +125,8 @@ const attrLinksStore = useAttributeLinksStore();
 
 const viewTypeOptionsStore = useViewTypeOptionsStore();
 
+const formRef = ref<QForm>({} as QForm);
+
 const viewTypeOption = ref<ViewTypeOption>({} as ViewTypeOption);
 
 const infoExpanded = ref(true);
@@ -136,6 +143,7 @@ const initializing = ref(true);
 const props = withDefaults(defineProps<{
   readonly: boolean,
   modelValue: PartVersion,
+  onSubmit?:(() => void),
   panelClass?: string,
 }>(), {
   readonly: true,
@@ -201,6 +209,21 @@ function updateSingleSelectAttribute() {
   });
 }
 
+/**
+ * Validate form
+ */
+async function validate(): Promise<boolean> {
+  const result = await formRef.value.validate();
+  return result;
+}
+
+/**
+ * Submit form
+ */
+function submit(): void {
+  formRef.value.submit();
+}
+
 watch(() => partVersion.value.id, () => {
   updateSingleSelectAttribute();
 });
@@ -217,6 +240,11 @@ onBeforeMount(async () => {
   viewTypeInit();
   updateSingleSelectAttribute();
   initializing.value = false;
+});
+
+defineExpose({
+  validate,
+  submit,
 });
 </script>
 

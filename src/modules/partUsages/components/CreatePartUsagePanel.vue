@@ -1,74 +1,79 @@
 <template>
   <div v-if="!initializing">
-    <q-expansion-item
-      v-model="infoExpanded"
-      icon="article"
-      :label="$t('info')"
-      header-class="text-h6 bg-primary text-white"
-      expand-icon-class="text-white"
-      class="expandable shadow-1 overflow-hidden"
-      style="border-radius: 10px"
+    <q-form
+      ref="formRef"
+      @submit="createPartUsage"
     >
-    <div class="q-pa-sm">
-      <ValidationInput
-        v-model="usageChildDTO.quantity"
-        type="number"
-        :label="$t('parts.usages.quantity')"
-        :readonly="readonly"
-        :input-validator="partUsageValiationService.validateQuantity"
-      />
-    </div>
-    </q-expansion-item>
-
-    <q-separator class="q-mb-md"/>
-
-    <q-expansion-item
-      v-model="customValuesExpanded"
-      icon="language"
-      :label="$t('customs.attributes.title')"
-      header-class="text-h6 bg-primary text-white"
-      expand-icon-class="text-white"
-      class="expandable shadow-1 overflow-hidden"
-      style="border-radius: 10px"
-    >
+      <q-expansion-item
+        v-model="infoExpanded"
+        icon="article"
+        :label="$t('info')"
+        header-class="text-h6 bg-primary text-white"
+        expand-icon-class="text-white"
+        class="expandable shadow-1 overflow-hidden"
+        style="border-radius: 10px"
+      >
       <div class="q-pa-sm">
-        <div
-          v-for="attribute in targetAttributes"
-          :key="attribute.id"
-        >
+        <ValidationInput
+          v-model="usageChildDTO.quantity"
+          type="number"
+          :label="$t('parts.usages.quantity')"
+          :readonly="readonly"
+          :input-validator="partUsageValiationService.quantityRules"
+        />
+      </div>
+      </q-expansion-item>
+
+      <q-separator class="q-mb-md"/>
+
+      <q-expansion-item
+        v-model="customValuesExpanded"
+        icon="language"
+        :label="$t('customs.attributes.title')"
+        header-class="text-h6 bg-primary text-white"
+        expand-icon-class="text-white"
+        class="expandable shadow-1 overflow-hidden"
+        style="border-radius: 10px"
+      >
+        <div class="q-pa-sm">
           <div
-            v-if="attribute.displayType === DisplayType.SingleSelect"
+            v-for="attribute in targetAttributes"
+            :key="attribute.id"
           >
-            <div class="q-mx-sm text-caption">
-              {{ attribute.languages[i18n.locale.value] }}
-            </div>
-            <q-select
+            <div
               v-if="attribute.displayType === DisplayType.SingleSelect"
-              filled
-              dense
+            >
+              <div class="q-mx-sm text-caption">
+                {{ attribute.languages[i18n.locale.value] }}
+              </div>
+              <q-select
+                v-if="attribute.displayType === DisplayType.SingleSelect"
+                filled
+                dense
+                :readonly="readonly"
+                v-model="middleCustomOptions[attribute.id]"
+                :options="getSelectOption(attribute.options, attribute.number)"
+                @update:modelValue="onSelectOptionUpdated"
+              />
+            </div>
+            <ValidationInput
+              v-else
+              :label="attribute.languages[i18n.locale.value]"
+              v-model="usageChildDTO.customValues[attribute.number]"
               :readonly="readonly"
-              v-model="middleCustomOptions[attribute.id]"
-              :options="getSelectOption(attribute.options, attribute.number)"
-              @update:modelValue="onSelectOptionUpdated"
             />
           </div>
-          <ValidationInput
-            v-else
-            :label="attribute.languages[i18n.locale.value]"
-            v-model="usageChildDTO.customValues[attribute.number]"
-            :readonly="readonly"
-          />
         </div>
-      </div>
-    </q-expansion-item>
+      </q-expansion-item>
+    </q-form>
   </div>
 </template>
 
 <script setup lang="ts">
 import {
-  ComponentPublicInstance,
   computed, onBeforeMount, ref, watch,
 } from 'vue';
+import { QForm } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { Part } from 'src/modules/parts/models/Part';
 import ValidationInput from 'src/components/ValidationInput.vue';
@@ -81,20 +86,11 @@ import { partUsageService } from '../services/PartUsageService';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { partUsageValiationService } from '../services/PartUsageValidateService';
 
-export interface ICreatePartUsagePanel extends ComponentPublicInstance {
-  /**
-   * Validate if current user input are valid to create a part usage data
-   */
-  validate: (() => string[]),
-  /**
-   * Create part usages
-   */
-   createPartUsage: () => Promise<PartUsageChild[] | null>,
-}
-
 const i18n = useI18n();
 
 const attrLinksStore = useAttributeLinksStore();
+
+const formRef = ref<QForm>({} as QForm);
 
 const infoExpanded = ref(true);
 
@@ -115,6 +111,8 @@ const props = withDefaults(defineProps<{
   readonly: boolean,
   parentPartVersionId: number,
   partChild: Part,
+  onSuccess?:((usages: PartUsageChild[]) => void),
+  onError?:(() => void),
 }>(), {
   readonly: true,
   parentPartVersionId: 0,
@@ -149,17 +147,24 @@ function updateSingleSelectAttribute() {
   });
 }
 
-async function createPartUsage(): Promise<PartUsageChild[] | null> {
+async function createPartUsage(): Promise<void> {
   const createDto: CreatePartUsagesDTO = {
     partVersionId: props.parentPartVersionId,
     children: [usageChildDTO.value],
   };
   const usages = await partUsageService.insert(createDto);
-  return usages;
+  if (usages && props.onSuccess) {
+    props.onSuccess(usages);
+  } else if (!usages && props.onError) {
+    props.onError();
+  }
 }
 
-function validate(): string[] {
-  return partUsageValiationService.validateQuantity(usageChildDTO.value.quantity);
+/**
+ * Submit form
+ */
+function submit(): void {
+  formRef.value.submit();
 }
 
 watch(() => props.partChild, () => {
@@ -181,7 +186,6 @@ onBeforeMount(async () => {
 });
 
 defineExpose({
-  createPartUsage,
-  validate,
+  submit,
 });
 </script>

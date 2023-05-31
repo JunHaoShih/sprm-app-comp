@@ -3,6 +3,7 @@
     <!-- info area -->
     <CustomAttributePanel
       v-model="defaultAttr"
+      :on-submit="editAttribute"
       :readonly="readonly"
     >
       <template v-slot:before>
@@ -20,7 +21,7 @@
             />
             <q-btn dense round flat color="green" icon="done"
               class="bg-grey-4"
-              @click="onConfirmClicked"
+              type="submit"
             />
           </div>
           <q-space/>
@@ -46,7 +47,6 @@ import { useQuasar } from 'quasar';
 import CustomAttributePanel from './CustomAttributePanel.vue';
 import { CustomAttribute } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
-import { customAttributeValidationService } from '../services/CustomAttributeValidationService';
 import 'src/extensions/date.extensions';
 
 const i18n = useI18n();
@@ -84,16 +84,7 @@ function onCancelClicked(): void {
   initialize();
 }
 
-async function onConfirmClicked(): Promise<void> {
-  const errors = customAttributeValidationService.checkAttributeRules(defaultAttr.value);
-  if (errors.length > 0) {
-    $q.notify({
-      message: `Error: ${i18n.t(errors[0])}`,
-      color: 'red',
-      icon: 'error',
-    });
-    return;
-  }
+async function editAttribute(): Promise<void> {
   const code = await customAttributeService.update(defaultAttr.value.id, {
     number: defaultAttr.value.number,
     name: defaultAttr.value.name,

@@ -45,7 +45,8 @@
                   class="dialog-inner-max" visible
                 >
                   <CreatePartPanel
-                    ref="createPartPanelRef"
+                    ref="formRef"
+                    :on-success="onPartCreated"
                   />
               </q-scroll-area>
               </q-step>
@@ -58,6 +59,7 @@
                 <q-scroll-area class="dialog-inner-max" visible>
                   <CreatePartUsagePanel
                     ref="createPartUsagePanel"
+                    :on-success="usageCreated"
                     :parent-part-version-id="selectedPartVersionId"
                     :part-child="selectedSinglePart"
                     :readonly="false"
@@ -75,7 +77,7 @@
             </div>
             <div v-if="isUsagePage">
               <q-btn flat :label="$t('actions.previous')" @click="stepper.previous()"></q-btn>
-              <q-btn flat :label="$t('actions.add')" @click="onAddClicked"></q-btn>
+              <q-btn flat :label="$t('actions.add')" @click="submit"></q-btn>
             </div>
           </q-card-actions>
         </q-form>
@@ -88,11 +90,12 @@
 import { computed, ref, watch } from 'vue';
 import { QStepper, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import CreatePartPanel, { ICreatePartPanel } from 'src/modules/parts/components/CreatePartPanel.vue';
+import CreatePartPanel from 'src/modules/parts/components/CreatePartPanel.vue';
 import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
-import CreatePartUsagePanel, { ICreatePartUsagePanel } from './CreatePartUsagePanel.vue';
+import CreatePartUsagePanel from './CreatePartUsagePanel.vue';
 import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
+import { PartUsageChild } from '../models/PartUsageUses';
 
 export type CreateType = 'create' | 'search' | 'none';
 
@@ -108,9 +111,9 @@ const pattern = ref('');
 
 const selected = ref<Part[]>([]);
 
-const createPartPanelRef = ref<ICreatePartPanel>({} as ICreatePartPanel);
+const formRef = ref<InstanceType<typeof CreatePartPanel>>();
 
-const createPartUsagePanel = ref<ICreatePartUsagePanel>({} as ICreatePartUsagePanel);
+const createPartUsagePanel = ref<InstanceType<typeof CreatePartUsagePanel>>();
 
 const selectedSinglePart = computed(
   (): Part => {
@@ -189,11 +192,11 @@ async function onSelectDone(): Promise<void> {
   stepper.value.next();
 }
 
-async function onCreatePart(): Promise<void> {
-  const newPart = await createPartPanelRef.value.createPart();
-  if (!newPart) {
-    return;
-  }
+function submit() {
+  createPartUsagePanel.value?.submit();
+}
+
+function onPartCreated(newPart: Part): void {
   selected.value.length = 0;
   selected.value.push(newPart);
   stepper.value.next();
@@ -201,21 +204,13 @@ async function onCreatePart(): Promise<void> {
 
 async function onNextStep(): Promise<void> {
   if (props.createType === 'create') {
-    onCreatePart();
+    formRef.value?.submit();
   } else {
     onSelectDone();
   }
 }
 
-async function onAddClicked() {
-  const errors = createPartUsagePanel.value.validate();
-  if (errors.length > 0) {
-    return;
-  }
-  const usages = await createPartUsagePanel.value.createPartUsage();
-  if (!usages) {
-    return;
-  }
+async function usageCreated(usages: PartUsageChild[]) {
   partUsaeChildrenStore.addUses(usages, props.selectedPartVersionId);
   $q.notify({
     message: i18n.t('actions.inserts.success'),

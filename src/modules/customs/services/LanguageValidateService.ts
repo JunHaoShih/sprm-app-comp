@@ -1,4 +1,4 @@
-import { ValidateRule } from 'src/models/ValidateRule';
+import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
 
 const validateLanguageRules: ValidateRule[] = [
   {
@@ -15,13 +15,10 @@ const validateLanguageRules: ValidateRule[] = [
   },
 ];
 
-const checkLanguageRules = (language: string | number | undefined): string[] => {
-  const errors = validateLanguageRules
-    .filter((rule) => !rule.validate(language))
-    .map((rule) => rule.message);
-  return errors;
-};
+const languageRules = (language: string) => (
+  genericRulesCheck(language, validateLanguageRules)
+);
 
 export const languageValidateService = {
-  checkLanguageRules,
+  languageRules,
 };

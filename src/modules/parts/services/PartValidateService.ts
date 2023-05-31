@@ -1,5 +1,4 @@
-import { ValidateRule } from 'src/models/ValidateRule';
-import { i18n } from 'src/boot/i18n';
+import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
 
 const validateNumberRules: ValidateRule[] = [
   {
@@ -34,18 +33,6 @@ const validateNameRules: ValidateRule[] = [
     message: 'validations.parts.invalidChar',
   },
 ];
-
-const genericRulesCheck = (val: string, rules: ValidateRule[]) => {
-  const errors: string[] = [];
-  rules
-    .filter((rule) => !rule.validate(val))
-    .forEach((rule) => errors.push(rule.message));
-  if (errors.length > 0) {
-    const error = errors[0];
-    return i18n.global.t(error);
-  }
-  return true;
-};
 
 const numberRules = (val: string) => (
   genericRulesCheck(val, validateNumberRules)

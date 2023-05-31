@@ -3,6 +3,7 @@
     <div v-if="partVersionStore.partVersion.id">
       <PartInfoPanel
         :readonly="false"
+        :on-submit="onSaveClicked"
         v-model="partVersionStore.partVersion"
         panel-class="outer-max"
       >
@@ -14,7 +15,7 @@
                 color="deep-orange"
                 glossy
                 label="Save"
-                @click="onSaveClicked"
+                type="submit"
               />
             </q-toolbar>
           </q-footer>

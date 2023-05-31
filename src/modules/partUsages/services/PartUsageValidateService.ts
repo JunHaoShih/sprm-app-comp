@@ -1,4 +1,4 @@
-import { ValidateRule } from 'src/models/ValidateRule';
+import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
 
 const validateQuantityRules: ValidateRule[] = [
   {
@@ -11,13 +11,10 @@ const validateQuantityRules: ValidateRule[] = [
   },
 ];
 
-const validateQuantity = (quantity: string | number | undefined): string[] => {
-  const errors = validateQuantityRules
-    .filter((rule) => !rule.validate(quantity))
-    .map((rule) => rule.message);
-  return errors;
-};
+const quantityRules = (quantity: string) => (
+  genericRulesCheck(String(quantity), validateQuantityRules)
+);
 
 export const partUsageValiationService = {
-  validateQuantity,
+  quantityRules,
 };

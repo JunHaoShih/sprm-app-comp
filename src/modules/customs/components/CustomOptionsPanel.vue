@@ -67,52 +67,56 @@
     persistent
   >
     <q-card style="min-width: 700px">
-      <q-card-section class="bg-primary text-white row items-center" >
-        <div class="text-h6">File</div>
-        <q-space></q-space>
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-      <!-- key input -->
-      <q-card-section class="q-pt-sm" >
-        <ValidationInput
-          v-model="editedOption.key"
-          :label="$t('key')"
-          :inputValidator="customOptionValidateService.checkOptionKeyRules"
-          :readonly="dialogMode === 2"
-        />
-      </q-card-section>
-      <!-- value input -->
-      <q-card-section class="q-pt-none">
-        <ValidationInput
-          v-model="editedOption.value"
-          :label="$t('value')"
-          :inputValidator="customOptionValidateService.checkOptionValueRules"
-        />
-      </q-card-section>
-      <!-- languages input -->
-      <q-card-section class="q-pt-none">
-        <div
-          v-for="locale in availableLocales"
-          :key="locale"
-        >
+      <q-form
+        @submit="onDialogConfirm"
+      >
+        <q-card-section class="bg-primary text-white row items-center" >
+          <div class="text-h6">File</div>
+          <q-space></q-space>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <!-- key input -->
+        <q-card-section class="q-pt-sm" >
           <ValidationInput
-            v-model="editedOption.languages[locale]"
-            :label="locale"
-            :inputValidator="languageValidateService.checkLanguageRules"
+            v-model="editedOption.key"
+            :label="$t('key')"
+            :inputValidator="customOptionValidateService.optionKeyRules"
+            :readonly="dialogMode === 2"
           />
-        </div>
-      </q-card-section>
-      <!-- actions -->
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup></q-btn>
-        <q-btn flat label="Confirm" @click="onDialogConfirm"></q-btn>
-      </q-card-actions>
+        </q-card-section>
+        <!-- value input -->
+        <q-card-section class="q-pt-none">
+          <ValidationInput
+            v-model="editedOption.value"
+            :label="$t('value')"
+            :inputValidator="customOptionValidateService.optionValueRules"
+          />
+        </q-card-section>
+        <!-- languages input -->
+        <q-card-section class="q-pt-none">
+          <div
+            v-for="locale in availableLocales"
+            :key="locale"
+          >
+            <ValidationInput
+              v-model="editedOption.languages[locale]"
+              :label="locale"
+              :inputValidator="languageValidateService.languageRules"
+            />
+          </div>
+        </q-card-section>
+        <!-- actions -->
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup></q-btn>
+          <q-btn flat label="Confirm" type="submit"></q-btn>
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { QDialog, QTableProps, useQuasar } from 'quasar';
+import { QDialog, QTableProps } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ValidationInput from 'src/components/ValidationInput.vue';
@@ -123,8 +127,6 @@ import { languageValidateService } from '../services/LanguageValidateService';
 import { CustomOption } from '../models/CustomAttribute';
 
 const i18n = useI18n();
-
-const $q = useQuasar();
 
 const dialogRef = ref<QDialog>({} as QDialog);
 
@@ -199,15 +201,6 @@ function onEdit(customOption: CustomOption): void {
 }
 
 function onDialogConfirm(): void {
-  const errors = customOptionValidateService.checkOptionRules(editedOption.value);
-  if (errors.length > 0) {
-    $q.notify({
-      message: `Error: ${i18n.t(errors[0])}`,
-      color: 'red',
-      icon: 'error',
-    });
-    return;
-  }
   switch (dialogMode.value) {
     case DialogType.Edit: {
       const targetOption = inputOptions.value

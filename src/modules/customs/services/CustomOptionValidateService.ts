@@ -1,6 +1,4 @@
-import { ValidateRule } from 'src/models/ValidateRule';
-import { CustomOption } from '../models/CustomAttribute';
-import { languageValidateService } from './LanguageValidateService';
+import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
 
 const validateOptionKeyRules: ValidateRule[] = [
   {
@@ -17,7 +15,7 @@ const validateOptionKeyRules: ValidateRule[] = [
   },
 ];
 
-export const validateOptionValueRules: ValidateRule[] = [
+const validateOptionValueRules: ValidateRule[] = [
   {
     validate: (val) => !!val,
     message: 'validations.notNull',
@@ -32,33 +30,15 @@ export const validateOptionValueRules: ValidateRule[] = [
   },
 ];
 
-const checkOptionKeyRules = (optionKey: string | number | undefined): string[] => {
-  const errors = validateOptionKeyRules
-    .filter((rule) => !rule.validate(optionKey))
-    .map((rule) => rule.message);
-  return errors;
-};
+const optionKeyRules = (optionKey: string) => (
+  genericRulesCheck(optionKey, validateOptionKeyRules)
+);
 
-const checkOptionValueRules = (optionValue: string | number | undefined): string[] => {
-  const errors = validateOptionValueRules
-    .filter((rule) => !rule.validate(optionValue))
-    .map((rule) => rule.message);
-  return errors;
-};
-
-const checkOptionRules = (option: CustomOption): string[] => {
-  const errors: string[] = [];
-  const keys = Object.keys(option.languages);
-  errors.push(...checkOptionKeyRules(option.key));
-  errors.push(...checkOptionValueRules(option.value));
-  keys.forEach((key) => {
-    errors.push(...languageValidateService.checkLanguageRules(option.languages[key]));
-  });
-  return errors;
-};
+const optionValueRules = (optionValue: string) => (
+  genericRulesCheck(optionValue, validateOptionValueRules)
+);
 
 export const customOptionValidateService = {
-  checkOptionKeyRules,
-  checkOptionValueRules,
-  checkOptionRules,
+  optionValueRules,
+  optionKeyRules,
 };

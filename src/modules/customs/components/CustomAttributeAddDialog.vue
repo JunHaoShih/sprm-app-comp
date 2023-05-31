@@ -14,6 +14,8 @@
         <q-card-section class="scroll dialog-inner-max">
           <!-- info area -->
           <CustomAttributePanel
+            ref="formRef"
+            :on-submit="addAttribute"
             v-model="defaultAttr"
             :readonly="readonly"
           />
@@ -21,7 +23,7 @@
         <q-separator />
         <q-card-actions align="right" class="text-primary">
           <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-          <q-btn flat :label="$t('actions.confirm')" @click="onConfirmClicked"></q-btn>
+          <q-btn flat :label="$t('actions.confirm')" @click="submit"></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -39,7 +41,6 @@ import { availableLocales } from 'src/models/Locale';
 import CustomAttributePanel from './CustomAttributePanel.vue';
 import { AttributeType, CustomAttribute, DisplayType } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
-import { customAttributeValidationService } from '../services/CustomAttributeValidationService';
 import { useCustomAttributesStore } from '../stores/CustomAttributesStore';
 import { CreateCustomAttributeDTO } from '../dtos/CreateCustomAttributeDTO';
 
@@ -48,6 +49,8 @@ const i18n = useI18n();
 const $q = useQuasar();
 
 const customAttributesStore = useCustomAttributesStore();
+
+const formRef = ref<InstanceType<typeof CustomAttributePanel> | null>(null);
 
 const props = defineProps<{
   modelValue: boolean,
@@ -94,17 +97,12 @@ watch(prompt, (newValue, oldValue) => {
   }
 });
 
-async function onConfirmClicked(): Promise<void> {
+function submit() {
+  formRef.value?.submit();
+}
+
+async function addAttribute(): Promise<void> {
   const createDTO: CreateCustomAttributeDTO = JSON.parse(JSON.stringify(defaultAttr.value));
-  const errors = customAttributeValidationService.checkCreateAttributeRules(createDTO);
-  if (errors.length > 0) {
-    $q.notify({
-      message: `Error: ${i18n.t(errors[0])}`,
-      color: 'red',
-      icon: 'error',
-    });
-    return;
-  }
   const newAttr = await customAttributeService.create(createDTO);
   if (!newAttr) {
     return;
