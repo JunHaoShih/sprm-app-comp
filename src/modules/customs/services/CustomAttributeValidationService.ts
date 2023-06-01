@@ -1,8 +1,4 @@
 import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
-import { customOptionValidateService } from './CustomOptionValidateService';
-import { CustomAttribute } from '../models/CustomAttribute';
-import { CreateCustomAttributeDTO } from '../dtos/CreateCustomAttributeDTO';
-import { languageValidateService } from './LanguageValidateService';
 
 const validateAttributeNumberRules: ValidateRule[] = [
   {

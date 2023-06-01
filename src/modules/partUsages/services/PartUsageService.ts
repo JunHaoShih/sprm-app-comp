@@ -1,6 +1,5 @@
 import { api } from 'src/boot/axios';
 import { Notify } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { i18n } from 'src/boot/i18n';
 import { SPRMResponse } from 'src/models/SPRMResponse';
 import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';

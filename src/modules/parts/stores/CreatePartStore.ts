@@ -4,7 +4,6 @@ import { api } from 'src/boot/axios';
 import { SPRMResponse } from 'src/models/SPRMResponse';
 import { CreatePartDTO } from '../dtos/CreatePartDTO';
 import { Part, ViewType } from '../models/Part';
-import { partValidationService } from '../services/PartValidateService';
 
 export const useCreatePartStore = defineStore('createPart', {
   state: (): CreatePartDTO => ({
