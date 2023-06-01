@@ -12,7 +12,7 @@ import { UpdateCustomAttributeDTO } from '../dtos/UpdateCustomAttributeDTO';
  */
 const create = async (createDto: CreateCustomAttributeDTO)
 : Promise<CustomAttribute | null> => {
-  const newAttribute = await api.post('api/CustomAttribute', createDto)
+  const newAttribute = await api.post('/api/CustomAttribute', createDto)
     .then((response): CustomAttribute => {
       const data = response.data as SPRMResponse<CustomAttribute>;
       return data.content;
@@ -47,7 +47,7 @@ const create = async (createDto: CreateCustomAttributeDTO)
  */
 const update = async (id: number, updateDto: UpdateCustomAttributeDTO)
 : Promise<number | null> => {
-  const returnMessage = await api.put(`api/CustomAttribute/${id}`, updateDto)
+  const returnMessage = await api.put(`/api/CustomAttribute/${id}`, updateDto)
     .then((response): number => {
       const data = response.data as SPRMResponse<string>;
       return data.code;
@@ -79,7 +79,7 @@ const update = async (id: number, updateDto: UpdateCustomAttributeDTO)
  * @returns All custom attributes
  */
 const getAll = async () : Promise<CustomAttribute[] | null> => {
-  const attributes = await api.get('api/CustomAttribute')
+  const attributes = await api.get('/api/CustomAttribute')
     .then((response): CustomAttribute[] => {
       const data = response.data as SPRMResponse<CustomAttribute[]>;
       return data.content;
@@ -112,7 +112,7 @@ const getAll = async () : Promise<CustomAttribute[] | null> => {
  * @returns body code
  */
 const remove = async (id: number): Promise<number | null> => {
-  const returnMessage = await api.delete(`api/CustomAttribute/${id}`)
+  const returnMessage = await api.delete(`/api/CustomAttribute/${id}`)
     .then((response): number => {
       const data = response.data as SPRMResponse<string>;
       return data.code;

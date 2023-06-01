@@ -12,7 +12,12 @@ import { DeleteAttributeLinksDTO } from '../dtos/DeleteAttributeLinksDTO';
  * @returns AttributeLinks (null if error occured)
  */
 const getByObjectTypeId = async (objectTypeId: ObjectTypeId): Promise<AttributeLinks | null> => {
-  const attributeLinks = await api.get(`api/AttributeLink/ByObjectType?objectTypeId=${objectTypeId}`)
+  const attributeLinks = await api
+    .get('/api/AttributeLink/ByObjectType', {
+      params: {
+        objectTypeId,
+      },
+    })
     .then((response): AttributeLinks => {
       const data = response.data as SPRMResponse<AttributeLinks>;
       return data.content;
@@ -45,7 +50,7 @@ const getByObjectTypeId = async (objectTypeId: ObjectTypeId): Promise<AttributeL
  * @returns AttributeLinks (null if error occured)
  */
 const insert = async (createDTO: CreateAttributeLinksDTO) => {
-  const attributeLinks = await api.post('api/AttributeLink', createDTO)
+  const attributeLinks = await api.post('/api/AttributeLink', createDTO)
     .then((response): AttributeLinks => {
       const data = response.data as SPRMResponse<AttributeLinks>;
       return data.content;
@@ -73,7 +78,7 @@ const insert = async (createDTO: CreateAttributeLinksDTO) => {
 };
 
 const deleteMultiple = async (deleteDTO: DeleteAttributeLinksDTO) => {
-  const code = await api.delete('api/AttributeLink', { data: deleteDTO })
+  const code = await api.delete('/api/AttributeLink', { data: deleteDTO })
     .then((response): number => {
       const data = response.data as SPRMResponse<string>;
       return data.code;
