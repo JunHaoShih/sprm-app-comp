@@ -20,7 +20,7 @@
       <q-tab-panel name="usage">
         <q-table
           :rows="partUsageChildren"
-          :columns="fileredColumns"
+          :columns="columns"
           :pagination="pagination"
           row-key="key"
           dense
@@ -30,18 +30,6 @@
           <!-- button at table header -->
           <template v-slot:top>
             <div class="q-gutter-xs">
-              <q-btn
-                push
-                v-if="!readonly"
-                color="primary"
-                :label="$t('actions.add')"
-              />
-              <q-btn
-                push
-                v-if="!readonly"
-                color="primary"
-                :label="$t('actions.delete')"
-              />
               <q-btn-dropdown
                 push
                 color="primary"
@@ -49,6 +37,13 @@
               >
                 <div class="row no-wrap q-pa-md">
                   <div class="column">
+                    <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
+                    <q-toggle
+                      v-for="column in defaultColumns"
+                      v-bind:key="column.name"
+                      v-model="displayMap[column.name]"
+                      :label="column.label"
+                    />
                     <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
                     <q-toggle
                       v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartUsage)"
@@ -66,19 +61,12 @@
           <template v-slot:body-cell-actions="props">
             <q-td :props="props">
               <q-btn
+                v-if="!readonly"
                 dense
                 round
                 flat
                 color="grey"
                 icon="edit"
-                size="12px"
-              />
-              <q-btn
-                dense
-                round
-                flat
-                color="grey"
-                icon="delete"
                 size="12px"
               />
             </q-td>
@@ -136,6 +124,8 @@ const initializing = ref(true);
 
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
+const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
 const props = withDefaults(defineProps<{
   readonly: boolean,
   id: number,
@@ -158,28 +148,32 @@ const selectedPartVersion = computed(
   (): PartVersion | undefined => partUsaeChildrenStore.partVersion(props.id),
 );
 
+const defaultColumns = computed(
+  (): QTableProps['columns'] => [
+    {
+      name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
+    },
+    {
+      name: 'usesNumber', required: true, label: i18n.t('parts.number'), align: 'left', field: '', sortable: true,
+    },
+    {
+      name: 'usesName', required: true, label: i18n.t('parts.name'), align: 'left', field: '', sortable: true,
+    },
+    {
+      name: 'quantity', label: i18n.t('quantity'), field: 'quantity', align: 'left', sortable: true,
+    },
+  ],
+);
+
 const columns = computed(
   (): QTableProps['columns'] => {
-    const defaultColumns: QTableProps['columns'] = [
-      {
-        name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
-      },
-      {
-        name: 'usesNumber', required: true, label: i18n.t('parts.number'), align: 'left', field: '', sortable: true,
-      },
-      {
-        name: 'usesName', required: true, label: i18n.t('parts.name'), align: 'left', field: '', sortable: true,
-      },
-      {
-        name: 'quantity', label: i18n.t('quantity'), field: 'quantity', align: 'left', sortable: true,
-      },
-    ];
+    const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
     attrLinksStore.attributes(ObjectTypeId.PartUsage).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
       const currentLabel = attr.languages[i18n.locale.value] || attr.name;
-      defaultColumns.push({
+      filteredColumns?.push({
         name: attr.number,
         label: currentLabel,
         field: attr.number,
@@ -187,16 +181,7 @@ const columns = computed(
         sortable: true,
       });
     });
-    return defaultColumns;
-  },
-);
-
-const fileredColumns = computed(
-  (): QTableProps['columns'] => {
-    if (props.readonly) {
-      return columns.value?.filter((col) => col.name !== 'actions');
-    }
-    return columns.value;
+    return filteredColumns;
   },
 );
 
@@ -220,6 +205,9 @@ onBeforeMount(async () => {
   const attributes = attrLinksStore.attributes(ObjectTypeId.PartUsage);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
+  });
+  defaultColumns.value?.forEach((column) => {
+    displayMap.value[column.name] = true;
   });
   initializing.value = false;
 });
