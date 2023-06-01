@@ -29,6 +29,7 @@
               color="primary"
               :label="$t('actions.delete')"
               @click="onDeleteButtonClicked"
+              :disable="selectedNode.usageId <= 0"
             />
           </template>
         </PartUsageTreePanel>
@@ -58,11 +59,21 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import PartUsageRightPanel from './components/PartUsageRightPanel.vue';
 import PartUsageTreePanel from './components/PartUsageTreePanel.vue';
 import CreatePartUsageDialog from './components/CreatePartUsageDialog.vue';
 import 'src/extensions/date.extensions';
+import { partUsageService } from './services/PartUsageService';
 import { BomTreeNode } from './stores/BomTreeStore';
+import { usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
+
+const $q = useQuasar();
+
+const i18n = useI18n();
+
+const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const splitterModel = ref(50);
 
@@ -91,8 +102,19 @@ const props = withDefaults(defineProps<{
   id: '',
 });
 
-function onDeleteButtonClicked() {
-  // TODO delete bom
+async function onDeleteButtonClicked() {
+  const success = await partUsageService.remove(selectedNode.value.usageId);
+  if (success) {
+    partUsaeChildrenStore.deleteUses(
+      selectedNode.value.parentId,
+      selectedNode.value.versionId,
+    );
+    $q.notify({
+      message: i18n.t('actions.deletes.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+  }
 }
 </script>
 
