@@ -131,7 +131,7 @@ const formRef = ref<QForm>({} as QForm);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
-  onSubmit:(() => void),
+  onSubmit?:(() => void),
   modelValue: CustomAttribute,
 }>(), {
   readonly: true,
