@@ -54,9 +54,12 @@
           :options="options"
           style="min-width: 120px;"
         />
-        <q-input v-model="patternInput" type="text" label="Search"
+        <q-input
+          v-model="patternInput"
+          type="text"
+          label="Search"
           dense
-          v-on:keyup.enter="onSearchEnter"
+          v-on:keydown.enter.prevent="onSearchEnter"
         />
       </template>
       <!-- action buttons -->
