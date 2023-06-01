@@ -15,12 +15,12 @@
       >
       <div class="q-pa-sm">
         <ValidationInput
-          v-model="createPartStore.number"
+          v-model="createDto.number"
           :label="$t('parts.number')"
           :inputValidator="partValidationService.numberRules"
         />
         <ValidationInput
-          v-model="createPartStore.name"
+          v-model="createDto.name"
           :label="$t('parts.name')"
           :inputValidator="partValidationService.nameRules"
         />
@@ -36,7 +36,7 @@
         <div class="column">
           <div class="q-mx-sm text-caption">{{ $t('remarks') }}</div>
           <q-input
-            v-model="createPartStore.remarks"
+            v-model="createDto.remarks"
             label="remarks" filled
             type="textarea"
           />
@@ -78,7 +78,7 @@
             <ValidationInput
               v-else
               :label="attribute.languages[i18n.locale.value]"
-              v-model="createPartStore.customValues[attribute.number]"
+              v-model="createDto.customValues[attribute.number]"
             />
           </div>
         </div>
@@ -98,14 +98,13 @@ import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/
 import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import ValidationInput from 'src/components/ValidationInput.vue';
+import { partService } from '../services/PartService';
 import { partValidationService } from '../services/PartValidateService';
-import { useCreatePartStore } from '../stores/CreatePartStore';
 import { useViewTypeOptionsStore } from '../stores/ViewTypeOptionsStore';
-import { Part, ViewTypeOption } from '../models/Part';
+import { Part, ViewType, ViewTypeOption } from '../models/Part';
+import { CreatePartDTO } from '../dtos/CreatePartDTO';
 
 const i18n = useI18n();
-
-const createPartStore = useCreatePartStore();
 
 const attrLinksStore = useAttributeLinksStore();
 
@@ -123,6 +122,14 @@ const initializing = ref(false);
 
 const middleCustomOptions = ref<Record<number, string>>({} as Record<number, string>);
 
+const createDto = ref<CreatePartDTO>({
+  number: '',
+  name: '',
+  viewType: ViewType.Design,
+  remarks: '',
+  customValues: {},
+});
+
 /**
  * Define props with default value
  */
@@ -137,11 +144,11 @@ const targetAttributes = computed(
 );
 
 function onViewTypeUpdated(value: ViewTypeOption) {
-  createPartStore.viewType = value.value;
+  createDto.value.viewType = value.value;
 }
 
 async function createPart(): Promise<void> {
-  const newPart = await createPartStore.create();
+  const newPart = await partService.create(createDto.value);
   if (newPart && props.onSuccess) {
     props.onSuccess(newPart);
   } else if (!newPart && props.onError) {
@@ -158,7 +165,7 @@ function getSelectOption(customOptions: CustomOption[], attributeNumber: string)
 }
 
 function onSelectOptionUpdated(selectOption: SelectOption<string>) {
-  createPartStore.customValues[selectOption.attributeNumber] = selectOption.value;
+  createDto.value.customValues[selectOption.attributeNumber] = selectOption.value;
 }
 
 function updateSingleSelectAttribute() {
@@ -170,6 +177,16 @@ function updateSingleSelectAttribute() {
           || targetOption.value;
     }
   });
+}
+
+function resetDto() {
+  createDto.value = {
+    number: '',
+    name: '',
+    viewType: ViewType.Design,
+    remarks: '',
+    customValues: {},
+  };
 }
 
 /**
@@ -185,10 +202,11 @@ watch(() => i18n.locale.value, () => {
 
 onBeforeMount(async () => {
   initializing.value = true;
+  resetDto();
   await attrLinksStore.initialize(ObjectTypeId.PartVersion);
   const option = viewTypeOptionsStore.i18nOptions[0];
   viewTypeOption.value = option;
-  createPartStore.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
+  createDto.value.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
   updateSingleSelectAttribute();
   initializing.value = false;
 });
