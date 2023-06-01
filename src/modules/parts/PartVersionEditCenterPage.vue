@@ -72,7 +72,10 @@ const props = withDefaults(defineProps<{
 });
 
 async function updatePartAndVersion(partVersionId: number) {
-  await partVersionStore.partVersionInit(partVersionId);
+  const success = await partVersionStore.partVersionInit(partVersionId);
+  if (!success) {
+    return;
+  }
   if (!partVersionStore.content.checkout) {
     $q.notify({
       message: i18n.t('parts.versionMustCheckout'),
