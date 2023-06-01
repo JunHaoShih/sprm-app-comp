@@ -54,6 +54,7 @@ export default {
       quantity: '使用數量',
       selfAddNotAllowed: '不可將自己加入子料件',
       alreadyExist: '子料件已存在',
+      notExist: '使用關係不存在',
     },
     bom: 'BOM',
     info: '資訊',

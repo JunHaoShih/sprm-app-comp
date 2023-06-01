@@ -54,6 +54,7 @@ export default {
       quantity: 'Usage quantity',
       selfAddNotAllowed: 'You cannot add yourself as child part',
       alreadyExist: 'Child part already exist',
+      notExist: 'Part usage does not exist',
     },
     bom: 'BOM',
     info: 'Information',

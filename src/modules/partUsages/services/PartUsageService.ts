@@ -115,8 +115,40 @@ const toRecords = (partUsageChildren: PartUsageChild[]): Record<string, unknown>
   return newRecords;
 };
 
+const remove = async (id: number): Promise<boolean> => {
+  const success = await api.delete(`/api/PartUsage/${id}`)
+    .then((): boolean => true)
+    .catch((error): boolean => {
+      let message = '';
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        let bodyMessage = '';
+        if (body.code === 302) {
+          bodyMessage = i18n.global.t('parts.usages.notExist');
+        } else {
+          bodyMessage = body.message;
+        }
+        message = `Error: ${body.code}, ${bodyMessage}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        message = 'Error: No response';
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        message = 'Something went wrong';
+      }
+      Notify.create({
+        message,
+        color: 'red',
+        icon: 'error',
+      });
+      return false;
+    });
+  return success;
+};
+
 export const partUsageService = {
   getByParentVersionId,
   toRecords,
   insert,
+  remove,
 };
