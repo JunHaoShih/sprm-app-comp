@@ -22,7 +22,7 @@
             color="orange"
             size="8px">
             <q-tooltip>
-              {{ $t('iterable.checkout') }}
+              {{ $t('actions.checkout') }}
             </q-tooltip>
           </q-icon>
         </div>
