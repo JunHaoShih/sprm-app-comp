@@ -10,7 +10,7 @@
       </q-card-section>
       <q-separator />
       <q-card-section class="scroll dialog-inner-max">
-        <CreatePartPanel
+        <CreatePartForm
           ref="formRef"
           :on-success="onDialogConfirm"
         />
@@ -28,7 +28,7 @@
 import { computed, ref } from 'vue';
 import { QDialog, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import CreatePartPanel from './CreatePartPanel.vue';
+import CreatePartForm from './CreatePartForm.vue';
 import { Part } from '../models/Part';
 
 const $q = useQuasar();
@@ -37,7 +37,7 @@ const i18n = useI18n();
 
 const dialogRef = ref<QDialog>({} as QDialog);
 
-const formRef = ref<InstanceType<typeof CreatePartPanel>>();
+const formRef = ref<InstanceType<typeof CreatePartForm>>();
 
 /**
  * Define props with default value

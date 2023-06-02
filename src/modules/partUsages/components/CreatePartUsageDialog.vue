@@ -44,7 +44,7 @@
                   v-if="createType === 'create'"
                   class="dialog-inner-max" visible
                 >
-                  <CreatePartPanel
+                  <CreatePartForm
                     ref="formRef"
                     :on-success="onPartCreated"
                   />
@@ -90,7 +90,7 @@
 import { computed, ref, watch } from 'vue';
 import { QStepper, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
-import CreatePartPanel from 'src/modules/parts/components/CreatePartPanel.vue';
+import CreatePartForm from 'src/modules/parts/components/CreatePartForm.vue';
 import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
 import CreatePartUsagePanel from './CreatePartUsagePanel.vue';
@@ -111,7 +111,7 @@ const pattern = ref('');
 
 const selected = ref<Part[]>([]);
 
-const formRef = ref<InstanceType<typeof CreatePartPanel>>();
+const formRef = ref<InstanceType<typeof CreatePartForm>>();
 
 const createPartUsagePanel = ref<InstanceType<typeof CreatePartUsagePanel>>();
 
