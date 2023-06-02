@@ -135,10 +135,21 @@
       />
       <q-select
         v-model="paginationInput.page"
-        :options="pageOptions"
+        :options="filteredPageOptions"
         hide-bottom-space
         dense
-      />
+        @filter="filterFn"
+        use-input
+        style="width: 200px"
+      >
+        <template v-slot:no-option>
+          <q-item>
+            <q-item-section class="text-grey">
+              No results
+            </q-item-section>
+          </q-item>
+        </template>
+      </q-select>
     </div>
   </div>
 </template>
@@ -148,7 +159,7 @@ import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QTableProps } from 'quasar';
+import { QSelect, QTableProps } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
@@ -228,6 +239,8 @@ const pageOptions = computed(
   },
 );
 
+const filteredPageOptions = ref<number[]>([]);
+
 const options = ref<number[]>([20, 50, 100]);
 
 const defaultColumns = computed(
@@ -288,6 +301,19 @@ const columns = computed(
 const pagination = ref<QTableProps['pagination']>({
   rowsPerPage: 20,
 });
+
+function filterFn(val: string, update: (callbackFn: () => void,
+  afterFn?: ((ref: QSelect) => void) | undefined) => void) {
+  if (val === '') {
+    update(() => {
+      filteredPageOptions.value = pageOptions.value;
+    });
+    return;
+  }
+  update(() => {
+    filteredPageOptions.value = pageOptions.value.filter((v) => v.toString().indexOf(val) > -1);
+  });
+}
 
 function onSearchEnter(): void {
   pattern.value = patternInput.value;
