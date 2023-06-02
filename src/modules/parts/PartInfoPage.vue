@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-sm main-panel">
-    <PartInfoPanel
+    <PartInfoForm
       v-if="partVersionStore.content.id"
       :readonly="true"
       v-model="partVersionStore.partVersion"
@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import PartInfoPanel from './components/PartInfoPanel.vue';
+import PartInfoForm from './components/PartInfoForm.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import 'src/extensions/date.extensions';
 

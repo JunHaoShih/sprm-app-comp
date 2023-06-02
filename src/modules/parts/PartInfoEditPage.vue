@@ -1,7 +1,7 @@
 <template>
   <div class="q-pa-sm main-panel">
     <div v-if="partVersionStore.partVersion.id">
-      <PartInfoPanel
+      <PartInfoForm
         :readonly="false"
         :on-submit="onSaveClicked"
         v-model="partVersionStore.partVersion"
@@ -20,7 +20,7 @@
             </q-toolbar>
           </q-footer>
         </template>
-      </PartInfoPanel>
+      </PartInfoForm>
     </div>
     <div v-else class="row justify-center items-center outer-max">
       <span class="loader"></span>
@@ -31,7 +31,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import PartInfoPanel from './components/PartInfoPanel.vue';
+import PartInfoForm from './components/PartInfoForm.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import { partVersionService } from './services/PartVersionService';
 import 'src/extensions/date.extensions';

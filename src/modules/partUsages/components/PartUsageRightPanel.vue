@@ -88,7 +88,7 @@
       </q-tab-panel>
 
       <q-tab-panel name="info">
-        <part-info-panel
+        <PartInfoForm
           v-if="selectedPartVersion"
           :readonly="true"
           v-model="selectedPartVersion"
@@ -135,7 +135,7 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QTableProps, useQuasar } from 'quasar';
-import PartInfoPanel from '../../parts/components/PartInfoPanel.vue';
+import PartInfoForm from '../../parts/components/PartInfoForm.vue';
 import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
 import { PartVersion } from '../../parts/models/PartVersion';
