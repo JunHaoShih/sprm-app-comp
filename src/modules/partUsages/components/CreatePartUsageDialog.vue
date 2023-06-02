@@ -57,8 +57,8 @@
                 :header-nav="isUsagePageDone"
               >
                 <q-scroll-area class="dialog-inner-max" visible>
-                  <CreatePartUsagePanel
-                    ref="createPartUsagePanel"
+                  <CreatePartUsageForm
+                    ref="createPartUsageForm"
                     :on-success="usageCreated"
                     :parent-part-version-id="selectedPartVersionId"
                     :part-child="selectedSinglePart"
@@ -93,7 +93,7 @@ import { useI18n } from 'vue-i18n';
 import CreatePartForm from 'src/modules/parts/components/CreatePartForm.vue';
 import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
-import CreatePartUsagePanel from './CreatePartUsagePanel.vue';
+import CreatePartUsageForm from './CreatePartUsageForm.vue';
 import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
 import { PartUsageChild } from '../models/PartUsageUses';
 
@@ -113,7 +113,7 @@ const selected = ref<Part[]>([]);
 
 const formRef = ref<InstanceType<typeof CreatePartForm>>();
 
-const createPartUsagePanel = ref<InstanceType<typeof CreatePartUsagePanel>>();
+const createPartUsageForm = ref<InstanceType<typeof CreatePartUsageForm>>();
 
 const selectedSinglePart = computed(
   (): Part => {
@@ -193,7 +193,7 @@ async function onSelectDone(): Promise<void> {
 }
 
 function submit() {
-  createPartUsagePanel.value?.submit();
+  createPartUsageForm.value?.submit();
 }
 
 function onPartCreated(newPart: Part): void {
