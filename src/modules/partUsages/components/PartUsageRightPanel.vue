@@ -113,14 +113,16 @@
         <q-separator />
         <q-card-section>
           <PartUsageForm
+            ref="formRef"
             v-model="modifiedUsage"
             :readonly="false"
+            :on-submit="updateUsage"
           >
           </PartUsageForm>
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-          <q-btn flat :label="$t('actions.edit')" type="submit"></q-btn>
+          <q-btn flat :label="$t('actions.edit')" @click="submit" ></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -132,7 +134,7 @@ import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QTableProps } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
 import PartInfoPanel from '../../parts/components/PartInfoPanel.vue';
 import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
@@ -142,12 +144,17 @@ import { useAttributeLinksStore } from '../../customs/stores/AttributeLinksStore
 import { ObjectTypeId } from '../../objectTypes/models/ObjectType';
 import PartUsageForm from './PartUsageForm.vue';
 import { PartUsageChild } from '../models/PartUsageUses';
+import { UpdatePartUsageDTO } from '../dtos/UpdatePartUsageDTO';
+
+const $q = useQuasar();
 
 const i18n = useI18n();
 
 const partUsaeChildrenStore = usePartUsageChildrenStore();
 
 const attrLinksStore = useAttributeLinksStore();
+
+const formRef = ref<InstanceType<typeof PartUsageForm>>();
 
 const initializing = ref(true);
 
@@ -232,6 +239,32 @@ const pagination: QTableProps['pagination'] = {
 function onEditClicked(row: PartUsageChild) {
   modifiedUsage.value = row;
   prompt.value = true;
+}
+
+function submit() {
+  formRef.value?.submit();
+}
+
+async function updateUsage() {
+  const dto: UpdatePartUsageDTO = {
+    quantity: modifiedUsage.value.quantity,
+    remarks: modifiedUsage.value.remarks,
+    customValues: modifiedUsage.value.customValues,
+  };
+  const success = await partUsageService.update(modifiedUsage.value.id, dto);
+  if (success) {
+    partUsaeChildrenStore.updateUsage(
+      modifiedUsage.value.parentId,
+      modifiedUsage.value.child.id,
+      modifiedUsage.value,
+    );
+    $q.notify({
+      message: i18n.t('actions.updates.success'),
+      icon: 'check_circle',
+      color: 'secondary',
+    });
+    prompt.value = false;
+  }
 }
 
 onBeforeMount(async () => {

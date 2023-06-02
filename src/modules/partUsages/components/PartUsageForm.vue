@@ -3,6 +3,7 @@
     <q-form
       ref="formRef"
       @submit="props.onSubmit"
+      @validation-success="returnPartUsage"
     >
       <q-expansion-item
         v-model="infoExpanded"
@@ -166,6 +167,10 @@ function updateSingleSelectAttribute() {
  */
 function submit(): void {
   formRef.value.submit();
+}
+
+function returnPartUsage() {
+  emit('update:modelValue', formUsage.value);
 }
 
 watch(() => inputUsage.value.id, () => {

@@ -7,6 +7,7 @@ import { DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { CreatePartUsagesDTO } from '../dtos/CreatePartUsagesDTO';
+import { UpdatePartUsageDTO } from '../dtos/UpdatePartUsageDTO';
 
 const getByParentVersionId = async (parentVersionId: number): Promise<PartUsageChild[] | null> => {
   const searchUrl = `/api/PartUsage/ByParent/${parentVersionId}`;
@@ -146,9 +147,41 @@ const remove = async (id: number): Promise<boolean> => {
   return success;
 };
 
+const update = async (id: number, dto: UpdatePartUsageDTO) => {
+  const success = await api.put(`/api/PartUsage/${id}`, dto)
+    .then((): boolean => true)
+    .catch((error): boolean => {
+      let message = '';
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        let bodyMessage = '';
+        if (body.code === 302) {
+          bodyMessage = i18n.global.t('parts.usages.notExist');
+        } else {
+          bodyMessage = body.message;
+        }
+        message = `Error: ${body.code}, ${bodyMessage}`;
+      } else if (error.request) {
+        // The request was made but no response was received
+        message = 'Error: No response';
+      } else {
+        // Something happened in setting up the request that triggered an Error
+        message = 'Something went wrong';
+      }
+      Notify.create({
+        message,
+        color: 'red',
+        icon: 'error',
+      });
+      return false;
+    });
+  return success;
+};
+
 export const partUsageService = {
   getByParentVersionId,
   toRecords,
   insert,
   remove,
+  update,
 };

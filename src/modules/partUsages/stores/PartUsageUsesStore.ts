@@ -96,5 +96,12 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
         this.partVersionMap.set(versionId, targetVersion);
       }
     },
+    updateUsage(parentId: number, childId: number, updatedUsage: PartUsageChild) {
+      if (this.uses.has(parentId)) {
+        if (this.uses.get(parentId)?.has(childId)) {
+          this.uses.get(parentId)?.set(childId, updatedUsage);
+        }
+      }
+    },
   },
 });
