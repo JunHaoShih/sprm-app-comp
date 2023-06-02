@@ -53,11 +53,11 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       this.partVersionMap.clear();
       for (let i = 0; i < usages.length; i += 1) {
         const usage = usages[i];
-        if (!this.uses.has(usage.usedBy)) {
-          this.uses.set(usage.usedBy, new Map<number, PartUsageChild>());
+        if (!this.uses.has(usage.parentId)) {
+          this.uses.set(usage.parentId, new Map<number, PartUsageChild>());
         }
-        if (!this.uses.get(usage.usedBy)?.has(usage.uses.version.id)) {
-          this.uses.get(usage.usedBy)?.set(usage.uses.version.id, usage);
+        if (!this.uses.get(usage.parentId)?.has(usage.child.version.id)) {
+          this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
         }
       }
       return this.treeNodes;
@@ -71,11 +71,11 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       }
       for (let i = 0; i < usages.length; i += 1) {
         const usage = usages[i];
-        if (!this.uses.has(usage.usedBy)) {
-          this.uses.set(usage.usedBy, new Map<number, PartUsageChild>());
+        if (!this.uses.has(usage.parentId)) {
+          this.uses.set(usage.parentId, new Map<number, PartUsageChild>());
         }
-        if (!this.uses.get(usage.usedBy)?.has(usage.uses.version.id)) {
-          this.uses.get(usage.usedBy)?.set(usage.uses.version.id, usage);
+        if (!this.uses.get(usage.parentId)?.has(usage.child.version.id)) {
+          this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
         }
       }
     },

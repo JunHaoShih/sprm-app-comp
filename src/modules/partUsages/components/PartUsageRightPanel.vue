@@ -68,19 +68,20 @@
                 color="grey"
                 icon="edit"
                 size="12px"
+                @click="onEditClicked(props.row as PartUsageChild)"
               />
             </q-td>
           </template>
           <!-- child number -->
           <template v-slot:body-cell-usesNumber="props">
             <q-td :props="props">
-              {{ props.row.uses.number }}
+              {{ props.row.child.number }}
             </q-td>
           </template>
           <!-- child name -->
           <template v-slot:body-cell-usesName="props">
             <q-td :props="props">
-              {{ props.row.uses.name }}
+              {{ props.row.child.name }}
             </q-td>
           </template>
         </q-table>
@@ -97,6 +98,32 @@
         </div>
       </q-tab-panel>
     </q-tab-panels>
+    <q-dialog
+      v-model="prompt"
+      persistent
+      transition-show="rotate"
+      transition-hide="rotate"
+    >
+      <q-card style="min-width: 700px">
+        <q-card-section class="bg-primary text-white row items-center">
+          <div class="text-h6">{{ $t('parts.usages.edit') }}</div>
+          <q-space></q-space>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <q-separator />
+        <q-card-section>
+          <PartUsageForm
+            v-model="modifiedUsage"
+            :readonly="false"
+          >
+          </PartUsageForm>
+        </q-card-section>
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
+          <q-btn flat :label="$t('actions.edit')" type="submit"></q-btn>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -113,6 +140,8 @@ import { PartVersion } from '../../parts/models/PartVersion';
 import { partUsageService } from '../services/PartUsageService';
 import { useAttributeLinksStore } from '../../customs/stores/AttributeLinksStore';
 import { ObjectTypeId } from '../../objectTypes/models/ObjectType';
+import PartUsageForm from './PartUsageForm.vue';
+import { PartUsageChild } from '../models/PartUsageUses';
 
 const i18n = useI18n();
 
@@ -125,6 +154,10 @@ const initializing = ref(true);
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
+const prompt = ref(false);
+
+const modifiedUsage = ref<PartUsageChild>({} as PartUsageChild);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
@@ -195,6 +228,11 @@ const pagination: QTableProps['pagination'] = {
   page: 1,
   rowsPerPage: 20,
 };
+
+function onEditClicked(row: PartUsageChild) {
+  modifiedUsage.value = row;
+  prompt.value = true;
+}
 
 onBeforeMount(async () => {
   initializing.value = true;

@@ -39,16 +39,16 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
       const nodes = [] as QTreeNode[];
       mapValue.forEach((value) => {
         const currentNode: BomTreeNode = {
-          label: getPartLabel(value.uses),
+          label: getPartLabel(value.child),
           icon: 'settings',
-          parentId: value.usedBy,
-          versionId: value.uses.version.id,
-          checkout: value.uses.checkout,
+          parentId: value.parentId,
+          versionId: value.child.version.id,
+          checkout: value.child.checkout,
           usageId: value.id,
           lazy: true,
         };
         this.nodeMap.set(value.id, currentNode);
-        const children = wholeMap.get(value.uses.version.id);
+        const children = wholeMap.get(value.child.version.id);
         if (children) {
           currentNode.children = this.getSubTreeNodes(children, wholeMap);
           currentNode.lazy = false;

@@ -51,6 +51,7 @@ export default {
     usage: 'Usage',
     usages: {
       new: 'New part usage',
+      edit: 'Edit part usage',
       quantity: 'Usage quantity',
       selfAddNotAllowed: 'You cannot add yourself as child part',
       alreadyExist: 'Child part already exist',

@@ -51,6 +51,7 @@ export default {
     usage: '使用關係',
     usages: {
       new: '新增使用關係',
+      edit: '編輯使用關係',
       quantity: '使用數量',
       selfAddNotAllowed: '不可將自己加入子料件',
       alreadyExist: '子料件已存在',

@@ -24,7 +24,7 @@ const props = defineProps<{
   type?: QInputProps['type'],
   inputValidator?:((val: string) => string | boolean),
   readonly?: boolean,
-  modelValue: string | number | undefined,
+  modelValue?: string | number | undefined,
 }>();
 
 type Emit = {
