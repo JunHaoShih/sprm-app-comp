@@ -51,6 +51,25 @@
           @click="onInfoClicked(props.part)"
         />
       </template>
+      <template v-slot:cell-after="props">
+        <q-menu touch-position context-menu>
+          <q-list dense style="min-width: 100px">
+            <q-item clickable v-close-popup>
+              <q-item-section
+                @click="onEditClicked(props.part)"
+              >
+                {{ $t('actions.edit') }}
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section>{{ $t('actions.delete') }}</q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section>{{ $t('parts.routing') }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </template>
     </PartsSearchPanel>
     <PartDialog v-model="prompt" @onPartCreated="onPartCreated"></PartDialog>
   </div>

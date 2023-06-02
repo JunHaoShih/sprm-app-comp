@@ -117,19 +117,7 @@
         <q-td :props="props">
           {{props.value}}
         </q-td>
-        <q-menu touch-position context-menu>
-          <q-list dense style="min-width: 100px">
-            <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('actions.edit') }}</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('actions.delete') }}</q-item-section>
-            </q-item>
-            <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('parts.routing') }}</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
+        <slot name="cell-after" :part="(props.row as Part)"></slot>
       </template>
       <template v-slot:loading>
         <q-inner-loading showing color="red-7" />
