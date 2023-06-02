@@ -71,7 +71,7 @@
         </q-card-section>
         <q-separator />
         <q-card-section class="scroll dialog-inner-max">
-          <CustomAttributePanel
+          <CustomAttributeForm
             v-model="viewedCustomAttribute"
             :readonly="true"
           />
@@ -93,7 +93,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { QDialog, QTableProps, useQuasar } from 'quasar';
 import AttributeLinksAddDialog from './AttributeLinksAddDialog.vue';
-import CustomAttributePanel from './CustomAttributePanel.vue';
+import CustomAttributeForm from './CustomAttributeForm.vue';
 import { CustomAttribute } from '../models/CustomAttribute';
 import { useAttributeLinksStore } from '../stores/AttributeLinksStore';
 import { useDisplayTypesStore } from '../stores/DisplayTypesStore';

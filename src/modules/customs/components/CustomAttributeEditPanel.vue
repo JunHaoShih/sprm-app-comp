@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- info area -->
-    <CustomAttributePanel
+    <CustomAttributeForm
       v-model="defaultAttr"
       :on-submit="editAttribute"
       :readonly="readonly"
@@ -34,7 +34,7 @@
           </div>
         </div>
       </template>
-    </CustomAttributePanel>
+    </CustomAttributeForm>
   </div>
 </template>
 
@@ -44,7 +44,7 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import CustomAttributePanel from './CustomAttributePanel.vue';
+import CustomAttributeForm from './CustomAttributeForm.vue';
 import { CustomAttribute } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
 import 'src/extensions/date.extensions';

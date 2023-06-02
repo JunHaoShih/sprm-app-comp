@@ -13,7 +13,7 @@
         <q-separator />
         <q-card-section class="scroll dialog-inner-max">
           <!-- info area -->
-          <CustomAttributePanel
+          <CustomAttributeForm
             ref="formRef"
             :on-submit="addAttribute"
             v-model="defaultAttr"
@@ -38,7 +38,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { QDialog, useQuasar } from 'quasar';
 import { availableLocales } from 'src/models/Locale';
-import CustomAttributePanel from './CustomAttributePanel.vue';
+import CustomAttributeForm from './CustomAttributeForm.vue';
 import { AttributeType, CustomAttribute, DisplayType } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
 import { useCustomAttributesStore } from '../stores/CustomAttributesStore';
@@ -50,7 +50,7 @@ const $q = useQuasar();
 
 const customAttributesStore = useCustomAttributesStore();
 
-const formRef = ref<InstanceType<typeof CustomAttributePanel> | null>(null);
+const formRef = ref<InstanceType<typeof CustomAttributeForm> | null>(null);
 
 const props = defineProps<{
   modelValue: boolean,
