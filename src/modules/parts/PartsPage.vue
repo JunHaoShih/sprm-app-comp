@@ -62,10 +62,34 @@
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('actions.delete') }}</q-item-section>
+              <q-item-section>
+                {{ $t('actions.delete') }}
+              </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('parts.routing') }}</q-item-section>
+              <q-item-section>
+                {{ $t('parts.routing') }}
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="!props.part.checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onCheckOutClicked(props.part)"
+              >
+                {{ $t('actions.checkout') }}
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="props.part.checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onCheckInClicked(props.part)"
+              >
+                {{ $t('actions.checkin') }}
+              </q-item-section>
             </q-item>
           </q-list>
         </q-menu>
@@ -107,6 +131,14 @@ function onEditClicked(part: Part): void {
     // TODO show dialog to checkout
   }
   router.push(`parts/version/edit/${part.version.id}/info`);
+}
+
+function onCheckInClicked(part: Part): void {
+  // TODO check in part
+}
+
+function onCheckOutClicked(part: Part): void {
+  // TODO check out part
 }
 
 function onPartCreated(newPart: Part) {
