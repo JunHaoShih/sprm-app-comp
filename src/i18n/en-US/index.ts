@@ -109,6 +109,7 @@ export default {
   },
   iterable: {
     version: 'Version',
+    history: 'History',
   },
   validations: {
     notNull: 'Cannot be empty',

@@ -109,6 +109,7 @@ export default {
   },
   iterable: {
     version: '版本',
+    history: '歷史',
   },
   validations: {
     notNull: '不可為空',

@@ -67,6 +67,13 @@
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
+              <q-item-section
+                @click="onHistoryClicked(props.part)"
+              >
+                {{ $t('iterable.history') }}
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
               <q-item-section>
                 {{ $t('parts.routing') }}
               </q-item-section>
@@ -141,6 +148,10 @@ const selected = ref<Part[]>([]);
 
 function onInfoClicked(part: Part): void {
   router.push(`parts/version/${part.version.id}/info`);
+}
+
+function onHistoryClicked(part: Part) {
+  router.push(`parts/${part.id}/history`);
 }
 
 async function onCheckInClicked(part: Part): Promise<void> {
