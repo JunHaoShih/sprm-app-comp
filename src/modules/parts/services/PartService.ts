@@ -9,7 +9,6 @@ import { CreatePartDTO } from '../dtos/CreatePartDTO';
 
 const getByPattern = async (pattern: string, pagination: OffsetPaginationInput):
 Promise<OffsetPaginationData<Part[]> | null> => {
-  // const searchUrl = `/api/Part/Search${pattern ? `?pattern=${pattern}` : ''}`;
   const partsResponse = await api
     .get(encodeURI('/api/Part/Search'), {
       params: {
@@ -26,22 +25,15 @@ Promise<OffsetPaginationData<Part[]> | null> => {
       };
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-        icon: 'error',
-      });
       return null;
     });
   return partsResponse;
@@ -55,22 +47,15 @@ const getById = async (id: number): Promise<Part | null> => {
       return data.content;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-        icon: 'error',
-      });
       return null;
     });
   return partResponse;
@@ -83,22 +68,78 @@ const create = async (createDto: CreatePartDTO): Promise<Part | null> => {
       return data.content;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-        icon: 'error',
-      });
+      return null;
+    });
+  return part;
+};
+
+const checkIn = async (id: number): Promise<Part | null> => {
+  const part = await api.post(`/api/Part/${id}/CheckIn`)
+    .then((response): Part => {
+      const data = response.data as SPRMResponse<Part>;
+      return data.content;
+    })
+    .catch((error) => {
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
+      }
+      return null;
+    });
+  return part;
+};
+
+const checkOut = async (id: number): Promise<Part | null> => {
+  const part = await api.post(`/api/Part/${id}/CheckOut`)
+    .then((response): Part => {
+      const data = response.data as SPRMResponse<Part>;
+      return data.content;
+    })
+    .catch((error) => {
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
+      }
+      return null;
+    });
+  return part;
+};
+
+const discard = async (id: number): Promise<Part | null> => {
+  const part = await api.delete(`/api/Part/${id}/Discard`)
+    .then((response): Part => {
+      const data = response.data as SPRMResponse<Part>;
+      return data.content;
+    })
+    .catch((error) => {
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
+      }
       return null;
     });
   return part;
@@ -108,4 +149,7 @@ export const partService = {
   getByPattern,
   getById,
   create,
+  checkIn,
+  checkOut,
+  discard,
 };

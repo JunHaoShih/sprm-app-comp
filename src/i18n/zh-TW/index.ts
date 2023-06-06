@@ -26,7 +26,21 @@ export default {
     },
     search: '搜尋',
     checkout: '簽出',
+    checkouts: {
+      success: '簽出成功',
+      failed: '簽出失敗',
+    },
     checkin: '簽入',
+    checkins: {
+      success: '簽入成功',
+      failed: '簽入失敗',
+    },
+    discard: '捨棄',
+    discards: {
+      confirm: '確定要捨棄所有編輯資料?',
+      success: '捨棄成功',
+      cannotDiscardFirstVersion: '無法捨棄第一版資料',
+    },
     next: '下一步',
     previous: '上一步',
   },
@@ -63,6 +77,7 @@ export default {
     search: '搜尋料件',
     versionMustCheckout: '料件版本尚未簽出',
     mustSelectOne: '請選擇一個料件',
+    wantToCheckOut: '料件尚未出庫，是否要出庫?',
   },
   customs: {
     title: '自定義',

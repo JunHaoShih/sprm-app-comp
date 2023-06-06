@@ -26,7 +26,21 @@ export default {
     },
     search: 'Search',
     checkout: 'Check out',
+    checkouts: {
+      success: 'Check out success',
+      failed: 'Check out failed',
+    },
     checkin: 'Check in',
+    checkins: {
+      success: 'Check in success',
+      failed: 'Check in failed',
+    },
+    discard: 'Discard',
+    discards: {
+      confirm: 'Are you sure you want to discard all modified data?',
+      success: 'Discard success',
+      cannotDiscardFirstVersion: 'You cannot discard first version',
+    },
     next: 'Next',
     previous: 'Previous',
   },
@@ -63,6 +77,7 @@ export default {
     search: 'Search part',
     versionMustCheckout: 'This part version does not checkout',
     mustSelectOne: 'Please select a part',
+    wantToCheckOut: 'Part does not check out, do you want to check out?',
   },
   customs: {
     title: 'Customization',

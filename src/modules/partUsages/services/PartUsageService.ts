@@ -151,7 +151,6 @@ const update = async (id: number, dto: UpdatePartUsageDTO) => {
   const success = await api.put(`/api/PartUsage/${id}`, dto)
     .then((): boolean => true)
     .catch((error): boolean => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
         let bodyMessage = '';
@@ -160,19 +159,13 @@ const update = async (id: number, dto: UpdatePartUsageDTO) => {
         } else {
           bodyMessage = body.message;
         }
-        message = `Error: ${body.code}, ${bodyMessage}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${bodyMessage}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-        icon: 'error',
-      });
       return false;
     });
   return success;

@@ -91,6 +91,16 @@
                 {{ $t('actions.checkin') }}
               </q-item-section>
             </q-item>
+            <q-item
+              v-if="props.part.checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onDiscardClicked(props.part)"
+              >
+                {{ $t('actions.discard') }}
+              </q-item-section>
+            </q-item>
           </q-list>
         </q-menu>
       </template>
@@ -104,11 +114,18 @@ import { onBeforeMount, ref } from 'vue';
 import {
   LocationQueryValue, onBeforeRouteUpdate, useRoute, useRouter,
 } from 'vue-router';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import PartDialog from './components/PartDialog.vue';
 import PartsSearchPanel from './components/PartsSearchPanel.vue';
 import { usePartsStore } from './stores/PartsStore';
 import { Part } from './models/Part';
 import 'src/extensions/date.extensions';
+import { partService } from './services/PartService';
+
+const $q = useQuasar();
+
+const i18n = useI18n();
 
 const route = useRoute();
 
@@ -126,19 +143,77 @@ function onInfoClicked(part: Part): void {
   router.push(`parts/version/${part.version.id}/info`);
 }
 
+async function onCheckInClicked(part: Part): Promise<void> {
+  const checkinPart = await partService.checkIn(part.id);
+  if (checkinPart) {
+    partsStore.updatePart(checkinPart);
+    $q.notify({
+      message: i18n.t('actions.checkins.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+  }
+}
+
+async function onCheckOutClicked(part: Part): Promise<Part | null> {
+  const checkoutPart = await partService.checkOut(part.id);
+  if (checkoutPart) {
+    partsStore.updatePart(checkoutPart);
+    $q.notify({
+      message: i18n.t('actions.checkouts.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+    return checkoutPart;
+  }
+  return null;
+}
+
+function onDiscardClicked(part: Part): void {
+  if (part.checkoutId === part.version.id) {
+    $q.notify({
+      message: i18n.t('actions.discards.cannotDiscardFirstVersion'),
+      color: 'red',
+      icon: 'error',
+    });
+    return;
+  }
+  $q.dialog({
+    dark: true,
+    title: i18n.t('actions.discards.confirm'),
+    message: i18n.t('parts.wantToCheckOut'),
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    const discardPart = await partService.discard(part.id);
+    if (discardPart) {
+      partsStore.updatePart(discardPart);
+      $q.notify({
+        message: i18n.t('actions.discards.success'),
+        color: 'secondary',
+        icon: 'check_circle',
+      });
+    }
+  });
+}
+
 function onEditClicked(part: Part): void {
   if (!part.checkout) {
-    // TODO show dialog to checkout
+    $q.dialog({
+      dark: true,
+      title: i18n.t('actions.checkout'),
+      message: i18n.t('parts.wantToCheckOut'),
+      cancel: true,
+      persistent: true,
+    }).onOk(async () => {
+      const checkoutPart = await onCheckOutClicked(part);
+      if (checkoutPart) {
+        router.push(`parts/version/edit/${checkoutPart.checkoutId}/info`);
+      }
+    });
+  } else {
+    router.push(`parts/version/edit/${part.checkoutId}/info`);
   }
-  router.push(`parts/version/edit/${part.version.id}/info`);
-}
-
-function onCheckInClicked(part: Part): void {
-  // TODO check in part
-}
-
-function onCheckOutClicked(part: Part): void {
-  // TODO check out part
 }
 
 function onPartCreated(newPart: Part) {

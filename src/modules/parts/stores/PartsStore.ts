@@ -81,5 +81,9 @@ export const usePartsStore = defineStore('parts', {
     unshiftPart(part: Part): void {
       this.parts.unshift(part);
     },
+    updatePart(part: Part): void {
+      const index = this.parts.findIndex((currentPart) => currentPart.id === part.id);
+      this.parts[index] = part;
+    },
   },
 });
