@@ -10,7 +10,30 @@
       @lazy-load="onLazyLoad"
       @update:selected="onSelected"
       :default-expand-all="true"
-    />
+    >
+      <template v-slot:default-header="prop">
+        <div class="row items-center">
+          <q-icon :name="prop.node.icon" class="q-mr-sm"></q-icon>
+          <q-badge
+            v-if="(prop.node as BomTreeNode).checkout"
+            color="orange"
+            class="q-mr-sm"
+          >
+            {{ $t('actions.checkout') }}
+          </q-badge>
+          <div>{{ prop.node.label }}</div>
+        </div>
+        <q-menu touch-position context-menu>
+          <q-list dense style="min-width: 100px">
+            <q-item clickable v-close-popup>
+              <q-item-section>
+                {{ (prop.node as BomTreeNode).usageId }}
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </template>
+    </q-tree>
   </div>
 </template>
 

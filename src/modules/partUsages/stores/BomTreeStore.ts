@@ -15,15 +15,13 @@ interface BomTreeContainer {
   nodeMap: Map<number, BomTreeNode>,
 }
 
-const getPartLabel = (part: Part) => {
-  const checkoutState = part.checkout ? '(*) ' : '';
-  return `${checkoutState}${part.number} - ${part.version.version}`;
-};
+const getPartLabel = (part: Part) => (
+  `${part.number} - ${part.version.version}`
+);
 
-const getPartVersionLabel = (partVersion: PartVersion) => {
-  const checkoutState = partVersion.master.checkout ? '(*) ' : '';
-  return `${checkoutState}${partVersion.master.number} - ${partVersion.version}`;
-};
+const getPartVersionLabel = (partVersion: PartVersion) => (
+  `${partVersion.master.number} - ${partVersion.version}`
+);
 
 export const useBomTreeStore = defineStore('bomTreeStore', {
   state: (): BomTreeContainer => ({
