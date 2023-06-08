@@ -34,6 +34,9 @@ export const usePartVersionStore = defineStore('partVersion', {
   },
   actions: {
     async partVersionInit(versionId: number): Promise<boolean> {
+      if (versionId === this.content.id) {
+        return true;
+      }
       this.content = {
         id: 0,
         version: 0,
