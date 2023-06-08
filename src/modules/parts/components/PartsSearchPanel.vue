@@ -71,11 +71,9 @@
       <!-- is checkout -->
       <template v-slot:body-cell-isCheckout="props">
         <q-td :props="props">
-          <q-icon v-if="props.row.checkout" name="stop_circle" color="orange" size="16px">
-            <q-tooltip>
-              {{ $t('actions.checkout') }}
-            </q-tooltip>
-          </q-icon>
+          <q-badge color="orange" class="q-ml-sm">
+            {{ $t('actions.checkout') }}
+          </q-badge>
         </q-td>
       </template>
       <!-- version -->
