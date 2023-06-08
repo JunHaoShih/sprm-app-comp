@@ -111,6 +111,7 @@ export default {
   iterable: {
     version: 'Version',
     history: 'History',
+    latest: 'Latest',
   },
   validations: {
     notNull: 'Cannot be empty',

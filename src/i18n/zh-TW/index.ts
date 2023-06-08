@@ -111,6 +111,7 @@ export default {
   iterable: {
     version: '版本',
     history: '歷史',
+    latest: '最新',
   },
   validations: {
     notNull: '不可為空',

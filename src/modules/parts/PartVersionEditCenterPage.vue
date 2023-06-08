@@ -9,11 +9,11 @@
       <template v-slot:before-history>
         <q-btn
           push
-          :label="$t('parts.info')"
+          :label="$t('iterable.latest')"
           color="white"
           text-color="primary"
           class="q-mr-sm"
-          @click="onInfoClicked(partVersionStore.content.master.id)"
+          @click="onLatestClicked(partVersionStore.content.master.id)"
         />
       </template>
     </PartVersionBanner>
@@ -79,7 +79,7 @@ async function updatePartAndVersion(partVersionId: number) {
   }
 }
 
-async function onInfoClicked(masterId: number) {
+async function onLatestClicked(masterId: number) {
   const part = await partService.getById(masterId);
   if (part) {
     router.push(`/parts/version/${part.version.id}/info`);

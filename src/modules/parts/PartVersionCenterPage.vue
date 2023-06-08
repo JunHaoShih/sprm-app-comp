@@ -8,6 +8,15 @@
       </template>
       <template v-slot:before-history>
         <q-btn
+          v-if="!partVersionStore.content.isLatest"
+          push
+          :label="$t('iterable.latest')"
+          color="white"
+          text-color="primary"
+          class="q-mr-sm"
+          @click="onLatestClicked(partVersionStore.content.master.id)"
+        />
+        <q-btn
           v-if="partVersionStore.content.master.checkout"
           push
           :label="$t('actions.draft')"
@@ -67,6 +76,13 @@ async function onEditClicked(masterId: number) {
   const part = await partService.getById(masterId);
   if (part) {
     router.push(`/parts/version/edit/${part.checkoutId}/info`);
+  }
+}
+
+async function onLatestClicked(masterId: number) {
+  const part = await partService.getById(masterId);
+  if (part) {
+    router.push(`/parts/version/${part.version.id}/info`);
   }
 }
 
