@@ -23,7 +23,25 @@
           </q-badge>
           <div>{{ prop.node.label }}</div>
         </div>
-        <slot name="default-header" :node="(prop.node as BomTreeNode)"></slot>
+        <q-menu touch-position context-menu>
+          <q-list dense style="min-width: 100px">
+            <q-item
+              clickable
+              v-close-popup
+            >
+              <q-item-section
+                @click="$router
+                  .push(`/parts/version/${(prop.node as BomTreeNode).infoId}/usages`)"
+              >
+                <div>
+                  <q-icon name="info" color="primary"/>
+                  {{ $t('parts.info') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <slot name="contex-menu" :node="(prop.node as BomTreeNode)"></slot>
+          </q-list>
+        </q-menu>
       </template>
     </q-tree>
   </div>

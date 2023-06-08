@@ -10,6 +10,8 @@ export interface BomTreeNode extends QTreeNode {
   versionId: number,
   checkout: boolean,
   usageId: number,
+  infoId: number,
+  checkoutId?: number | null,
 }
 
 interface BomTreeContainer {
@@ -56,6 +58,8 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
           versionId,
           checkout: part.checkout,
           usageId: value.id,
+          infoId: part.version.id,
+          checkoutId: part.checkoutId,
           lazy: true,
         };
         this.nodeMap.set(value.id, currentNode);
@@ -78,6 +82,8 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
           versionId: 0,
           checkout: false,
           usageId: 0,
+          infoId: 0,
+          checkoutId: 0,
           icon: 'settings',
         };
         this.nodeMap.set(0, dummyNode);
@@ -90,6 +96,8 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
         versionId: root.id,
         checkout: root.master.checkout,
         usageId: 0,
+        infoId: root.id,
+        checkoutId: 0,
         icon: 'settings',
       };
       this.nodeMap.set(0, rootNode);

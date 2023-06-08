@@ -33,40 +33,36 @@
               :disable="selectedNode.usageId <= 0"
             />
           </template>
-          <!-- add context menu -->
-          <template v-slot:default-header="prop">
-            <q-menu touch-position context-menu>
-              <q-list dense style="min-width: 100px">
-                <q-item
-                  v-if="canCheckIn(prop.node as BomTreeNode)"
-                  clickable
-                  v-close-popup
-                >
-                  <q-item-section
-                    @click="onCheckInClicked((prop.node as BomTreeNode).childId)"
-                  >
-                    <div>
-                      <q-icon name="south_east" color="secondary"/>
-                      {{ $t('actions.checkin') }}
-                    </div>
-                  </q-item-section>
-                </q-item>
-                <q-item
-                  v-if="canCheckOut(prop.node as BomTreeNode)"
-                  clickable
-                  v-close-popup
-                >
-                  <q-item-section
-                    @click="onCheckOutClicked((prop.node as BomTreeNode).childId)"
-                  >
-                    <div>
-                      <q-icon name="south_east" color="red"/>
-                      {{ $t('actions.checkout') }}
-                    </div>
-                  </q-item-section>
-                </q-item>
-              </q-list>
-            </q-menu>
+          <!-- add context menu items -->
+          <template v-slot:contex-menu="prop">
+            <q-item
+              v-if="canCheckIn(prop.node as BomTreeNode)"
+              clickable
+              v-close-popup
+            >
+              <q-item-section
+                @click="onCheckInClicked((prop.node as BomTreeNode).childId)"
+              >
+                <div>
+                  <q-icon name="south_east" color="secondary"/>
+                  {{ $t('actions.checkin') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="canCheckOut(prop.node as BomTreeNode)"
+              clickable
+              v-close-popup
+            >
+              <q-item-section
+                @click="onCheckOutClicked((prop.node as BomTreeNode).childId)"
+              >
+                <div>
+                  <q-icon name="south_east" color="red"/>
+                  {{ $t('actions.checkout') }}
+                </div>
+              </q-item-section>
+            </q-item>
           </template>
         </PartUsageTreePanel>
       </template>
