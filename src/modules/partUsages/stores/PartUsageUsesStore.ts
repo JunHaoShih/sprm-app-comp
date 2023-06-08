@@ -1,24 +1,29 @@
 import { defineStore } from 'pinia';
 import { QTreeProps } from 'quasar';
 import { PartVersion } from 'src/modules/parts/models/PartVersion';
+import { Part, PartVersionInfo } from 'src/modules/parts/models/Part';
 import { partVersionService } from 'src/modules/parts/services/PartVersionService';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { BomTreeNode, useBomTreeStore } from './BomTreeStore';
 
-interface PartUsageUsesContainer {
+interface PartUsageTreeContainer {
   uses: Map<number, Map<number, PartUsageChild>>,
+  partMap: Map<number, Part>,
+  versionInfoMap: Map<number, PartVersionInfo>,
   partVersionMap: Map<number, PartVersion>,
   root: PartVersion,
 }
 
-export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
-  state: (): PartUsageUsesContainer => ({
+export const usePartUsageTreeStore = defineStore('partUsageTree', {
+  state: (): PartUsageTreeContainer => ({
     uses: new Map<number, Map<number, PartUsageChild>>(),
+    partMap: new Map<number, Part>(),
+    versionInfoMap: new Map<number, PartVersionInfo>(),
     partVersionMap: new Map<number, PartVersion>(),
     root: {} as PartVersion,
   }),
   getters: {
-    treeNodes: (state): QTreeProps['nodes'] => {
+    treeNodes: (state) => (isEdit: boolean): QTreeProps['nodes'] => {
       if (!state.root.master) {
         return [{
           label: '',
@@ -26,7 +31,7 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
         }];
       }
       const treeNodeStore = useBomTreeStore();
-      const rootNode = treeNodeStore.getTreeNodes(state.uses, state.root);
+      const rootNode = treeNodeStore.getTreeNodes(state.uses, state.root, state.partMap, isEdit);
       return rootNode;
     },
     selectedTreeNode: () => (usageId: number): BomTreeNode | undefined => {
@@ -47,20 +52,20 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
     ),
   },
   actions: {
-    initialize(usages: PartUsageChild[], partVersion: PartVersion) {
+    initialize(usages: PartUsageChild[], partVersion: PartVersion, isEdit: boolean) {
       this.root = partVersion;
       this.uses.clear();
       this.partVersionMap.clear();
+      this.partMap.clear();
       for (let i = 0; i < usages.length; i += 1) {
         const usage = usages[i];
         if (!this.uses.has(usage.parentId)) {
           this.uses.set(usage.parentId, new Map<number, PartUsageChild>());
         }
-        if (!this.uses.get(usage.parentId)?.has(usage.child.version.id)) {
-          this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
-        }
+        this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
+        this.partMap.set(usage.child.id, usage.child);
       }
-      return this.treeNodes;
+      return this.treeNodes(isEdit);
     },
     addUses(usages: PartUsageChild[], parentId: number) {
       if (usages.length === 0) {
@@ -74,9 +79,8 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
         if (!this.uses.has(usage.parentId)) {
           this.uses.set(usage.parentId, new Map<number, PartUsageChild>());
         }
-        if (!this.uses.get(usage.parentId)?.has(usage.child.version.id)) {
-          this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
-        }
+        this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
+        this.partMap.set(usage.child.id, usage.child);
       }
     },
     deleteUses(parentId: number, childId: number) {
@@ -100,8 +104,12 @@ export const usePartUsageChildrenStore = defineStore('partUsageChildren', {
       if (this.uses.has(parentId)) {
         if (this.uses.get(parentId)?.has(childId)) {
           this.uses.get(parentId)?.set(childId, updatedUsage);
+          this.partMap.set(updatedUsage.child.id, updatedUsage.child);
         }
       }
+    },
+    setPart(part: Part) {
+      this.partMap.set(part.id, part);
     },
   },
 });

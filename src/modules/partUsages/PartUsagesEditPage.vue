@@ -10,6 +10,7 @@
           class="q-pa-md q-gutter-xs"
           :id="Number(props.id)"
           v-model:selectedNode="selectedNode"
+          :is-edit="true"
         >
           <template v-slot:before>
             <q-btn
@@ -31,6 +32,35 @@
               @click="onDeleteButtonClicked"
               :disable="selectedNode.usageId <= 0"
             />
+          </template>
+          <!-- add context menu -->
+          <template v-slot:default-header="prop">
+            <q-menu touch-position context-menu>
+              <q-list dense style="min-width: 100px">
+                <q-item
+                  v-if="canCheckIn(prop.node as BomTreeNode)"
+                  clickable
+                  v-close-popup
+                >
+                  <q-item-section
+                    @click="onCheckInClicked((prop.node as BomTreeNode).childId)"
+                  >
+                  {{ $t('actions.checkin') }}
+                  </q-item-section>
+                </q-item>
+                <q-item
+                  v-if="canCheckOut(prop.node as BomTreeNode)"
+                  clickable
+                  v-close-popup
+                >
+                  <q-item-section
+                    @click="onCheckOutClicked((prop.node as BomTreeNode).childId)"
+                  >
+                  {{ $t('actions.checkout') }}
+                  </q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
           </template>
         </PartUsageTreePanel>
       </template>
@@ -61,19 +91,20 @@
 import { computed, ref } from 'vue';
 import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import { partService } from 'src/modules/parts/services/PartService';
 import PartUsageRightPanel from './components/PartUsageRightPanel.vue';
 import PartUsageTreePanel from './components/PartUsageTreePanel.vue';
 import CreatePartUsageDialog from './components/CreatePartUsageDialog.vue';
 import 'src/extensions/date.extensions';
 import { partUsageService } from './services/PartUsageService';
 import { BomTreeNode } from './stores/BomTreeStore';
-import { usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
+import { usePartUsageTreeStore } from './stores/PartUsageUsesStore';
 
 const $q = useQuasar();
 
 const i18n = useI18n();
 
-const partUsaeChildrenStore = usePartUsageChildrenStore();
+const partUsaeChildrenStore = usePartUsageTreeStore();
 
 const splitterModel = ref(50);
 
@@ -115,6 +146,36 @@ async function onDeleteButtonClicked() {
       icon: 'check_circle',
     });
   }
+}
+
+async function onCheckInClicked(partId: number): Promise<void> {
+  const checkinPart = await partService.checkIn(partId);
+  if (checkinPart) {
+    partUsaeChildrenStore.setPart(checkinPart);
+    const uses = await partUsageService.getByParentVersionId(checkinPart.version.id);
+    if (uses) {
+      partUsaeChildrenStore.addUses(uses, checkinPart.version.id);
+    }
+  }
+}
+
+async function onCheckOutClicked(partId: number): Promise<void> {
+  const checkoutPart = await partService.checkOut(partId);
+  if (checkoutPart) {
+    partUsaeChildrenStore.setPart(checkoutPart);
+    const uses = await partUsageService.getByParentVersionId(checkoutPart.version.id);
+    if (uses) {
+      partUsaeChildrenStore.addUses(uses, checkoutPart.version.id);
+    }
+  }
+}
+
+function canCheckIn(node: BomTreeNode): boolean {
+  return node.checkout && node.usageId > 0;
+}
+
+function canCheckOut(node: BomTreeNode): boolean {
+  return !node.checkout && node.usageId > 0;
 }
 </script>
 

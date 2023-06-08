@@ -3,7 +3,7 @@
     <slot name="before"></slot>
     <q-tree
       ref="qtree"
-      :nodes="partUsaeChildrenStore.treeNodes"
+      :nodes="partUsaeChildrenStore.treeNodes(props.isEdit)"
       v-model:selected="selectedUsageId"
       selected-color="primary"
       node-key="usageId"
@@ -23,15 +23,7 @@
           </q-badge>
           <div>{{ prop.node.label }}</div>
         </div>
-        <q-menu touch-position context-menu>
-          <q-list dense style="min-width: 100px">
-            <q-item clickable v-close-popup>
-              <q-item-section>
-                {{ (prop.node as BomTreeNode).usageId }}
-              </q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
+        <slot name="default-header" :node="(prop.node as BomTreeNode)"></slot>
       </template>
     </q-tree>
   </div>
@@ -44,7 +36,7 @@ import {
 import { useQuasar } from 'quasar';
 import 'src/extensions/date.extensions';
 import { usePartVersionStore } from 'src/modules/parts/stores/PartVersionStore';
-import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
+import { usePartUsageTreeStore } from '../stores/PartUsageUsesStore';
 import { partUsageService } from '../services/PartUsageService';
 import { BomTreeNode } from '../stores/BomTreeStore';
 
@@ -52,15 +44,14 @@ const $q = useQuasar();
 
 const partVersionStore = usePartVersionStore();
 
-const partUsaeChildrenStore = usePartUsageChildrenStore();
+const partUsaeChildrenStore = usePartUsageTreeStore();
 
 const selectedUsageId = ref(0);
-
-const previousSelectedUsageId = ref(0);
 
 const props = withDefaults(defineProps<{
   id: number,
   selectedNode: BomTreeNode,
+  isEdit: boolean,
 }>(), {
 });
 
@@ -101,11 +92,6 @@ async function onLazyLoad(details: {
 }
 
 async function onSelected(nodeId: number) {
-  if (!nodeId && nodeId !== 0) {
-    selectedUsageId.value = previousSelectedUsageId.value;
-    return;
-  }
-  previousSelectedUsageId.value = nodeId;
   const targetNode = partUsaeChildrenStore.selectedTreeNode(nodeId);
   if (!targetNode) {
     return;
@@ -121,9 +107,8 @@ async function initializePage(partVersionId: number) {
   const uses = await partUsageService.getByParentVersionId(partVersionId);
   if (uses) {
     await partVersionStore.partVersionInit(partVersionId);
-    partUsaeChildrenStore.initialize(uses, partVersionStore.partVersion);
+    partUsaeChildrenStore.initialize(uses, partVersionStore.partVersion, props.isEdit);
     selectedUsageId.value = 0;
-    previousSelectedUsageId.value = 0;
     const node = partUsaeChildrenStore.selectedTreeNode(selectedUsageId.value);
     if (node) {
       selectedNode.value = node;

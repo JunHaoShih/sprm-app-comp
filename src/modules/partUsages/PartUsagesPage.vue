@@ -10,6 +10,7 @@
           class="q-pa-md q-gutter-sm"
           :id="Number(props.id)"
           v-model:selectedNode="selectedNode"
+          :isEdit="false"
         >
         </PartUsageTreePanel>
       </template>

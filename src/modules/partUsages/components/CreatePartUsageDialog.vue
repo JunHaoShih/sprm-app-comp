@@ -94,7 +94,7 @@ import CreatePartForm from 'src/modules/parts/components/CreatePartForm.vue';
 import PartsSearchPanel from 'src/modules/parts/components/PartsSearchPanel.vue';
 import { Part } from 'src/modules/parts/models/Part';
 import CreatePartUsageForm from './CreatePartUsageForm.vue';
-import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
+import { usePartUsageTreeStore } from '../stores/PartUsageUsesStore';
 import { PartUsageChild } from '../models/PartUsageUses';
 
 export type CreateType = 'create' | 'search' | 'none';
@@ -103,7 +103,7 @@ const $q = useQuasar();
 
 const i18n = useI18n();
 
-const partUsaeChildrenStore = usePartUsageChildrenStore();
+const partUsaeChildrenStore = usePartUsageTreeStore();
 
 const step = ref(1);
 

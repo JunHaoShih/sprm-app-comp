@@ -2,7 +2,11 @@
   <div class="main-panel">
     <PartVersionBanner
       :part-version="partVersionStore.content"
-    />
+    >
+      <template v-slot:front>
+        <q-icon name="info" size="24px" class="q-mt-xs q-mr-sm"/>
+      </template>
+    </PartVersionBanner>
     <q-tabs
       align="left"
       indicator-color="orange"

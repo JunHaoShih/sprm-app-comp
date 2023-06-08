@@ -136,7 +136,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { QTableProps, useQuasar } from 'quasar';
 import PartInfoForm from '../../parts/components/PartInfoForm.vue';
-import { usePartUsageChildrenStore } from '../stores/PartUsageUsesStore';
+import { usePartUsageTreeStore } from '../stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
 import { PartVersion } from '../../parts/models/PartVersion';
 import { partUsageService } from '../services/PartUsageService';
@@ -150,7 +150,7 @@ const $q = useQuasar();
 
 const i18n = useI18n();
 
-const partUsaeChildrenStore = usePartUsageChildrenStore();
+const partUsaeChildrenStore = usePartUsageTreeStore();
 
 const attrLinksStore = useAttributeLinksStore();
 

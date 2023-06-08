@@ -5,6 +5,7 @@
       style="border-radius: 10px"
     >
       <div class="text-h6 row">
+        <slot name="front"></slot>
         <div>{{ props.partVersion.master.number }}</div>
         <div>
           <q-badge color="info" class="q-ml-sm">
@@ -28,17 +29,34 @@
             {{ $t('actions.checkout') }}
           </q-badge>
         </div>
+        <q-space/>
+        <div>
+          <q-btn
+            push
+            :label="$t('iterable.history')"
+            color="white"
+            text-color="primary"
+            @click="toHistory"
+          />
+        </div>
       </div>
     </q-banner>
   </div>
 </template>
 
 <script setup lang="ts">
+import { useRouter } from 'vue-router';
 import { PartVersion } from '../models/PartVersion';
 import { ViewType } from '../models/Part';
+
+const router = useRouter();
 
 const props = withDefaults(defineProps<{
   partVersion: PartVersion,
 }>(), {
 });
+
+function toHistory() {
+  router.push(`/parts/${props.partVersion.master.id}/history`);
+}
 </script>

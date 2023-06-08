@@ -6,6 +6,7 @@ import { PartUsageChild } from '../models/PartUsageUses';
 
 export interface BomTreeNode extends QTreeNode {
   parentId: number,
+  childId: number,
   versionId: number,
   checkout: boolean,
   usageId: number,
@@ -33,34 +34,47 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
     ),
   },
   actions: {
-    getSubTreeNodes(mapValue: Map<number, PartUsageChild>, wholeMap: Map<number, Map<number, PartUsageChild>>): QTreeProps['nodes'] {
+    getSubTreeNodes(
+      mapValue: Map<number, PartUsageChild>,
+      wholeMap: Map<number,
+      Map<number, PartUsageChild>>,
+      partMap: Map<number, Part>,
+      isEdit: boolean,
+    ): QTreeProps['nodes'] {
       const nodes = [] as QTreeNode[];
       mapValue.forEach((value) => {
+        const part = partMap.get(value.child.id);
+        if (!part) {
+          return;
+        }
+        const versionId = isEdit && part.checkoutId ? part.checkoutId : part.version.id;
         const currentNode: BomTreeNode = {
-          label: getPartLabel(value.child),
+          label: getPartLabel(part),
           icon: 'settings',
           parentId: value.parentId,
-          versionId: value.child.version.id,
-          checkout: value.child.checkout,
+          childId: value.child.id,
+          versionId,
+          checkout: part.checkout,
           usageId: value.id,
           lazy: true,
         };
         this.nodeMap.set(value.id, currentNode);
-        const children = wholeMap.get(value.child.version.id);
+        const children = wholeMap.get(currentNode.versionId);
         if (children) {
-          currentNode.children = this.getSubTreeNodes(children, wholeMap);
+          currentNode.children = this.getSubTreeNodes(children, wholeMap, partMap, isEdit);
           currentNode.lazy = false;
         }
         nodes.push(currentNode);
       });
       return nodes;
     },
-    getTreeNodes(uses: Map<number, Map<number, PartUsageChild>>, root: PartVersion): QTreeProps['nodes'] {
+    getTreeNodes(uses: Map<number, Map<number, PartUsageChild>>, root: PartVersion, partMap: Map<number, Part>, isEdit: boolean): QTreeProps['nodes'] {
       this.nodeMap.clear();
       if (!root.master) {
         const dummyNode: BomTreeNode = {
           label: '',
           parentId: 0,
+          childId: 0,
           versionId: 0,
           checkout: false,
           usageId: 0,
@@ -72,6 +86,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
       const rootNode: BomTreeNode = {
         label: getPartVersionLabel(root),
         parentId: 0,
+        childId: 0,
         versionId: root.id,
         checkout: root.master.checkout,
         usageId: 0,
@@ -81,7 +96,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
       if (root.id) {
         const children = uses.get(root.id);
         if (children) {
-          rootNode.children = this.getSubTreeNodes(children, uses);
+          rootNode.children = this.getSubTreeNodes(children, uses, partMap, isEdit);
         }
       }
       return [rootNode];
