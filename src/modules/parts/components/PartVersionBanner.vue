@@ -30,6 +30,7 @@
           </q-badge>
         </div>
         <q-space/>
+        <slot name="before-history"></slot>
         <div>
           <q-btn
             push

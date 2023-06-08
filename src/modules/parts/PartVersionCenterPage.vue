@@ -6,6 +6,17 @@
       <template v-slot:front>
         <q-icon name="info" size="24px" class="q-mt-xs q-mr-sm"/>
       </template>
+      <template v-slot:before-history>
+        <q-btn
+          v-if="partVersionStore.content.master.checkout"
+          push
+          :label="$t('actions.draft')"
+          color="white"
+          text-color="primary"
+          class="q-mr-sm"
+          @click="onEditClicked(partVersionStore.content.master.id)"
+        />
+      </template>
     </PartVersionBanner>
     <q-tabs
       align="left"
@@ -32,9 +43,13 @@
 
 <script setup lang="ts">
 import { onBeforeMount, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { usePartVersionStore } from './stores/PartVersionStore';
 import PartVersionBanner from './components/PartVersionBanner.vue';
 import 'src/extensions/date.extensions';
+import { partService } from './services/PartService';
+
+const router = useRouter();
 
 const partVersionStore = usePartVersionStore();
 
@@ -46,6 +61,13 @@ const props = withDefaults(defineProps<{
 
 async function updatePartAndVersion(partVersionId: number) {
   await partVersionStore.partVersionInit(partVersionId);
+}
+
+async function onEditClicked(masterId: number) {
+  const part = await partService.getById(masterId);
+  if (part) {
+    router.push(`/parts/version/edit/${part.checkoutId}/info`);
+  }
 }
 
 watch(() => props.id, async (newValue) => {

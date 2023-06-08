@@ -43,6 +43,7 @@ export default {
     },
     next: 'Next',
     previous: 'Previous',
+    draft: 'Draft',
   },
   base: {
     creator: 'Creater',

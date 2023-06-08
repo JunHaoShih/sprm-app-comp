@@ -43,6 +43,7 @@ export default {
     },
     next: '下一步',
     previous: '上一步',
+    draft: '草稿',
   },
   base: {
     creator: '建立者',
