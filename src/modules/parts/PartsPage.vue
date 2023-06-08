@@ -58,19 +58,28 @@
               <q-item-section
                 @click="onEditClicked(props.part)"
               >
-                {{ $t('actions.edit') }}
+                <div>
+                  <q-icon name="edit" color="primary"/>
+                  {{ $t('actions.edit') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section>
-                {{ $t('actions.delete') }}
+                <div>
+                  <q-icon name="delete" color="red"/>
+                  {{ $t('actions.delete') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section
                 @click="onHistoryClicked(props.part)"
               >
-                {{ $t('iterable.history') }}
+                <div>
+                  <q-icon name="history" color="primary"/>
+                  {{ $t('iterable.history') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
@@ -85,7 +94,10 @@
               <q-item-section
                 @click="onCheckOutClicked(props.part)"
               >
-                {{ $t('actions.checkout') }}
+                <div>
+                  <q-icon name="south_east" color="red"/>
+                  {{ $t('actions.checkout') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item
@@ -95,7 +107,10 @@
               <q-item-section
                 @click="onCheckInClicked(props.part)"
               >
-                {{ $t('actions.checkin') }}
+                <div>
+                  <q-icon name="south_east" color="secondary"/>
+                  {{ $t('actions.checkin') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item
@@ -105,7 +120,10 @@
               <q-item-section
                 @click="onDiscardClicked(props.part)"
               >
-                {{ $t('actions.discard') }}
+                <div>
+                  <q-icon name="backspace" color="red"/>
+                  {{ $t('actions.discard') }}
+                </div>
               </q-item-section>
             </q-item>
           </q-list>

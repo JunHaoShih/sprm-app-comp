@@ -45,7 +45,10 @@
                   <q-item-section
                     @click="onCheckInClicked((prop.node as BomTreeNode).childId)"
                   >
-                  {{ $t('actions.checkin') }}
+                    <div>
+                      <q-icon name="south_east" color="secondary"/>
+                      {{ $t('actions.checkin') }}
+                    </div>
                   </q-item-section>
                 </q-item>
                 <q-item
@@ -56,7 +59,10 @@
                   <q-item-section
                     @click="onCheckOutClicked((prop.node as BomTreeNode).childId)"
                   >
-                  {{ $t('actions.checkout') }}
+                    <div>
+                      <q-icon name="south_east" color="red"/>
+                      {{ $t('actions.checkout') }}
+                    </div>
                   </q-item-section>
                 </q-item>
               </q-list>

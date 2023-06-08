@@ -71,7 +71,11 @@
       <!-- is checkout -->
       <template v-slot:body-cell-isCheckout="props">
         <q-td :props="props">
-          <q-badge color="orange" class="q-ml-sm">
+          <q-badge
+            v-if="(props.row as Part).checkout"
+            color="orange"
+            class="q-ml-sm"
+          >
             {{ $t('actions.checkout') }}
           </q-badge>
         </q-td>
