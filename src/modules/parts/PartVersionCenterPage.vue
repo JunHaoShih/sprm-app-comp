@@ -10,7 +10,10 @@
     <q-tabs
       align="left"
       indicator-color="orange"
-      class="tabs-font"
+      active-color="white"
+      active-bg-color="green-4"
+      class="tabs-font q-ma-sm"
+      style="border-radius: 10px;"
     >
       <q-route-tab
         :label="$t('parts.info')"
