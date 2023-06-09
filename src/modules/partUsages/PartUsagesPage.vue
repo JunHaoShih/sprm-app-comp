@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-sm">
+  <div class="q-px-sm">
+    <q-separator />
     <!-- splitter area -->
     <q-splitter
       v-model="splitterModel"
