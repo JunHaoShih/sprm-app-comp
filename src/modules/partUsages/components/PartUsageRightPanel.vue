@@ -6,10 +6,9 @@
       dense
       indicator-color="orange"
       active-bg-color="grey-4"
-      class="tabs-font q-ma-sm"
+      class="tabs-font q-ma-sm tabs-header"
       align="justify"
       narrow-indicator
-      style="border-radius: 10px;"
     >
       <q-tab name="usage" :label="$t('parts.usage')" />
       <q-tab name="info" :label="$t('parts.info')" />

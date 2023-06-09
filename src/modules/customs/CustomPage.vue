@@ -3,8 +3,7 @@
     align="justify"
     indicator-color="orange"
     active-bg-color="grey-4"
-    class="tabs-font main-panel"
-    style="border-radius: 10px;"
+    class="tabs-font q-ma-sm main-panel tabs-header"
   >
     <q-route-tab
       :label="$t('customs.attributes.title')"

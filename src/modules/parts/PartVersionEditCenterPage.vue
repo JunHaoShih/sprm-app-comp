@@ -18,8 +18,7 @@
       align="justify"
       indicator-color="orange"
       active-bg-color="grey-4"
-      class="tabs-font q-ma-sm"
-      style="border-radius: 10px;"
+      class="tabs-font q-ma-sm tabs-header"
     >
       <q-route-tab
         :label="$t('parts.info')"
