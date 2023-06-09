@@ -50,7 +50,7 @@
         max-pages="6"
         direction-links
         boundary-links
-        active-color="primary"
+        active-color="dark"
       />
       <q-select
         v-model="paginationInput.page"

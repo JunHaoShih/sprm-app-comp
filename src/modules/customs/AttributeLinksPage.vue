@@ -15,7 +15,7 @@
               v-ripple
               :active="defaultObjectType.id === objType.id"
               @click="defaultObjectType = objType"
-              active-class="highlight-menu"
+              active-class="bg-secondary text-white"
             >
               <q-item-section avatar>
                 <q-avatar class="avatar-color" text-color="white">{{ objType.name[0] }}</q-avatar>

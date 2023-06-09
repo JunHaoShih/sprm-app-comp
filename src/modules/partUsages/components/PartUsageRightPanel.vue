@@ -4,11 +4,12 @@
     <q-tabs
       v-model="tab"
       dense
-      class="text-grey"
-      active-color="primary"
-      indicator-color="primary"
+      indicator-color="orange"
+      active-bg-color="grey-4"
+      class="tabs-font q-ma-sm"
       align="justify"
       narrow-indicator
+      style="border-radius: 10px;"
     >
       <q-tab name="usage" :label="$t('parts.usage')" />
       <q-tab name="info" :label="$t('parts.info')" />
@@ -31,8 +32,7 @@
           <template v-slot:top>
             <div class="q-gutter-xs">
               <q-btn-dropdown
-                push
-                color="primary"
+                class="action-btn"
                 :label="$t('columns.display')"
               >
                 <div class="row no-wrap q-pa-md">

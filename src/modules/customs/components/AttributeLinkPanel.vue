@@ -16,14 +16,12 @@
       <template v-slot:top>
         <div class="q-gutter-xs">
           <q-btn
-            push
-            color="primary"
+            class="action-btn"
             :label="$t('actions.add')"
             @click="searchPrompt = !searchPrompt"
           />
           <q-btn
-            push
-            color="primary"
+            class="action-btn"
             :label="$t('actions.delete')"
             @click="onMultiDelete"
           />
@@ -64,7 +62,7 @@
     <q-dialog v-model="viewPrompt" persistent
       transition-show="rotate" transition-hide="rotate">
       <q-card style="min-width: 700px">
-        <q-card-section class="bg-primary text-white row items-center">
+        <q-card-section class="bg-dark text-white row items-center">
           <div class="text-h6">{{ $t('customs.attributes.title') }}</div>
           <q-space></q-space>
           <q-btn icon="close" flat round dense v-close-popup />

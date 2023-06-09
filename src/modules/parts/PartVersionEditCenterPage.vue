@@ -8,20 +8,16 @@
       </template>
       <template v-slot:before-history>
         <q-btn
-          push
           :label="$t('iterable.latest')"
-          color="white"
-          text-color="primary"
-          class="q-mr-sm"
+          class="q-mr-sm action-btn"
           @click="onLatestClicked(partVersionStore.content.master.id)"
         />
       </template>
     </PartVersionBanner>
     <q-tabs
-      align="left"
+      align="justify"
       indicator-color="orange"
-      active-color="white"
-      active-bg-color="green-4"
+      active-bg-color="grey-4"
       class="tabs-font q-ma-sm"
       style="border-radius: 10px;"
     >

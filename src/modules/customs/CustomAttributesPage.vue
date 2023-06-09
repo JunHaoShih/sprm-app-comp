@@ -2,14 +2,12 @@
   <div class="main-panel">
     <div class="row q-pa-md q-gutter-xs">
       <q-btn
-        push
-        color="primary"
+        class="action-btn"
         :label="$t('actions.add')"
         @click="onAddClicked"
       />
       <q-btn
-        push
-        color="primary"
+        class="action-btn"
         :label="$t('actions.delete')"
         @click="onDeleteClicked"
       />
@@ -36,7 +34,7 @@
               v-ripple
               :active="defaultAttr.id === attr.id"
               @click="defaultAttr = attr"
-              active-class="highlight-menu"
+              active-class="bg-secondary text-white"
             >
               <q-item-section avatar>
                 <q-avatar class="avatar-color" text-color="white">{{ attr.name[0] }}</q-avatar>

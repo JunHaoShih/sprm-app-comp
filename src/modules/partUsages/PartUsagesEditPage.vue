@@ -14,20 +14,17 @@
         >
           <template v-slot:before>
             <q-btn
-              push
-              color="primary"
+              class="action-btn"
               :label="$t('actions.adds.newPart')"
               @click="createPrompt = true"
             />
             <q-btn
-              push
-              color="primary"
+              class="action-btn"
               :label="$t('actions.adds.existingPart')"
               @click="searchPrompt = true"
             />
             <q-btn
-              push
-              color="primary"
+              class="action-btn"
               :label="$t('actions.delete')"
               @click="onDeleteButtonClicked"
               :disable="selectedNode.usageId <= 0"

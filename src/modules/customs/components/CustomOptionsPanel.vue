@@ -11,14 +11,12 @@
       <template v-if="!readonly" v-slot:top>
         <div class="q-gutter-xs">
           <q-btn
-            push
-            color="primary"
+            class="action-btn"
             :label="$t('actions.add')"
             @click="onAddClick"
           />
           <q-btn
-            push
-            color="primary"
+            class="action-btn"
             :label="$t('actions.delete')"
           />
           <q-space />
@@ -70,7 +68,7 @@
       <q-form
         @submit="onDialogConfirm"
       >
-        <q-card-section class="bg-primary text-white row items-center" >
+        <q-card-section class="bg-dark text-white row items-center" >
           <div class="text-h6">File</div>
           <q-space></q-space>
           <q-btn icon="close" flat round dense v-close-popup />

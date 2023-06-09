@@ -12,15 +12,13 @@
     >
       <template v-slot:table-top>
         <q-btn
-          push
-          color="primary"
           :label="$t('actions.add')"
           @click="prompt=true"
+          class="action-btn"
         />
         <q-btn
-          push
-          color="primary"
           :label="$t('actions.delete')"
+          class="action-btn"
         />
       </template>
       <template v-slot:row-actions="props">

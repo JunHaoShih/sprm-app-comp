@@ -12,9 +12,8 @@
                 v-model="infoExpanded"
                 icon="article"
                 :label="$t('info')"
-                header-class="text-h6 bg-primary text-white"
-                expand-icon-class="text-white"
-                class="expandable shadow-1 overflow-hidden"
+                header-class="info-card-header"
+                class="info-card-body"
                 style="border-radius: 10px"
               >
               <div class="q-pa-sm">
@@ -59,9 +58,8 @@
                 v-model="customValuesExpanded"
                 icon="language"
                 :label="$t('customs.attributes.title')"
-                header-class="text-h6 bg-primary text-white"
-                expand-icon-class="text-white"
-                class="expandable shadow-1 overflow-hidden"
+                header-class="info-card-header"
+                class="info-card-body"
                 style="border-radius: 10px"
               >
                 <div class="q-pa-sm">

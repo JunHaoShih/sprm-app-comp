@@ -21,8 +21,7 @@
           <slot name="table-top"></slot>
           <!-- column display switch -->
           <q-btn-dropdown
-            push
-            color="primary"
+            class="action-btn"
             :label="$t('columns.display')"
           >
             <div class="row no-wrap q-pa-md">
@@ -133,7 +132,7 @@
         max-pages="6"
         direction-links
         boundary-links
-        active-color="primary"
+        active-color="dark"
       />
       <q-select
         v-model="paginationInput.page"

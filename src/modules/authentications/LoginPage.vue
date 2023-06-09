@@ -2,7 +2,7 @@
   <div class="">
     <q-layout view="lHh lpr lFf">
       <q-header elevated>
-        <q-toolbar>
+        <q-toolbar class="bg-dark">
           <q-toolbar-title>
             Simple Manufacturing Process Manager
           </q-toolbar-title>

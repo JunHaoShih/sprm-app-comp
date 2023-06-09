@@ -1,7 +1,7 @@
 <template>
   <div>
     <q-banner
-      class="bg-primary text-white"
+      class="info-banner"
       style="border-radius: 10px"
     >
       <div class="text-h6 row">

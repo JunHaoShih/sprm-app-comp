@@ -10,6 +10,7 @@
       @lazy-load="onLazyLoad"
       @update:selected="onSelected"
       :default-expand-all="true"
+      no-selection-unset
     >
       <template v-slot:default-header="prop">
         <div class="row items-center">

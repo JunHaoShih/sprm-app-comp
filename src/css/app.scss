@@ -1,5 +1,6 @@
 // app global css in SCSS form
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100;300;400;500;700;900&display=swap');
+@import 'node_modules/quasar/src/css/index';
 
 .main-panel {
   max-width: 1400px;
@@ -15,6 +16,30 @@
   display: inline-block;
   box-sizing: border-box;
   animation: rotation 1s linear infinite;
+}
+
+.action-btn {
+  background-color: $grey-2;
+  color: $dark;
+  border-radius: 20px;
+}
+
+.info-banner {
+  background-color: white;
+  color: $dark;
+  border-radius: 10px;
+  border-color: black;
+}
+
+.info-card-header {
+  @extend .text-h6;
+  @extend .bg-secondary;
+  @extend .text-white;
+}
+
+.info-card-body {
+  @extend .shadow-1;
+  @extend .overflow-hidden;
 }
 
 @keyframes rotation {

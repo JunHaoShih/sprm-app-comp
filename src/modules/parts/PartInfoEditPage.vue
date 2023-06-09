@@ -9,7 +9,7 @@
       >
         <template v-slot:after>
           <q-footer elevated>
-            <q-toolbar>
+            <q-toolbar class="bg-dark">
               <q-space />
               <q-btn
                 color="deep-orange"

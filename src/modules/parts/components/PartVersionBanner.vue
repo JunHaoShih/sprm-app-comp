@@ -1,8 +1,7 @@
 <template>
   <div>
     <q-banner
-      class="bg-primary text-white q-ma-sm"
-      style="border-radius: 10px"
+      class="info-banner q-ma-sm"
     >
       <div class="text-h6 row">
         <slot name="front"></slot>
@@ -33,10 +32,8 @@
         <slot name="before-history"></slot>
         <div>
           <q-btn
-            push
             :label="$t('iterable.history')"
-            color="white"
-            text-color="primary"
+            class="action-btn"
             @click="toHistory"
           />
         </div>
