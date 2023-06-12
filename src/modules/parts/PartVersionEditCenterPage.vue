@@ -64,7 +64,7 @@ async function updatePartAndVersion(partVersionId: number) {
   if (!success) {
     return;
   }
-  if (!partVersionStore.content.checkout) {
+  if (!partVersionStore.content.isDraft) {
     $q.notify({
       message: i18n.t('parts.versionMustCheckout'),
       color: 'red',

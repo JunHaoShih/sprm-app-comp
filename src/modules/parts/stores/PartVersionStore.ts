@@ -12,7 +12,7 @@ export const usePartVersionStore = defineStore('partVersion', {
     content: {
       id: 0,
       version: 0,
-      checkout: false,
+      isDraft: false,
       isLatest: false,
       master: {
         id: 0,
@@ -40,7 +40,7 @@ export const usePartVersionStore = defineStore('partVersion', {
       this.content = {
         id: 0,
         version: 0,
-        checkout: false,
+        isDraft: false,
         master: {
           id: 0,
           number: '',

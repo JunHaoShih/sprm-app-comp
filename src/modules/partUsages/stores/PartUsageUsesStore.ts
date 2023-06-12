@@ -62,7 +62,7 @@ export const usePartUsageTreeStore = defineStore('partUsageTree', {
         if (!this.uses.has(usage.parentId)) {
           this.uses.set(usage.parentId, new Map<number, PartUsageChild>());
         }
-        this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
+        this.uses.get(usage.parentId)?.set(usage.child.id, usage);
         this.partMap.set(usage.child.id, usage.child);
       }
       return this.treeNodes(isEdit);
@@ -79,7 +79,7 @@ export const usePartUsageTreeStore = defineStore('partUsageTree', {
         if (!this.uses.has(usage.parentId)) {
           this.uses.set(usage.parentId, new Map<number, PartUsageChild>());
         }
-        this.uses.get(usage.parentId)?.set(usage.child.version.id, usage);
+        this.uses.get(usage.parentId)?.set(usage.child.id, usage);
         this.partMap.set(usage.child.id, usage.child);
       }
     },

@@ -49,7 +49,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
         if (!part) {
           return;
         }
-        const versionId = isEdit && part.checkoutId ? part.checkoutId : part.version.id;
+        const versionId = isEdit && part.draftId ? part.draftId : part.version.id;
         const currentNode: BomTreeNode = {
           label: getPartLabel(part),
           icon: 'settings',
@@ -59,7 +59,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
           checkout: part.checkout,
           usageId: value.id,
           infoId: part.version.id,
-          checkoutId: part.checkoutId,
+          checkoutId: part.draftId,
           lazy: true,
         };
         this.nodeMap.set(value.id, currentNode);

@@ -14,7 +14,6 @@
           @click="onLatestClicked(partVersionStore.content.master.id)"
         />
         <q-btn
-
           v-if="partVersionStore.content.master.checkout"
           :label="$t('actions.draft')"
           class="q-mr-sm action-btn"
@@ -68,7 +67,7 @@ async function updatePartAndVersion(partVersionId: number) {
 async function onEditClicked(masterId: number) {
   const part = await partService.getById(masterId);
   if (part) {
-    router.push(`/parts/version/edit/${part.checkoutId}/info`);
+    router.push(`/parts/version/edit/${part.draftId}/info`);
   }
 }
 

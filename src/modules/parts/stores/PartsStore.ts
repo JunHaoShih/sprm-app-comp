@@ -19,10 +19,10 @@ export const usePartsStore = defineStore('parts', {
       return versionStr;
     },
     isInitialized: () => (part: Part): boolean => {
-      if (!part.checkoutId) {
+      if (!part.draftId) {
         return false;
       }
-      return part.checkoutId !== part.version.id;
+      return part.draftId !== part.version.id;
     },
     /**
      * Convert parts to records, so custom values are able to display in table

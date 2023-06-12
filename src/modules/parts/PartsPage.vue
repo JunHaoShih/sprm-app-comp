@@ -197,7 +197,7 @@ async function onCheckOutClicked(part: Part): Promise<Part | null> {
 }
 
 function onDiscardClicked(part: Part): void {
-  if (part.checkoutId === part.version.id) {
+  if (part.draftId === part.version.id) {
     $q.notify({
       message: i18n.t('actions.discards.cannotDiscardFirstVersion'),
       color: 'red',
@@ -235,11 +235,11 @@ function onEditClicked(part: Part): void {
     }).onOk(async () => {
       const checkoutPart = await onCheckOutClicked(part);
       if (checkoutPart) {
-        router.push(`parts/version/edit/${checkoutPart.checkoutId}/info`);
+        router.push(`parts/version/edit/${checkoutPart.draftId}/info`);
       }
     });
   } else {
-    router.push(`parts/version/edit/${part.checkoutId}/info`);
+    router.push(`parts/version/edit/${part.draftId}/info`);
   }
 }
 

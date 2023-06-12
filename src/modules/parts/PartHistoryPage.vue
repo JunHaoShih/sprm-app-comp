@@ -15,7 +15,17 @@
     >
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
-          <q-badge color="primary"
+          <q-badge
+            v-if="(props.row as PartVersion).isDraft"
+            color="orange"
+            @click="onVersionClicked(props.row as PartVersion)"
+            class="clickable-badge"
+          >
+            v. {{ (props.row as PartVersion).version }} {{ $t('actions.draft') }}
+          </q-badge>
+          <q-badge
+            v-else
+            color="primary"
             @click="onVersionClicked(props.row as PartVersion)"
             class="clickable-badge"
           >
@@ -170,6 +180,10 @@ const columns = computed(
 );
 
 async function onVersionClicked(version: PartVersion) {
+  if (version.isDraft) {
+    router.push(`/parts/version/edit/${version.id}/info`);
+    return;
+  }
   router.push(`/parts/version/${version.id}/info`);
 }
 
@@ -181,8 +195,7 @@ async function initialize() {
   const versionsPagination = await partVersionService
     .getPartVersions(Number(props.id), paginationInput.value);
   if (versionsPagination) {
-    partVersions.value = versionsPagination.content
-      .filter((version) => !version.checkout);
+    partVersions.value = versionsPagination.content;
     paginationResponse.value = versionsPagination.pagination;
   }
 }

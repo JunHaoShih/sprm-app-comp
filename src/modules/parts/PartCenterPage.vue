@@ -59,7 +59,7 @@ const part = ref<Part>({} as Part);
 const partVersion = ref<PartVersion>({
   id: 0,
   version: 0,
-  checkout: false,
+  isDraft: false,
   isLatest: false,
   master: {} as PartMaster,
   customValues: {} as Record<string, string>,
@@ -80,10 +80,10 @@ async function updatePartAndVersion(partId: number) {
   const targetPart = await partService.getById(partId);
   if (targetPart) {
     part.value = targetPart;
-    if (!targetPart.checkoutId) {
+    if (!targetPart.draftId) {
       router.push('/parts');
     }
-    const targetVersion = await partVersionService.getById(Number(targetPart.checkoutId));
+    const targetVersion = await partVersionService.getById(Number(targetPart.draftId));
     if (targetVersion) {
       partVersion.value = targetVersion;
     }
