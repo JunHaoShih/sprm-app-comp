@@ -5,7 +5,7 @@
       transition-show="rotate" transition-hide="rotate"
     >
       <q-card style="min-width: 700px">
-        <q-card-section class="bg-primary text-white row items-center">
+        <q-card-section class="bg-dark text-white row items-center">
           <div class="text-h6">{{ $t('customs.attributes.new') }}</div>
           <q-space></q-space>
           <q-btn icon="close" flat round dense v-close-popup />
@@ -13,7 +13,9 @@
         <q-separator />
         <q-card-section class="scroll dialog-inner-max">
           <!-- info area -->
-          <CustomAttributePanel
+          <CustomAttributeForm
+            ref="formRef"
+            :on-submit="addAttribute"
             v-model="defaultAttr"
             :readonly="readonly"
           />
@@ -21,7 +23,7 @@
         <q-separator />
         <q-card-actions align="right" class="text-primary">
           <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-          <q-btn flat :label="$t('actions.confirm')" @click="onConfirmClicked"></q-btn>
+          <q-btn flat :label="$t('actions.confirm')" @click="submit"></q-btn>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -36,10 +38,9 @@ import {
 import { useI18n } from 'vue-i18n';
 import { QDialog, useQuasar } from 'quasar';
 import { availableLocales } from 'src/models/Locale';
-import CustomAttributePanel from './CustomAttributePanel.vue';
+import CustomAttributeForm from './CustomAttributeForm.vue';
 import { AttributeType, CustomAttribute, DisplayType } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
-import { customAttributeValidationService } from '../services/CustomAttributeValidationService';
 import { useCustomAttributesStore } from '../stores/CustomAttributesStore';
 import { CreateCustomAttributeDTO } from '../dtos/CreateCustomAttributeDTO';
 
@@ -49,14 +50,16 @@ const $q = useQuasar();
 
 const customAttributesStore = useCustomAttributesStore();
 
+const formRef = ref<InstanceType<typeof CustomAttributeForm> | null>(null);
+
 const props = defineProps<{
   modelValue: boolean,
 }>();
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: boolean): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const prompt = computed({
   get: (): boolean => props.modelValue,
@@ -94,16 +97,12 @@ watch(prompt, (newValue, oldValue) => {
   }
 });
 
-async function onConfirmClicked(): Promise<void> {
+function submit() {
+  formRef.value?.submit();
+}
+
+async function addAttribute(): Promise<void> {
   const createDTO: CreateCustomAttributeDTO = JSON.parse(JSON.stringify(defaultAttr.value));
-  const result = customAttributeValidationService.checkCreateAttributeRules(createDTO);
-  if (result) {
-    $q.notify({
-      message: `Error: ${i18n.t(result)}`,
-      color: 'red',
-    });
-    return;
-  }
   const newAttr = await customAttributeService.create(createDTO);
   if (!newAttr) {
     return;
@@ -113,6 +112,7 @@ async function onConfirmClicked(): Promise<void> {
   $q.notify({
     message: `${newAttr.number} ${i18n.t('actions.inserts.success')}`,
     color: 'secondary',
+    icon: 'check_circle',
   });
   dialogRef.value.hide();
 }

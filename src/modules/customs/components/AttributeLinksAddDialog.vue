@@ -7,7 +7,7 @@
     transition-hide="rotate"
   >
     <q-card style="min-width: 700px">
-      <q-card-section class="bg-primary text-white row items-center">
+      <q-card-section class="bg-dark text-white row items-center">
         <div class="text-h6">{{ $t('customs.attributeLinks.new') }}</div>
         <q-space></q-space>
         <q-btn icon="close" flat round dense v-close-popup />
@@ -81,10 +81,10 @@ const props = withDefaults(defineProps<{
   excludedAttributes: () => [] as CustomAttribute[],
 });
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: boolean): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const prompt = computed({
   get: (): boolean => props.modelValue,
@@ -149,10 +149,11 @@ async function onConfirm(): Promise<void> {
   if (!newLinks) {
     return;
   }
-  newLinks.attributes.forEach((newLink) => attrLinksStore.content.attributes.push(newLink));
+  newLinks.attributes.forEach((newLink) => attrLinksStore.addLink(newLink, props.objectTypeId));
   $q.notify({
     message: `${i18n.t('actions.inserts.success')}`,
     color: 'secondary',
+    icon: 'check_circle',
   });
   dialogRef.value.hide();
 }

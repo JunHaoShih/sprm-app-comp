@@ -5,29 +5,45 @@ import { AttributeLinks } from '../models/AttributeLinks';
 import { CustomAttribute } from '../models/CustomAttribute';
 
 export interface AttributeLinksContainer {
-  content: AttributeLinks,
+  linksMap: Map<ObjectTypeId, AttributeLinks>,
 }
 
 export const useAttributeLinksStore = defineStore('attributeLinks', {
   state: (): AttributeLinksContainer => ({
-    content: {
-      objectTypeId: ObjectTypeId.None,
-      attributes: [],
-    },
+    linksMap: new Map<ObjectTypeId, AttributeLinks>(),
   }),
+  getters: {
+    attributes: (state) => (objectTypeId: ObjectTypeId): CustomAttribute[] => {
+      const atrributeLinks = state.linksMap.get(objectTypeId);
+      if (!atrributeLinks) {
+        return [];
+      }
+      return atrributeLinks.attributes;
+    },
+  },
   actions: {
     async initialize(objectTypeId: ObjectTypeId): Promise<void> {
       const attrLinks = await attributeLinkService.getByObjectTypeId(objectTypeId);
       if (attrLinks) {
-        this.content = attrLinks;
+        this.linksMap.set(objectTypeId, attrLinks);
       }
     },
-    deleteLinks(targetAttrs: CustomAttribute[]): void {
-      this.content.attributes = this.content.attributes.filter(
-        (attribute) => !targetAttrs.find(
-          (targetAttr) => targetAttr.id === attribute.id,
-        ),
-      );
+    deleteLinks(targetAttrs: CustomAttribute[], objectTypeId: ObjectTypeId): void {
+      const atrributeLinks = this.linksMap.get(objectTypeId);
+      if (atrributeLinks) {
+        atrributeLinks.attributes = atrributeLinks.attributes.filter(
+          (attribute) => !targetAttrs.find(
+            (targetAttr) => targetAttr.id === attribute.id,
+          ),
+        );
+        this.linksMap.set(objectTypeId, atrributeLinks);
+      }
+    },
+    addLink(targetAttr: CustomAttribute, objectTypeId: ObjectTypeId): void {
+      const atrributeLinks = this.linksMap.get(objectTypeId);
+      if (atrributeLinks) {
+        atrributeLinks.attributes.push(targetAttr);
+      }
     },
   },
 });

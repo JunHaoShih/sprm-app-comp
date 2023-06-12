@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
+import { Notify } from 'quasar';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -13,7 +14,9 @@ declare module '@vue/runtime-core' {
 // good idea to move this instance creation inside of the
 // "export default () => {}" function below (which runs individually
 // for each client)
-const api = axios.create();
+const api = axios.create({
+  timeout: 5000,
+});
 
 export default boot(({ app, router }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
@@ -40,7 +43,25 @@ export default boot(({ app, router }) => {
     if (error.response.status === 401) {
       localStorage.removeItem('token');
       await router.push('/login');
+      return Promise.reject(error);
     }
+    if (error.response) {
+      return Promise.reject(error);
+    }
+
+    let message = '';
+    if (error.request) {
+      // The request was made but no response was received
+      message = 'Error: No response';
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      message = 'Something went wrong';
+    }
+    Notify.create({
+      message,
+      color: 'red',
+      icon: 'error',
+    });
     return Promise.reject(error);
   });
 });

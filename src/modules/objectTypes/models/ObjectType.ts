@@ -1,10 +1,11 @@
 export enum ObjectTypeId {
   None = 0,
   PartVersion = 1,
-  Routing = 2,
-  RoutingVersion = 3,
-  Process = 4,
-  RoutingProcess = 5,
+  PartUsage = 2,
+  Routing = 3,
+  RoutingVersion = 4,
+  Process = 5,
+  RoutingProcess = 6,
 }
 
 export interface ObjectType {

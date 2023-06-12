@@ -1,32 +1,39 @@
 <template>
   <div class="q-pa-sm main-panel">
-    <PartInfoPanel
-      :id="id"
-      :readonly="false"
-      v-model="partVersionStore.content"
-    />
-    <q-footer elevated>
-      <q-toolbar>
-        <q-space />
-        <q-btn
-          color="deep-orange"
-          glossy
-          label="Save"
-          @click="onSaveClicked"
-        />
-      </q-toolbar>
-    </q-footer>
+    <div v-if="partVersionStore.partVersion.id">
+      <PartInfoForm
+        :readonly="false"
+        :on-submit="onSaveClicked"
+        v-model="partVersionStore.partVersion"
+        panel-class="outer-max"
+      >
+        <template v-slot:after>
+          <q-footer elevated>
+            <q-toolbar class="bg-dark">
+              <q-space />
+              <q-btn
+                color="deep-orange"
+                glossy
+                label="Save"
+                type="submit"
+              />
+            </q-toolbar>
+          </q-footer>
+        </template>
+      </PartInfoForm>
+    </div>
+    <div v-else class="row justify-center items-center outer-max">
+      <span class="loader"></span>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import PartInfoPanel from './components/PartInfoPanel.vue';
+import PartInfoForm from './components/PartInfoForm.vue';
 import { usePartVersionStore } from '../parts/stores/PartVersionStore';
 import { partVersionService } from './services/PartVersionService';
-import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import 'src/extensions/date.extensions';
 
 const i18n = useI18n();
@@ -34,14 +41,6 @@ const i18n = useI18n();
 const $q = useQuasar();
 
 const partVersionStore = usePartVersionStore();
-
-const attrLinksStore = useAttributeLinksStore();
-
-const props = withDefaults(defineProps<{
-  id: string,
-}>(), {
-  id: '',
-});
 
 async function onSaveClicked(): Promise<void> {
   const code = await partVersionService.update(partVersionStore.content.id, {
@@ -52,20 +51,13 @@ async function onSaveClicked(): Promise<void> {
     $q.notify({
       message: i18n.t('actions.updates.success'),
       color: 'secondary',
+      icon: 'check_circle',
     });
   }
 }
-
-onBeforeMount(async () => {
-  partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.content.attributes.map((attr) => [attr.number, '']));
-  const targetVersion = await partVersionService.getById(Number(props.id));
-  if (targetVersion) {
-    partVersionStore.content = targetVersion;
-  }
-});
 </script>
 
 <style lang="sass" scoped>
-.outer-max
-  height: calc(100vh - 70px)
+:deep(.outer-max)
+  height: calc(100vh - 270px)
 </style>

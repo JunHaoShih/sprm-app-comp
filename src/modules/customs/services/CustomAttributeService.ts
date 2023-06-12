@@ -12,27 +12,21 @@ import { UpdateCustomAttributeDTO } from '../dtos/UpdateCustomAttributeDTO';
  */
 const create = async (createDto: CreateCustomAttributeDTO)
 : Promise<CustomAttribute | null> => {
-  const newAttribute = await api.post('api/CustomAttribute', createDto)
+  const newAttribute = await api.post('/api/CustomAttribute', createDto)
     .then((response): CustomAttribute => {
       const data = response.data as SPRMResponse<CustomAttribute>;
       return data.content;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-      });
       return null;
     });
   return newAttribute;
@@ -46,27 +40,21 @@ const create = async (createDto: CreateCustomAttributeDTO)
  */
 const update = async (id: number, updateDto: UpdateCustomAttributeDTO)
 : Promise<number | null> => {
-  const returnMessage = await api.put(`api/CustomAttribute/${id}`, updateDto)
+  const returnMessage = await api.put(`/api/CustomAttribute/${id}`, updateDto)
     .then((response): number => {
       const data = response.data as SPRMResponse<string>;
       return data.code;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-      });
       return null;
     });
   return returnMessage;
@@ -77,27 +65,21 @@ const update = async (id: number, updateDto: UpdateCustomAttributeDTO)
  * @returns All custom attributes
  */
 const getAll = async () : Promise<CustomAttribute[] | null> => {
-  const attributes = await api.get('api/CustomAttribute')
+  const attributes = await api.get('/api/CustomAttribute')
     .then((response): CustomAttribute[] => {
       const data = response.data as SPRMResponse<CustomAttribute[]>;
       return data.content;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-      });
       return null;
     });
   return attributes;
@@ -109,27 +91,21 @@ const getAll = async () : Promise<CustomAttribute[] | null> => {
  * @returns body code
  */
 const remove = async (id: number): Promise<number | null> => {
-  const returnMessage = await api.delete(`api/CustomAttribute/${id}`)
+  const returnMessage = await api.delete(`/api/CustomAttribute/${id}`)
     .then((response): number => {
       const data = response.data as SPRMResponse<string>;
       return data.code;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-      });
       return null;
     });
   return returnMessage;

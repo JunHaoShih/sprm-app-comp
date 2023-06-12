@@ -1,37 +1,40 @@
 <template>
   <div>
-    <!-- action bar -->
-    <div class="row shadow-1 q-mb-sm q-pa-sm"
-      style="border-radius: 10px"
-    >
-      <q-btn v-if="readonly" dense round flat color="grey" icon="edit"
-        @click="readonly = !readonly"
-      />
-      <div v-else class="row">
-        <q-btn dense round flat color="red" icon="close"
-          class="bg-grey-4 q-mr-sm"
-          @click="onCancelClicked"
-        />
-        <q-btn dense round flat color="green" icon="done"
-          class="bg-grey-4"
-          @click="onConfirmClicked"
-        />
-      </div>
-      <q-space/>
-      <div class="q-ma-sm">
-        Last edited: {{ new Date(defaultAttr.updateDate).getDateStr() }}
-        <q-tooltip>
-          <div>{{ new Date(defaultAttr.updateDate).toString() }}</div>
-          <div>By {{ defaultAttr.updateUser }}</div>
-        </q-tooltip>
-      </div>
-    </div>
-
     <!-- info area -->
-    <CustomAttributePanel
+    <CustomAttributeForm
       v-model="defaultAttr"
+      :on-submit="editAttribute"
       :readonly="readonly"
-    />
+    >
+      <template v-slot:before>
+        <!-- action bar -->
+        <div class="row shadow-1 q-mb-sm q-pa-sm"
+          style="border-radius: 10px"
+        >
+          <q-btn v-if="readonly" dense round flat color="grey" icon="edit"
+            @click="readonly = !readonly"
+          />
+          <div v-else class="row">
+            <q-btn dense round flat color="red" icon="close"
+              class="bg-grey-4 q-mr-sm"
+              @click="onCancelClicked"
+            />
+            <q-btn dense round flat color="green" icon="done"
+              class="bg-grey-4"
+              type="submit"
+            />
+          </div>
+          <q-space/>
+          <div class="q-ma-sm">
+            Last edited: {{ new Date(defaultAttr.updateDate).getDateStr() }}
+            <q-tooltip>
+              <div>{{ new Date(defaultAttr.updateDate).toString() }}</div>
+              <div>By {{ defaultAttr.updateUser }}</div>
+            </q-tooltip>
+          </div>
+        </div>
+      </template>
+    </CustomAttributeForm>
   </div>
 </template>
 
@@ -41,10 +44,9 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
-import CustomAttributePanel from './CustomAttributePanel.vue';
+import CustomAttributeForm from './CustomAttributeForm.vue';
 import { CustomAttribute } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
-import { customAttributeValidationService } from '../services/CustomAttributeValidationService';
 import 'src/extensions/date.extensions';
 
 const i18n = useI18n();
@@ -55,10 +57,10 @@ const props = defineProps<{
   modelValue: CustomAttribute,
 }>();
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: CustomAttribute): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const inputAttr = computed({
   get: () => props.modelValue,
@@ -82,15 +84,7 @@ function onCancelClicked(): void {
   initialize();
 }
 
-async function onConfirmClicked(): Promise<void> {
-  const result = customAttributeValidationService.checkAttributeRules(defaultAttr.value);
-  if (result) {
-    $q.notify({
-      message: `Error: ${i18n.t(result)}`,
-      color: 'red',
-    });
-    return;
-  }
+async function editAttribute(): Promise<void> {
   const code = await customAttributeService.update(defaultAttr.value.id, {
     number: defaultAttr.value.number,
     name: defaultAttr.value.name,
@@ -117,6 +111,7 @@ async function onConfirmClicked(): Promise<void> {
     $q.notify({
       message: `${inputAttr.value.number}: ${i18n.t('actions.updates.success')}`,
       color: 'secondary',
+      icon: 'check_circle',
     });
   }
 }

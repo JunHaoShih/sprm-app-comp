@@ -1,6 +1,9 @@
 import { api } from 'src/boot/axios';
 import { Notify } from 'quasar';
 import { SPRMResponse } from 'src/models/SPRMResponse';
+import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
+import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationResponse';
+import { paginationService } from 'src/services/PaginationService';
 import { PartVersion } from '../models/PartVersion';
 import { UpdatePartVersionDTO } from '../dtos/UpdatePartVersionDTO';
 
@@ -12,21 +15,15 @@ const getById = async (id: number): Promise<PartVersion | null> => {
       return data.content;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-      });
       return null;
     });
   return partVersionResponse;
@@ -40,27 +37,53 @@ const update = async (id: number, dto: UpdatePartVersionDTO): Promise<number | n
       return data.code;
     })
     .catch((error) => {
-      let message = '';
       if (error.response) {
         const body: SPRMResponse<string> = error.response.data;
-        message = `Error: ${body.code}, ${body.message}`;
-      } else if (error.request) {
-        // The request was made but no response was received
-        message = 'Error: No response';
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        message = 'Something went wrong';
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
       }
-      Notify.create({
-        message,
-        color: 'red',
-      });
       return null;
     });
   return code;
 };
 
+const getPartVersions = async (partId: number, pagination: OffsetPaginationInput):
+Promise<OffsetPaginationData<PartVersion[]> | null> => {
+  const partsResponse = await api
+    .get(`/api/Part/${partId}/PartVersion`, {
+      params: {
+        page: pagination.page,
+        perPage: pagination.perPage,
+      },
+    })
+    .then((response): OffsetPaginationData<PartVersion[]> => {
+      const data = response.data as SPRMResponse<PartVersion[]>;
+      return {
+        pagination: paginationService.getHeaderPagination(response),
+        content: data.content,
+      };
+    })
+    .catch((error) => {
+      if (error.response) {
+        const body: SPRMResponse<string> = error.response.data;
+        const message = `Error: ${body.code}, ${body.message}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
+      }
+      return null;
+    });
+  return partsResponse;
+};
+
 export const partVersionService = {
   getById,
   update,
+  getPartVersions,
 };

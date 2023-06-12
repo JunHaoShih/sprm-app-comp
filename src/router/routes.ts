@@ -8,20 +8,26 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       { path: '/parts', component: () => import('src/modules/parts/PartsPage.vue') },
       {
-        path: '/parts/:id',
-        component: () => import('src/modules/parts/PartCenterPage.vue'),
+        path: '/parts/:id/history',
+        component: () => import('src/modules/parts/PartHistoryPage.vue'),
         props: true,
-        children: [
-          { path: '/parts/:id/info', component: () => import('src/modules/parts/PartInfoEditPage.vue'), props: true },
-        ],
       },
       {
         path: '/parts/version/:id',
         component: () => import('src/modules/parts/PartVersionCenterPage.vue'),
         props: true,
         children: [
-          { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue'), props: true },
+          { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue') },
           { path: '/parts/version/:id/usages', component: () => import('src/modules/partUsages/PartUsagesPage.vue'), props: true },
+        ],
+      },
+      {
+        path: '/parts/version/edit/:id',
+        component: () => import('src/modules/parts/PartVersionEditCenterPage.vue'),
+        props: true,
+        children: [
+          { path: '/parts/version/edit/:id/info', component: () => import('src/modules/parts/PartInfoEditPage.vue'), props: true },
+          { path: '/parts/version/edit/:id/usages', component: () => import('src/modules/partUsages/PartUsagesEditPage.vue'), props: true },
         ],
       },
       {

@@ -1,84 +1,48 @@
-import { ValidateRule } from 'src/models/ValidateRule';
-import { Part } from '../models/Part';
-import { CreatePartDTO } from '../dtos/CreatePartDTO';
+import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
 
-export const validateNumberRules: ValidateRule[] = [
+const validateNumberRules: ValidateRule[] = [
   {
     validate: (val) => !!val,
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length >= 3,
+    validate: (val) => String(val).length >= 3,
     message: 'validations.parts.shorterThan3',
   },
   {
-    validate: (val) => val.length <= 50,
+    validate: (val) => String(val).length <= 50,
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[a-zA-Z0-9_-]*$/.test(val),
+    validate: (val) => /^[a-zA-Z0-9_-]*$/.test(String(val)),
     message: 'validations.parts.invalidChar',
   },
 ];
 
-export const validateNameRules: ValidateRule[] = [
+const validateNameRules: ValidateRule[] = [
   {
     validate: (val) => !!val,
     message: 'validations.notNull',
   },
   {
-    validate: (val) => val.length <= 50,
+    validate: (val) => String(val).length <= 50,
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(val),
+    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.parts.invalidChar',
   },
 ];
 
-const checkNumberRules = (number: string): string | undefined => {
-  const result = validateNumberRules.find((rule) => !rule.validate(number));
-  if (result) {
-    return result.message;
-  }
-  return result;
-};
+const numberRules = (val: string) => (
+  genericRulesCheck(val, validateNumberRules)
+);
 
-const checkNameRules = (name: string): string | undefined => {
-  const result = validateNameRules.find((rule) => !rule.validate(name));
-  if (result) {
-    return result.message;
-  }
-  return result;
-};
-
-const checkPartRules = (part: Part): string | undefined => {
-  let result = checkNumberRules(part.number);
-  if (result) {
-    return result;
-  }
-  result = checkNameRules(part.name);
-  if (result) {
-    return result;
-  }
-  return result;
-};
-
-const checkCreatePartRules = (part: CreatePartDTO): string | undefined => {
-  let result = checkNumberRules(part.number);
-  if (result) {
-    return result;
-  }
-  result = checkNameRules(part.name);
-  if (result) {
-    return result;
-  }
-  return result;
-};
+const nameRules = (val: string) => (
+  genericRulesCheck(val, validateNameRules)
+);
 
 export const partValidationService = {
-  checkNumberRules,
-  checkNameRules,
-  checkPartRules,
-  checkCreatePartRules,
+  numberRules,
+  nameRules,
 };

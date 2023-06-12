@@ -9,17 +9,37 @@
     >
       <!-- button at table header -->
       <template v-if="!readonly" v-slot:top>
-        <q-btn color="primary" :label="$t('actions.add')" @click="onAddClick"></q-btn>
-        <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
-        <q-space />
+        <div class="q-gutter-xs">
+          <q-btn
+            class="action-btn"
+            :label="$t('actions.add')"
+            @click="onAddClick"
+          />
+          <q-btn
+            class="action-btn"
+            :label="$t('actions.delete')"
+          />
+          <q-space />
+        </div>
       </template>
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round flat
-            color="grey" icon="edit" @click="onEdit(props.row as CustomOption)"></q-btn>
-          <q-btn dense round flat
-            color="grey" icon="delete"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="edit"
+            size="10px"
+            @click="onEdit(props.row as CustomOption)"></q-btn>
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="delete"
+            size="10px"></q-btn>
         </q-td>
       </template>
       <!-- languages -->
@@ -39,47 +59,62 @@
     </q-table>
   </div>
   <!-- dialog -->
-  <q-dialog ref="dialogRef" v-model="prompt" persistent>
+  <q-dialog
+    ref="dialogRef"
+    v-model="prompt"
+    persistent
+  >
     <q-card style="min-width: 700px">
-      <q-card-section>
-        <div class="text-h6">File</div>
-      </q-card-section>
-      <!-- key input -->
-      <q-card-section class="q-pt-none">
-        <ValidationInput v-model="editedOption.key" :label="$t('key')"
-          :inputValidator="customOptionValidateService.checkOptionKeyRules"
-          :readonly="dialogMode === 2"
-        />
-      </q-card-section>
-      <!-- value input -->
-      <q-card-section class="q-pt-none">
-        <ValidationInput v-model="editedOption.value" :label="$t('value')"
-          :inputValidator="customOptionValidateService.checkOptionValueRules"
-        />
-      </q-card-section>
-      <!-- languages input -->
-      <q-card-section class="q-pt-none">
-        <div
-          v-for="locale in availableLocales"
-          :key="locale"
-        >
-          <div class="q-ma-sm">{{ locale }}</div>
-          <ValidationInput v-model="editedOption.languages[locale]"
-            :inputValidator="languageValidateService.checkLanguageRules"
+      <q-form
+        @submit="onDialogConfirm"
+      >
+        <q-card-section class="bg-dark text-white row items-center" >
+          <div class="text-h6">File</div>
+          <q-space></q-space>
+          <q-btn icon="close" flat round dense v-close-popup />
+        </q-card-section>
+        <!-- key input -->
+        <q-card-section class="q-pt-sm" >
+          <ValidationInput
+            v-model="editedOption.key"
+            :label="$t('key')"
+            :inputValidator="customOptionValidateService.optionKeyRules"
+            :readonly="dialogMode === 2"
           />
-        </div>
-      </q-card-section>
-      <!-- actions -->
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat label="Cancel" v-close-popup></q-btn>
-        <q-btn flat label="Confirm" @click="onDialogConfirm"></q-btn>
-      </q-card-actions>
+        </q-card-section>
+        <!-- value input -->
+        <q-card-section class="q-pt-none">
+          <ValidationInput
+            v-model="editedOption.value"
+            :label="$t('value')"
+            :inputValidator="customOptionValidateService.optionValueRules"
+          />
+        </q-card-section>
+        <!-- languages input -->
+        <q-card-section class="q-pt-none">
+          <div
+            v-for="locale in availableLocales"
+            :key="locale"
+          >
+            <ValidationInput
+              v-model="editedOption.languages[locale]"
+              :label="locale"
+              :inputValidator="languageValidateService.languageRules"
+            />
+          </div>
+        </q-card-section>
+        <!-- actions -->
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup></q-btn>
+          <q-btn flat label="Confirm" type="submit"></q-btn>
+        </q-card-actions>
+      </q-form>
     </q-card>
   </q-dialog>
 </template>
 
 <script setup lang="ts">
-import { QDialog, QTableProps, useQuasar } from 'quasar';
+import { QDialog, QTableProps } from 'quasar';
 import { computed, ref } from 'vue';
 import { useI18n } from 'vue-i18n';
 import ValidationInput from 'src/components/ValidationInput.vue';
@@ -91,8 +126,6 @@ import { CustomOption } from '../models/CustomAttribute';
 
 const i18n = useI18n();
 
-const $q = useQuasar();
-
 const dialogRef = ref<QDialog>({} as QDialog);
 
 const props = withDefaults(defineProps<{
@@ -102,10 +135,10 @@ const props = withDefaults(defineProps<{
   readonly: true,
 });
 
-// eslint-disable-next-line no-spaced-func, func-call-spacing
-const emit = defineEmits<{
+type Emit = {
   (e: 'update:modelValue', value: CustomOption[]): void
-}>();
+}
+const emit = defineEmits<Emit>();
 
 const inputOptions = computed({
   get: () => props.modelValue,
@@ -151,6 +184,9 @@ function onAddClick(): void {
     value: '',
     languages: {},
   };
+  availableLocales.forEach((locale) => {
+    editedOption.value.languages[locale] = '';
+  });
   prompt.value = true;
 }
 
@@ -163,14 +199,6 @@ function onEdit(customOption: CustomOption): void {
 }
 
 function onDialogConfirm(): void {
-  const error = customOptionValidateService.checkOptionRules(editedOption.value);
-  if (error) {
-    $q.notify({
-      message: `Error: ${i18n.t(error)}`,
-      color: 'red',
-    });
-    return;
-  }
   switch (dialogMode.value) {
     case DialogType.Edit: {
       const targetOption = inputOptions.value

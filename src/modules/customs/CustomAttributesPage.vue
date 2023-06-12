@@ -1,8 +1,16 @@
 <template>
   <div class="main-panel">
-    <div class="row q-pa-md">
-      <q-btn color="primary" :label="$t('actions.add')" @click="onAddClicked"></q-btn>
-      <q-btn color="primary" :label="$t('actions.delete')" @click="onDeleteClicked"></q-btn>
+    <div class="row q-pa-md q-gutter-xs">
+      <q-btn
+        class="action-btn"
+        :label="$t('actions.add')"
+        @click="onAddClicked"
+      />
+      <q-btn
+        class="action-btn"
+        :label="$t('actions.delete')"
+        @click="onDeleteClicked"
+      />
       <q-space/>
       <q-input
         dense
@@ -26,7 +34,7 @@
               v-ripple
               :active="defaultAttr.id === attr.id"
               @click="defaultAttr = attr"
-              active-class="highlight-menu"
+              active-class="bg-secondary text-white"
             >
               <q-item-section avatar>
                 <q-avatar class="avatar-color" text-color="white">{{ attr.name[0] }}</q-avatar>
@@ -98,6 +106,7 @@ function onDeleteClicked(): void {
     $q.notify({
       message: `${i18n.t('actions.deletes.atLeastOne')}`,
       color: 'red',
+      icon: 'error',
     });
     return;
   }
@@ -112,13 +121,14 @@ function onDeleteClicked(): void {
       $q.notify({
         message: `${defaultAttr.value.number}: ${i18n.t('actions.deletes.success')}`,
         color: 'secondary',
+        icon: 'check_circle',
       });
       customAttributesStore.removeAttribute(defaultAttr.value.id);
     }
   });
 }
 
-watch(() => attributes.value.length, (newValue, oldValue) => {
+watch(() => attributes.value.length, () => {
   const firstAttr = attributes.value[0];
   if (firstAttr) {
     defaultAttr.value = firstAttr;

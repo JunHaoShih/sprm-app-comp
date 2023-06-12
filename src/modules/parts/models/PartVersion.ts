@@ -11,7 +11,8 @@ export interface PartMaster {
 
 export interface PartVersion extends ReturnBase {
   version: number,
-  checkout: boolean,
+  isDraft: boolean,
+  isLatest: boolean,
   master: PartMaster,
   customValues: Record<string, string>,
 }

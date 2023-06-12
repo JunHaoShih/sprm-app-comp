@@ -18,7 +18,7 @@
         <div class="q-ml-sm">
           <q-icon v-if="part.checkout" name="warning" color="orange" size="8px">
             <q-tooltip>
-              {{ $t('iterable.checkout') }}
+              {{ $t('actions.checkout') }}
             </q-tooltip>
           </q-icon>
         </div>
@@ -40,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 import { useRouter } from 'vue-router';
 import { partService } from './services/PartService';
 import { partVersionService } from './services/PartVersionService';
@@ -59,7 +59,8 @@ const part = ref<Part>({} as Part);
 const partVersion = ref<PartVersion>({
   id: 0,
   version: 0,
-  checkout: false,
+  isDraft: false,
+  isLatest: false,
   master: {} as PartMaster,
   customValues: {} as Record<string, string>,
   createUser: '',
@@ -75,19 +76,27 @@ const props = withDefaults(defineProps<{
   id: '',
 });
 
-onBeforeMount(async () => {
-  attrLinksStore.initialize(ObjectTypeId.PartVersion);
-  const targetPart = await partService.getById(Number(props.id));
+async function updatePartAndVersion(partId: number) {
+  const targetPart = await partService.getById(partId);
   if (targetPart) {
     part.value = targetPart;
-    if (!targetPart.checkoutId) {
+    if (!targetPart.draftId) {
       router.push('/parts');
     }
-    const targetVersion = await partVersionService.getById(Number(targetPart.checkoutId));
+    const targetVersion = await partVersionService.getById(Number(targetPart.draftId));
     if (targetVersion) {
       partVersion.value = targetVersion;
     }
   }
+}
+
+watch(() => props.id, async (newValue) => {
+  await updatePartAndVersion(Number(newValue));
+});
+
+onBeforeMount(async () => {
+  attrLinksStore.initialize(ObjectTypeId.PartVersion);
+  await updatePartAndVersion(Number(props.id));
 });
 </script>
 

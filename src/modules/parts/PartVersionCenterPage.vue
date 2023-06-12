@@ -1,33 +1,31 @@
 <template>
   <div class="main-panel">
-    <q-banner
-      class="bg-primary text-white q-ma-sm"
-      style="border-radius: 10px"
+    <PartVersionBanner
+      :part-version="partVersionStore.content"
     >
-      <div class="text-h6 row">
-        <div>{{ partVersionStore.content.master.number }}</div>
-        <div>
-          [{{ partVersionStore.content.version }}]
-        </div>
-        <div v-if="partVersionStore.content.master.viewType === ViewType.Design">
-          [{{ $t('parts.views.design') }}]
-        </div>
-        <div v-else>
-          [{{ $t('parts.views.manufacturing') }}]
-        </div>
-        <div class="q-ml-sm">
-          <q-icon v-if="part.checkout" name="warning" color="orange" size="8px">
-            <q-tooltip>
-              {{ $t('iterable.checkout') }}
-            </q-tooltip>
-          </q-icon>
-        </div>
-      </div>
-    </q-banner>
+      <template v-slot:front>
+        <q-icon name="info" size="24px" class="q-mt-xs q-mr-sm"/>
+      </template>
+      <template v-slot:before-history>
+        <q-btn
+          v-if="!partVersionStore.content.isLatest"
+          :label="$t('iterable.latest')"
+          class="q-mr-sm action-btn"
+          @click="onLatestClicked(partVersionStore.content.master.id)"
+        />
+        <q-btn
+          v-if="partVersionStore.content.master.checkout"
+          :label="$t('actions.draft')"
+          class="q-mr-sm action-btn"
+          @click="onEditClicked(partVersionStore.content.master.id)"
+        />
+      </template>
+    </PartVersionBanner>
     <q-tabs
-      align="left"
+      align="justify"
       indicator-color="orange"
-      class="tabs-font"
+      active-bg-color="grey-4"
+      class="tabs-font q-ma-sm tabs-header"
     >
       <q-route-tab
         :label="$t('parts.info')"
@@ -45,20 +43,16 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
-import { partService } from './services/PartService';
-import { partVersionService } from './services/PartVersionService';
-import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
+import { onBeforeMount, watch } from 'vue';
+import { useRouter } from 'vue-router';
 import { usePartVersionStore } from './stores/PartVersionStore';
-import { Part, ViewType } from './models/Part';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
+import PartVersionBanner from './components/PartVersionBanner.vue';
 import 'src/extensions/date.extensions';
+import { partService } from './services/PartService';
 
-const attrLinksStore = useAttributeLinksStore();
+const router = useRouter();
 
 const partVersionStore = usePartVersionStore();
-
-const part = ref<Part>({} as Part);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -66,17 +60,30 @@ const props = withDefaults(defineProps<{
   id: '',
 });
 
-onBeforeMount(async () => {
-  partVersionStore.content.customValues = Object.fromEntries(attrLinksStore.content.attributes.map((attr) => [attr.number, '']));
-  attrLinksStore.initialize(ObjectTypeId.PartVersion);
-  const targetVersion = await partVersionService.getById(Number(props.id));
-  if (targetVersion) {
-    partVersionStore.content = targetVersion;
-    const targetPart = await partService.getById(Number(targetVersion.master.id));
-    if (targetPart) {
-      part.value = targetPart;
-    }
+async function updatePartAndVersion(partVersionId: number) {
+  await partVersionStore.partVersionInit(partVersionId);
+}
+
+async function onEditClicked(masterId: number) {
+  const part = await partService.getById(masterId);
+  if (part) {
+    router.push(`/parts/version/edit/${part.draftId}/info`);
   }
+}
+
+async function onLatestClicked(masterId: number) {
+  const part = await partService.getById(masterId);
+  if (part) {
+    router.push(`/parts/version/${part.version.id}/info`);
+  }
+}
+
+watch(() => props.id, async (newValue) => {
+  await updatePartAndVersion(Number(newValue));
+});
+
+onBeforeMount(async () => {
+  await updatePartAndVersion(Number(props.id));
 });
 </script>
 

@@ -1,25 +1,27 @@
 <template>
-  <div class="q-pa-sm">
+  <div class="q-px-sm">
+    <q-separator />
     <!-- splitter area -->
     <q-splitter
       v-model="splitterModel"
       class="outer-max"
     >
       <template v-slot:before>
-        <div class="q-pa-md q-gutter-sm">
-          <q-tree
-          ref="qtree"
-            :nodes="partUsaeChildrenStore.treeNodes"
-            node-key="id"
-            @lazy-load="onLazyLoad"
-            :default-expand-all="true"
-          />
-        </div>
+        <PartUsageTreePanel
+          class="q-pa-md q-gutter-sm"
+          :id="Number(props.id)"
+          v-model:selectedNode="selectedNode"
+          :isEdit="false"
+        >
+        </PartUsageTreePanel>
       </template>
 
       <template v-slot:after>
-        <div class="q-pa-md">
-          Infos
+        <div class="q-gutter-sm">
+          <PartUsageRightPanel
+            :id="selectedParentId"
+            :readonly="true"
+          />
         </div>
       </template>
     </q-splitter>
@@ -27,46 +29,33 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref } from 'vue';
-import { usePartVersionStore } from '../parts/stores/PartVersionStore';
-import { BomTreeNode, usePartUsageChildrenStore } from './stores/PartUsageUsesStore';
-import { partUsageService } from './services/PartUsageService';
+import { computed, ref } from 'vue';
+import PartUsageRightPanel from './components/PartUsageRightPanel.vue';
+import PartUsageTreePanel from './components/PartUsageTreePanel.vue';
 import 'src/extensions/date.extensions';
-
-const partVersionStore = usePartVersionStore();
-
-const partUsaeChildrenStore = usePartUsageChildrenStore();
+import { BomTreeNode } from './stores/BomTreeStore';
 
 const splitterModel = ref(50);
+
+const selectedNode = ref<BomTreeNode>({} as BomTreeNode);
+
+const selectedParentId = computed(
+  (): number => {
+    if (Object.keys(selectedNode).length === 0) {
+      return 0;
+    }
+    return selectedNode.value.versionId;
+  },
+);
 
 const props = withDefaults(defineProps<{
   id: string,
 }>(), {
   id: '',
 });
-
-async function onLazyLoad(details: {
-  node: BomTreeNode,
-  key: string,
-  done: (children?: readonly BomTreeNode[] | undefined) => void,
-  fail: () => void,
-}) {
-  const uses = await partUsageService.getByParentVersionId(details.node.versionId);
-  if (uses) {
-    partUsaeChildrenStore.addUses(uses);
-    details.done([]);
-  }
-}
-
-onBeforeMount(async () => {
-  const uses = await partUsageService.getByParentVersionId(Number(props.id));
-  if (uses) {
-    partUsaeChildrenStore.initialize(uses, partVersionStore.content);
-  }
-});
 </script>
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 200px)
+  height: calc(100vh - 190px)
 </style>

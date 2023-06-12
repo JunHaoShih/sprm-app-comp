@@ -38,6 +38,7 @@ export const CurrentUserStore = defineStore('currentUser', {
           Notify.create({
             message,
             color: 'red',
+            icon: 'error',
           });
           return null;
         });

@@ -12,7 +12,8 @@ export interface PartVersionInfo extends ReturnBase {
   masterId: number,
   version: number,
   isLatest: boolean,
-  checkout: boolean,
+  isDraft: boolean,
+  customValues: Record<string, string>,
 }
 
 export interface Part extends ReturnBase {
@@ -20,7 +21,6 @@ export interface Part extends ReturnBase {
   name: string,
   viewType: ViewType,
   checkout: boolean,
-  checkoutId: number | null,
+  draftId: number | null,
   version: PartVersionInfo,
-  customValues: Record<string, string>,
 }

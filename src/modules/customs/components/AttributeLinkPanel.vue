@@ -3,7 +3,7 @@
     <q-table
       dense
       :title="$t('customs.attributeLinks.title')"
-      :rows="attrLinksStore.content.attributes"
+      :rows="targetAttributes"
       :columns="columns"
       :pagination="pagination"
       v-model:selected="selectedAttributes"
@@ -14,17 +14,40 @@
     >
       <!-- button at table header -->
       <template v-slot:top>
-        <q-btn color="primary" :label="$t('actions.add')" @click="searchPrompt = !searchPrompt"/>
-        <q-btn color="primary" :label="$t('actions.delete')" @click="onMultiDelete" />
-        <q-space />
+        <div class="q-gutter-xs">
+          <q-btn
+            class="action-btn"
+            :label="$t('actions.add')"
+            @click="searchPrompt = !searchPrompt"
+          />
+          <q-btn
+            class="action-btn"
+            :label="$t('actions.delete')"
+            @click="onMultiDelete"
+          />
+          <q-space />
+        </div>
       </template>
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <q-btn dense round flat
-            color="grey" icon="delete" @click="onSingleDelete(props.row as CustomAttribute)" />
-          <q-btn dense round flat
-            color="grey" icon="info" @click="onInfoClicked(props.row as CustomAttribute)" />
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="delete"
+            size="12px"
+            @click="onSingleDelete(props.row as CustomAttribute)"
+          />
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="info"
+            size="12px"
+            @click="onInfoClicked(props.row as CustomAttribute)" />
         </q-td>
       </template>
       <!-- display type -->
@@ -39,14 +62,14 @@
     <q-dialog v-model="viewPrompt" persistent
       transition-show="rotate" transition-hide="rotate">
       <q-card style="min-width: 700px">
-        <q-card-section class="bg-primary text-white row items-center">
+        <q-card-section class="bg-dark text-white row items-center">
           <div class="text-h6">{{ $t('customs.attributes.title') }}</div>
           <q-space></q-space>
           <q-btn icon="close" flat round dense v-close-popup />
         </q-card-section>
         <q-separator />
         <q-card-section class="scroll dialog-inner-max">
-          <CustomAttributePanel
+          <CustomAttributeForm
             v-model="viewedCustomAttribute"
             :readonly="true"
           />
@@ -55,8 +78,8 @@
     </q-dialog>
     <AttributeLinksAddDialog
       v-model="searchPrompt"
-      :excludedAttributes="attrLinksStore.content.attributes"
-      :objectTypeId="attrLinksStore.content.objectTypeId"
+      :excludedAttributes="targetAttributes"
+      :objectTypeId="props.objectTypeId"
     />
   </div>
 </template>
@@ -68,7 +91,7 @@ import {
 import { useI18n } from 'vue-i18n';
 import { QDialog, QTableProps, useQuasar } from 'quasar';
 import AttributeLinksAddDialog from './AttributeLinksAddDialog.vue';
-import CustomAttributePanel from './CustomAttributePanel.vue';
+import CustomAttributeForm from './CustomAttributeForm.vue';
 import { CustomAttribute } from '../models/CustomAttribute';
 import { useAttributeLinksStore } from '../stores/AttributeLinksStore';
 import { useDisplayTypesStore } from '../stores/DisplayTypesStore';
@@ -95,6 +118,10 @@ const props = withDefaults(defineProps<{
 }>(), {
   objectTypeId: 0,
 });
+
+const targetAttributes = computed(
+  (): CustomAttribute[] => attrLinksStore.attributes(props.objectTypeId),
+);
 
 const columns = computed(
   (): QTableProps['columns'] => [
@@ -149,10 +176,11 @@ async function onSingleDelete(attribute: CustomAttribute) {
       attributeIds: [attribute.id],
     });
     if (code === 0) {
-      attrLinksStore.deleteLinks([attribute]);
+      attrLinksStore.deleteLinks([attribute], props.objectTypeId);
       $q.notify({
         message: i18n.t('actions.deletes.success'),
         color: 'secondary',
+        icon: 'check_circle',
       });
     }
   });
@@ -163,6 +191,7 @@ async function onMultiDelete(): Promise<void> {
     $q.notify({
       message: i18n.t('actions.deletes.atLeastOne'),
       color: 'red',
+      icon: 'error',
     });
     return;
   }
@@ -177,11 +206,12 @@ async function onMultiDelete(): Promise<void> {
       attributeIds: selectedAttributes.value.map((attr) => attr.id),
     });
     if (code === 0) {
-      attrLinksStore.deleteLinks(selectedAttributes.value);
+      attrLinksStore.deleteLinks(selectedAttributes.value, props.objectTypeId);
       selectedAttributes.value.length = 0;
       $q.notify({
         message: i18n.t('actions.deletes.success'),
         color: 'secondary',
+        icon: 'check_circle',
       });
     }
   });

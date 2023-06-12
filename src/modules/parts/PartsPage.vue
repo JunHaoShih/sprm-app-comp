@@ -1,139 +1,152 @@
 <template>
   <div class="q-pa-sm">
     <!-- product files table -->
-    <q-table
-      title="Parts"
-      :rows="partsStore.parts"
-      :columns="columns"
+    <PartsSearchPanel
+      v-model="pattern"
+      :readonly="true"
       v-model:selected="selected"
       selection="multiple"
-      row-key="id"
-      class="center-max outer-max main-panel"
-      dense
-      :pagination="pagination"
-      style="position: sticky; top: 0"
+      class="main-panel"
+      table-class="outer-max"
+      @on-search="onSearch"
     >
-      <!-- button at table header -->
-      <template v-slot:top>
-        <q-btn color="primary" :label="$t('actions.add')" @click="prompt=true"></q-btn>
-        <q-btn color="primary" :label="$t('actions.delete')"></q-btn>
-        <q-space />
-        <q-input v-model="patternInput" type="text" label="Search"
-          v-on:keyup.enter="onSearchEnter"
+      <template v-slot:table-top>
+        <q-btn
+          :label="$t('actions.add')"
+          @click="prompt=true"
+          class="action-btn"
+        />
+        <q-btn
+          :label="$t('actions.delete')"
+          class="action-btn"
         />
       </template>
-      <!-- action buttons -->
-      <template v-slot:body-cell-actions="props">
-        <q-td :props="props">
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            icon="edit"
-            @click="onEditClicked(props.row as Part)"
-          />
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            icon="delete"
-          />
-          <q-btn
-            dense
-            round
-            flat
-            color="grey"
-            icon="info"
-            @click="onInfoClicked(props.row as Part)"
-          />
-        </q-td>
+      <template v-slot:row-actions="props">
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="edit"
+          size="12px"
+          @click="onEditClicked(props.part)"
+        />
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="delete"
+          size="12px"
+        />
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="info"
+          size="12px"
+          @click="onInfoClicked(props.part)"
+        />
       </template>
-      <!-- is checkout -->
-      <template v-slot:body-cell-isCheckout="props">
-        <q-td :props="props">
-          <q-icon v-if="props.row.checkout" name="warning" color="orange" size="8px">
-            <q-tooltip>
-              {{ $t('iterable.checkout') }}
-            </q-tooltip>
-          </q-icon>
-        </q-td>
-      </template>
-      <!-- version -->
-      <template v-slot:body-cell-version="props">
-        <q-td :props="props">
-          {{ partsStore.getVersion(props.row.version) }}
-        </q-td>
-      </template>
-      <!-- view -->
-      <template v-slot:body-cell-view="props">
-        <q-td v-if="props.row.viewType === ViewType.Design" :props="props">
-          {{ $t('parts.views.design') }}
-        </q-td>
-        <q-td v-else :props="props">
-          {{ $t('parts.views.manufacturing') }}
-        </q-td>
-      </template>
-      <!-- create date -->
-      <template v-slot:body-cell-createDate="props">
-        <q-td :props="props">
-          {{ new Date(props.row.version.createDate).getDateStr() }}
-          <q-tooltip>
-            {{ new Date(props.row.version.createDate).toString() }}
-          </q-tooltip>
-        </q-td>
-      </template>
-      <!-- modified date -->
-      <template v-slot:body-cell-updateDate="props">
-        <q-td :props="props">
-          {{ new Date(props.row.version.updateDate).getDateStr() }}
-          <q-tooltip>
-            {{ new Date(props.row.version.updateDate).toString() }}
-          </q-tooltip>
-        </q-td>
-      </template>
-      <!-- context menu -->
-      <template v-slot:body-cell="props">
-        <!-- display table value -->
-        <q-td :props="props">
-          {{props.value}}
-        </q-td>
+      <template v-slot:cell-after="props">
         <q-menu touch-position context-menu>
           <q-list dense style="min-width: 100px">
             <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('actions.edit') }}</q-item-section>
+              <q-item-section
+                @click="onEditClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="edit" color="primary"/>
+                  {{ $t('actions.edit') }}
+                </div>
+              </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('actions.delete') }}</q-item-section>
+              <q-item-section>
+                <div>
+                  <q-icon name="delete" color="red"/>
+                  {{ $t('actions.delete') }}
+                </div>
+              </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
-              <q-item-section>{{ $t('parts.routing') }}</q-item-section>
+              <q-item-section
+                @click="onHistoryClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="history" color="primary"/>
+                  {{ $t('iterable.history') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section>
+                {{ $t('parts.routing') }}
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="!props.part.checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onCheckOutClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="south_east" color="red"/>
+                  {{ $t('actions.checkout') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="props.part.checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onCheckInClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="south_east" color="secondary"/>
+                  {{ $t('actions.checkin') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="props.part.checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onDiscardClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="backspace" color="red"/>
+                  {{ $t('actions.discard') }}
+                </div>
+              </q-item-section>
             </q-item>
           </q-list>
         </q-menu>
       </template>
-    </q-table>
+    </PartsSearchPanel>
     <PartDialog v-model="prompt" @onPartCreated="onPartCreated"></PartDialog>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  computed, onBeforeMount, ref, watch,
-} from 'vue';
-import { useI18n } from 'vue-i18n';
+import { onBeforeMount, ref } from 'vue';
 import {
   LocationQueryValue, onBeforeRouteUpdate, useRoute, useRouter,
 } from 'vue-router';
-import { QTableProps } from 'quasar';
-import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import PartDialog from './components/PartDialog.vue';
-import { partService } from './services/PartService';
+import PartsSearchPanel from './components/PartsSearchPanel.vue';
 import { usePartsStore } from './stores/PartsStore';
-import { Part, ViewType } from './models/Part';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
+import { Part } from './models/Part';
 import 'src/extensions/date.extensions';
+import { partService } from './services/PartService';
+
+const $q = useQuasar();
 
 const i18n = useI18n();
 
@@ -141,114 +154,124 @@ const route = useRoute();
 
 const router = useRouter();
 
-const attrLinksStore = useAttributeLinksStore();
-
 const partsStore = usePartsStore();
-
-const patternInput = ref('');
 
 const pattern = ref('');
 
-const selected = ref<Part[]>([]);
-
 const prompt = ref(false);
 
-const columns = computed(
-  (): QTableProps['columns'] => [
-    {
-      name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
-    },
-    {
-      name: 'isCheckout', label: '', field: '', align: 'left', sortable: false,
-    },
-    {
-      name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
-    },
-    {
-      name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
-    },
-    {
-      name: 'view', label: i18n.t('parts.view'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'version', label: i18n.t('iterable.version'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
-    },
-    {
-      name: 'createDate', label: i18n.t('base.createDate'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'updateUser', label: i18n.t('base.modifier'), field: 'updateUser', align: 'left', sortable: true,
-    },
-    {
-      name: 'updateDate', label: i18n.t('base.modifiedDate'), field: '', align: 'left', sortable: true,
-    },
-  ],
-);
-
-const pagination: QTableProps['pagination'] = {
-  sortBy: 'desc',
-  descending: false,
-  page: 1,
-  rowsPerPage: 20,
-};
+const selected = ref<Part[]>([]);
 
 function onInfoClicked(part: Part): void {
   router.push(`parts/version/${part.version.id}/info`);
 }
 
-function onEditClicked(part: Part): void {
-  if (!part.checkout) {
-    // TODO show dialog to checkout
-  }
-  router.push(`parts/${part.id}/info`);
+function onHistoryClicked(part: Part) {
+  router.push(`parts/${part.id}/history`);
 }
 
-function onSearchEnter(): void {
-  router.push({
-    path: '/parts',
-    query: { pattern: patternInput.value },
+async function onCheckInClicked(part: Part): Promise<void> {
+  const checkinPart = await partService.checkIn(part.id);
+  if (checkinPart) {
+    partsStore.updatePart(checkinPart);
+    $q.notify({
+      message: i18n.t('actions.checkins.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+  }
+}
+
+async function onCheckOutClicked(part: Part): Promise<Part | null> {
+  const checkoutPart = await partService.checkOut(part.id);
+  if (checkoutPart) {
+    partsStore.updatePart(checkoutPart);
+    $q.notify({
+      message: i18n.t('actions.checkouts.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+    return checkoutPart;
+  }
+  return null;
+}
+
+function onDiscardClicked(part: Part): void {
+  if (part.draftId === part.version.id) {
+    $q.notify({
+      message: i18n.t('actions.discards.cannotDiscardFirstVersion'),
+      color: 'red',
+      icon: 'error',
+    });
+    return;
+  }
+  $q.dialog({
+    dark: true,
+    title: i18n.t('actions.discards.confirm'),
+    message: i18n.t('parts.wantToCheckOut'),
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    const discardPart = await partService.discard(part.id);
+    if (discardPart) {
+      partsStore.updatePart(discardPart);
+      $q.notify({
+        message: i18n.t('actions.discards.success'),
+        color: 'secondary',
+        icon: 'check_circle',
+      });
+    }
   });
+}
+
+function onEditClicked(part: Part): void {
+  if (!part.checkout) {
+    $q.dialog({
+      dark: true,
+      title: i18n.t('actions.checkout'),
+      message: i18n.t('parts.wantToCheckOut'),
+      cancel: true,
+      persistent: true,
+    }).onOk(async () => {
+      const checkoutPart = await onCheckOutClicked(part);
+      if (checkoutPart) {
+        router.push(`parts/version/edit/${checkoutPart.draftId}/info`);
+      }
+    });
+  } else {
+    router.push(`parts/version/edit/${part.draftId}/info`);
+  }
 }
 
 function onPartCreated(newPart: Part) {
   partsStore.unshiftPart(newPart);
 }
 
-async function searchParts(): Promise<void> {
-  const parts = await partService.getByPattern(patternInput.value);
-  if (parts) {
-    partsStore.parts = parts;
-  }
-}
-
-function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {
+async function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {
   const newPattern = Array.isArray(queryValue)
-    ? queryValue[0] === null ? '' : queryValue[0]
-    : queryValue === null ? '' : queryValue;
-  patternInput.value = newPattern;
+    ? queryValue[0] === null || queryValue[0] === undefined ? '' : queryValue[0]
+    : queryValue === null || queryValue === undefined ? '' : queryValue;
   pattern.value = newPattern;
 }
 
-onBeforeRouteUpdate((to) => {
-  updatePattern(to.query.pattern);
-});
+function onSearch(searchPattern: string) {
+  pattern.value = searchPattern;
+  router.push({
+    path: '/parts',
+    query: { pattern: searchPattern },
+  });
+}
 
-watch(pattern, async () => {
-  await searchParts();
+onBeforeRouteUpdate(async (to) => {
+  await updatePattern(to.query.pattern);
 });
 
 onBeforeMount(async () => {
-  updatePattern(route.query.pattern);
-  await Promise.all([
-    attrLinksStore.initialize(ObjectTypeId.PartVersion),
-  ]);
+  await updatePattern(route.query.pattern);
 });
 </script>
 
 <style lang="sass" scoped>
-.outer-max
-  height: calc(100vh - 70px)
+:deep(.outer-max)
+  height: calc(100vh - 125px)
 </style>

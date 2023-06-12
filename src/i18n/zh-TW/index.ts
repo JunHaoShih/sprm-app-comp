@@ -5,6 +5,10 @@ export default {
   actions: {
     action: '動作',
     add: '新增',
+    adds: {
+      newPart: '加入新料件',
+      existingPart: '加入現有料件',
+    },
     edit: '編輯',
     delete: '刪除',
     cancel: '取消',
@@ -21,6 +25,25 @@ export default {
       atLeastOne: '至少要選擇一筆',
     },
     search: '搜尋',
+    checkout: '簽出',
+    checkouts: {
+      success: '簽出成功',
+      failed: '簽出失敗',
+    },
+    checkin: '簽入',
+    checkins: {
+      success: '簽入成功',
+      failed: '簽入失敗',
+    },
+    discard: '捨棄',
+    discards: {
+      confirm: '確定要捨棄所有編輯資料?',
+      success: '捨棄成功',
+      cannotDiscardFirstVersion: '無法捨棄第一版資料',
+    },
+    next: '下一步',
+    previous: '上一步',
+    draft: '草稿',
   },
   base: {
     creator: '建立者',
@@ -40,9 +63,22 @@ export default {
       design: '設計',
       manufacturing: '製造',
     },
+    usage: '使用關係',
+    usages: {
+      new: '新增使用關係',
+      edit: '編輯使用關係',
+      quantity: '使用數量',
+      selfAddNotAllowed: '不可將自己加入子料件',
+      alreadyExist: '子料件已存在',
+      notExist: '使用關係不存在',
+    },
     bom: 'BOM',
     info: '資訊',
     new: '新增料件',
+    search: '搜尋料件',
+    versionMustCheckout: '料件版本尚未簽出',
+    mustSelectOne: '請選擇一個料件',
+    wantToCheckOut: '料件尚未出庫，是否要出庫?',
   },
   customs: {
     title: '自定義',
@@ -74,7 +110,8 @@ export default {
   },
   iterable: {
     version: '版本',
-    checkout: '出庫',
+    history: '歷史',
+    latest: '最新',
   },
   validations: {
     notNull: '不可為空',
@@ -83,6 +120,12 @@ export default {
       shorterThan3: '字數不可少於3',
       longerThan50: '字數不可大於50',
       invalidChar: '只能含有0-9、aA-zZ、-、_',
+    },
+    partUsages: {
+      quantity: {
+        atLeastOne: '使用數量不可小於1',
+        mustBeInteger: '使用數量必須是整數',
+      },
     },
     customAttributes: {
       options: {
@@ -99,6 +142,11 @@ export default {
       invalidChar: '不可含有任何非法字元',
     },
   },
+  columns: {
+    display: '欄位顯示',
+    defaultColumn: '預設欄位',
+  },
+  quantity: '數量',
   remarks: '備註',
   language: '語言',
   info: '資訊',
@@ -107,5 +155,8 @@ export default {
   lang: {
     zhTW: '繁體中文',
     enUS: 'English(英文)',
+  },
+  errors: {
+    unknown: '不明錯誤',
   },
 };
