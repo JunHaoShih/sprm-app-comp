@@ -91,6 +91,7 @@
           v-if="selectedPartVersion"
           :readonly="true"
           v-model="selectedPartVersion"
+          panel-class="info-outer-max"
         />
         <div v-else class="row justify-center items-center">
           <span class="loader"></span>
@@ -285,6 +286,8 @@ const tab = ref('usage');
 </script>
 
 <style lang="sass" scoped>
+:deep(.info-outer-max)
+  height: calc(100vh - 300px)
 .outer-max
-  height: calc(100vh - 260px)
+  height: calc( 100vh - 270px )
 </style>
