@@ -7,7 +7,7 @@
         <slot name="front"></slot>
         <div>{{ props.partVersion.master.number }}</div>
         <div>
-          <q-badge color="info" class="q-ml-sm">
+          <q-badge color="primary" class="q-ml-sm">
             v. {{ props.partVersion.version }}
           </q-badge>
         </div>
