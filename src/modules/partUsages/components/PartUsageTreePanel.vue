@@ -8,7 +8,6 @@
       selected-color="primary"
       node-key="usageId"
       @lazy-load="onLazyLoad"
-      @update:selected="onSelected"
       :default-expand-all="true"
       no-selection-unset
     >
@@ -50,9 +49,9 @@
 
 <script setup lang="ts">
 import {
-  computed, onBeforeMount, ref, watch,
+  computed, onBeforeMount, onUpdated, ref, watch,
 } from 'vue';
-import { useQuasar } from 'quasar';
+import { QTree, useQuasar } from 'quasar';
 import 'src/extensions/date.extensions';
 import { usePartVersionStore } from 'src/modules/parts/stores/PartVersionStore';
 import { usePartUsageTreeStore } from '../stores/PartUsageUsesStore';
@@ -64,6 +63,8 @@ const $q = useQuasar();
 const partVersionStore = usePartVersionStore();
 
 const partUsaeChildrenStore = usePartUsageTreeStore();
+
+const qtree = ref<QTree>();
 
 const selectedUsageId = ref(0);
 
@@ -101,25 +102,11 @@ async function onLazyLoad(details: {
   done: (children?: readonly BomTreeNode[] | undefined) => void,
   fail: () => void,
 }) {
-  const exist = partUsaeChildrenStore.children(details.node.versionId);
-  if (exist) {
-    details.done([]);
+  if (!details.node.lazy) {
     return;
   }
   await updateChildrenStore(details.node.versionId);
   details.done([]);
-}
-
-async function onSelected(nodeId: number) {
-  const targetNode = partUsaeChildrenStore.selectedTreeNode(nodeId);
-  if (!targetNode) {
-    return;
-  }
-  const exist = partUsaeChildrenStore.children(targetNode.versionId);
-  if (exist) {
-    return;
-  }
-  await updateChildrenStore(targetNode.versionId);
 }
 
 async function initializePage(partVersionId: number) {
@@ -148,6 +135,10 @@ watch(() => selectedUsageId.value, async () => {
 
 onBeforeMount(async () => {
   await initializePage(props.id);
+});
+
+onUpdated(() => {
+  qtree.value?.expandAll();
 });
 </script>
 

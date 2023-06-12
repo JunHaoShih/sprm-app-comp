@@ -60,7 +60,7 @@ export const useBomTreeStore = defineStore('bomTreeStore', {
           usageId: value.id,
           infoId: part.version.id,
           checkoutId: part.draftId,
-          lazy: true,
+          lazy: value.subChildCount > 0,
         };
         this.nodeMap.set(value.id, currentNode);
         const children = wholeMap.get(currentNode.versionId);
