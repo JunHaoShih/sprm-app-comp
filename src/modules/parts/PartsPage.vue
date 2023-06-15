@@ -81,8 +81,13 @@
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
-              <q-item-section>
-                {{ $t('parts.routing') }}
+              <q-item-section
+                @click="onRoutingClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="route" color="primary"/>
+                  {{ $t('parts.routing') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item
@@ -194,6 +199,10 @@ async function onCheckOutClicked(part: Part): Promise<Part | null> {
     return checkoutPart;
   }
   return null;
+}
+
+function onRoutingClicked(part: Part): void {
+  router.push(`parts/${part.id}/routing`);
 }
 
 function onDiscardClicked(part: Part): void {
