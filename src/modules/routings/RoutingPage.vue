@@ -38,7 +38,12 @@
               active-class="bg-secondary text-white"
             >
               <q-item-section avatar>
-                <q-avatar class="avatar-color" text-color="white">{{ routing.name[0] }}</q-avatar>
+                <q-avatar
+                  class="avatar-color"
+                  text-color="white"
+                >
+                  {{ routing.name[0] }}
+                </q-avatar>
               </q-item-section>
 
               <q-item-section>
