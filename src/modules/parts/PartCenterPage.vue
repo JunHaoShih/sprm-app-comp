@@ -5,16 +5,19 @@
     />
     <q-tabs
       align="justify"
+      inline-label
       indicator-color="orange"
       active-bg-color="grey-4"
       class="tabs-font q-ma-sm tabs-header"
     >
       <q-route-tab
+        icon="history"
         :label="$t('iterable.history')"
         :to="'/parts/' + id + '/history'"
         exact
       />
       <q-route-tab
+        icon="route"
         :label="$t('parts.routing')"
         :to="'/parts/' + id + '/routing'"
         exact

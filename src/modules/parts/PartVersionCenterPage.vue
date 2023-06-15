@@ -23,16 +23,19 @@
     </PartVersionBanner>
     <q-tabs
       align="justify"
+      inline-label
       indicator-color="orange"
       active-bg-color="grey-4"
       class="tabs-font q-ma-sm tabs-header"
     >
       <q-route-tab
+        icon="info"
         :label="$t('parts.info')"
         :to="'/parts/version/' + id + '/info'"
         exact
       />
       <q-route-tab
+        icon="list"
         :label="$t('parts.bom')"
         :to="'/parts/version/' + id + '/usages'"
         exact
