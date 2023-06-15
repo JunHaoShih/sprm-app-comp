@@ -7,25 +7,30 @@
     >
       <template v-slot:before>
         <div class="q-pa-md">
-          <q-list bordered padding class="rounded-borders text-black">
-            <q-item
-              v-for="objType in objectTypes"
-              :key="objType.id"
-              clickable
-              v-ripple
-              :active="defaultObjectType.id === objType.id"
-              @click="defaultObjectType = objType"
-              active-class="bg-secondary text-white"
-            >
-              <q-item-section avatar>
-                <q-avatar class="avatar-color" text-color="white">{{ objType.name[0] }}</q-avatar>
-              </q-item-section>
+          <q-scroll-area
+            visible
+            class="scroll-max"
+          >
+            <q-list bordered padding class="rounded-borders text-black">
+              <q-item
+                v-for="objType in objectTypes"
+                :key="objType.id"
+                clickable
+                v-ripple
+                :active="defaultObjectType.id === objType.id"
+                @click="defaultObjectType = objType"
+                active-class="bg-secondary text-white"
+              >
+                <q-item-section avatar>
+                  <q-avatar class="avatar-color" text-color="white">{{ objType.name[0] }}</q-avatar>
+                </q-item-section>
 
-              <q-item-section>
-                {{ objType.number }} {{ objType.name }}
-              </q-item-section>
-            </q-item>
-          </q-list>
+                <q-item-section>
+                  {{ objType.number }} {{ objType.name }}
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-scroll-area>
         </div>
       </template>
 
@@ -65,7 +70,10 @@ onBeforeMount(async () => {
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 180px)
+  height: calc(100vh - 100px)
+
+.scroll-max
+  height: calc(100vh - 135px)
 
 .avatar-color
   background: #FF9933
