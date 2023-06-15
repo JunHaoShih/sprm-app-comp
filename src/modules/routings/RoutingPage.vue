@@ -26,31 +26,34 @@
     >
       <template v-slot:before>
         <div class="q-pa-md">
-          <q-scroll-area class="scroll-max">
-          <q-list bordered padding class="rounded-borders text-black">
-            <q-item
-              v-for="routing in routings"
-              :key="routing.id"
-              clickable
-              v-ripple
-              :active="defaultRouting.id === routing.id"
-              @click="defaultRouting = routing"
-              active-class="bg-secondary text-white"
-            >
-              <q-item-section avatar>
-                <q-avatar
-                  class="avatar-color"
-                  text-color="white"
-                >
-                  {{ routing.name[0] }}
-                </q-avatar>
-              </q-item-section>
+          <q-scroll-area
+            visible
+            class="scroll-max"
+          >
+            <q-list bordered padding class="rounded-borders text-black">
+              <q-item
+                v-for="routing in routings"
+                :key="routing.id"
+                clickable
+                v-ripple
+                :active="defaultRouting.id === routing.id"
+                @click="defaultRouting = routing"
+                active-class="bg-secondary text-white"
+              >
+                <q-item-section avatar>
+                  <q-avatar
+                    class="avatar-color"
+                    text-color="white"
+                  >
+                    {{ routing.name[0] }}
+                  </q-avatar>
+                </q-item-section>
 
-              <q-item-section>
-                {{ routing.name }}
-              </q-item-section>
-            </q-item>
-          </q-list>
+                <q-item-section>
+                  {{ routing.name }}
+                </q-item-section>
+              </q-item>
+            </q-list>
           </q-scroll-area>
         </div>
       </template>

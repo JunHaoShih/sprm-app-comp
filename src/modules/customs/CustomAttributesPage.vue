@@ -26,7 +26,10 @@
     >
       <template v-slot:before>
         <div class="q-pa-md">
-          <q-scroll-area class="scroll-max">
+          <q-scroll-area
+            visible
+            class="scroll-max"
+          >
             <q-list bordered padding class="rounded-borders text-black">
               <q-item
                 v-for="attr in attributes"
