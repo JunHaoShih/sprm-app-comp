@@ -97,6 +97,7 @@ import { PartVersion } from './models/PartVersion';
 import { Part } from './models/Part';
 import PartBanner from './components/PartBanner.vue';
 import { partService } from './services/PartService';
+import 'src/extensions/date.extensions';
 
 const i18n = useI18n();
 
