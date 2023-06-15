@@ -1,37 +1,22 @@
 <template>
   <div class="main-panel">
-    <q-banner
-      class="bg-primary text-white q-ma-sm"
-      style="border-radius: 10px"
-    >
-      <div class="text-h6 row">
-        <div>{{ partVersion.master.number }}</div>
-        <div>
-          [{{ partVersion.version }}]
-        </div>
-        <div v-if="partVersion.master.viewType === ViewType.Design">
-          [{{ $t('parts.views.design') }}]
-        </div>
-        <div v-else>
-          [{{ $t('parts.views.manufacturing') }}]
-        </div>
-        <div class="q-ml-sm">
-          <q-icon v-if="part.checkout" name="warning" color="orange" size="8px">
-            <q-tooltip>
-              {{ $t('actions.checkout') }}
-            </q-tooltip>
-          </q-icon>
-        </div>
-      </div>
-    </q-banner>
+    <PartBanner
+      :part="part"
+    />
     <q-tabs
-      align="left"
+      align="justify"
       indicator-color="orange"
-      class="tabs-font"
+      active-bg-color="grey-4"
+      class="tabs-font q-ma-sm tabs-header"
     >
       <q-route-tab
-        :label="$t('parts.info')"
-        :to="'/parts/' + id + '/info'"
+        :label="$t('iterable.history')"
+        :to="'/parts/' + id + '/history'"
+        exact
+      />
+      <q-route-tab
+        :label="$t('parts.routing')"
+        :to="'/parts/' + id + '/routing'"
         exact
       />
     </q-tabs>
@@ -41,34 +26,12 @@
 
 <script setup lang="ts">
 import { onBeforeMount, ref, watch } from 'vue';
-import { useRouter } from 'vue-router';
 import { partService } from './services/PartService';
-import { partVersionService } from './services/PartVersionService';
-import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
-import { Part, ViewType } from './models/Part';
-import { PartMaster, PartVersion } from './models/PartVersion';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
+import { Part } from './models/Part';
+import PartBanner from './components/PartBanner.vue';
 import 'src/extensions/date.extensions';
 
-const router = useRouter();
-
-const attrLinksStore = useAttributeLinksStore();
-
 const part = ref<Part>({} as Part);
-
-const partVersion = ref<PartVersion>({
-  id: 0,
-  version: 0,
-  isDraft: false,
-  isLatest: false,
-  master: {} as PartMaster,
-  customValues: {} as Record<string, string>,
-  createUser: '',
-  createDate: new Date(),
-  updateUser: '',
-  updateDate: new Date(),
-  remarks: '',
-});
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -80,13 +43,6 @@ async function updatePartAndVersion(partId: number) {
   const targetPart = await partService.getById(partId);
   if (targetPart) {
     part.value = targetPart;
-    if (!targetPart.draftId) {
-      router.push('/parts');
-    }
-    const targetVersion = await partVersionService.getById(Number(targetPart.draftId));
-    if (targetVersion) {
-      partVersion.value = targetVersion;
-    }
   }
 }
 
@@ -95,7 +51,6 @@ watch(() => props.id, async (newValue) => {
 });
 
 onBeforeMount(async () => {
-  attrLinksStore.initialize(ObjectTypeId.PartVersion);
   await updatePartAndVersion(Number(props.id));
 });
 </script>

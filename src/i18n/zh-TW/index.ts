@@ -55,7 +55,7 @@ export default {
     title: '料件管理',
     caption: '管理料件以及其他關連',
     part: '料件',
-    routing: '產品途程',
+    routing: '工藝路徑',
     number: '料號',
     name: '料件名稱',
     view: 'View',

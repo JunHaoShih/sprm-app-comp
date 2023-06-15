@@ -6,11 +6,26 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
-      { path: '/parts', component: () => import('src/modules/parts/PartsPage.vue') },
       {
-        path: '/parts/:id/history',
-        component: () => import('src/modules/parts/PartHistoryPage.vue'),
+        path: '/parts',
+        component: () => import('src/modules/parts/PartsPage.vue'),
+      },
+      {
+        path: '/parts/:id',
+        component: () => import('src/modules/parts/PartCenterPage.vue'),
         props: true,
+        children: [
+          {
+            path: '/parts/:id/history',
+            component: () => import('src/modules/parts/PartHistoryPage.vue'),
+            props: true,
+          },
+          {
+            path: '/parts/:id/routing',
+            component: () => import('src/modules/routings/RoutingPage.vue'),
+            props: true,
+          },
+        ],
       },
       {
         path: '/parts/version/:id',

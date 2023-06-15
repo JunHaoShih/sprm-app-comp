@@ -1,8 +1,5 @@
 <template>
   <div class="q-pa-sm">
-    <PartBanner
-      :part="part"
-    />
     <q-table
       :title="$t('iterable.history')"
       :columns="columns"
@@ -94,16 +91,11 @@ import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationIn
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { partVersionService } from './services/PartVersionService';
 import { PartVersion } from './models/PartVersion';
-import { Part } from './models/Part';
-import PartBanner from './components/PartBanner.vue';
-import { partService } from './services/PartService';
 import 'src/extensions/date.extensions';
 
 const i18n = useI18n();
 
 const router = useRouter();
-
-const part = ref<Part>({} as Part);
 
 const partVersions = ref<PartVersion[]>([]);
 
@@ -189,10 +181,6 @@ async function onVersionClicked(version: PartVersion) {
 }
 
 async function initialize() {
-  const targetPart = await partService.getById(Number(props.id));
-  if (targetPart) {
-    part.value = targetPart;
-  }
   const versionsPagination = await partVersionService
     .getPartVersions(Number(props.id), paginationInput.value);
   if (versionsPagination) {
@@ -215,5 +203,5 @@ onBeforeMount(async () => {
   cursor: pointer
 
 .outer-max
-  height: calc(100vh - 175px)
+  height: calc(100vh - 240px)
 </style>
