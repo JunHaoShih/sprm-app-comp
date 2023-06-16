@@ -13,8 +13,8 @@ export const routingService = {
    * @param pagination Offset pagination data
    * @returns Routing array
    */
-  async getByPartId(partId: number, pagination: OffsetPaginationInput):
-  Promise<OffsetPaginationData<Routing[]> | null> {
+  getByPartId: async (partId: number, pagination: OffsetPaginationInput):
+  Promise<OffsetPaginationData<Routing[]> | null> => {
     const partsResponse = await api
       .get(encodeURI(`/api/Part/${partId}/Routing`), {
         params: {

@@ -34,15 +34,11 @@ const validateNameRules: ValidateRule[] = [
   },
 ];
 
-const numberRules = (val: string) => (
-  genericRulesCheck(val, validateNumberRules)
-);
-
-const nameRules = (val: string) => (
-  genericRulesCheck(val, validateNameRules)
-);
-
 export const partValidationService = {
-  numberRules,
-  nameRules,
+  numberRules: (val: string) => (
+    genericRulesCheck(val, validateNumberRules)
+  ),
+  nameRules: (val: string) => (
+    genericRulesCheck(val, validateNameRules)
+  ),
 };

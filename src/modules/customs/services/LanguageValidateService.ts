@@ -15,10 +15,8 @@ const validateLanguageRules: ValidateRule[] = [
   },
 ];
 
-const languageRules = (language: string) => (
-  genericRulesCheck(language, validateLanguageRules)
-);
-
 export const languageValidateService = {
-  languageRules,
+  languageRules: (language: string) => (
+    genericRulesCheck(language, validateLanguageRules)
+  ),
 };

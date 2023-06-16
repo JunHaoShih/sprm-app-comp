@@ -30,15 +30,11 @@ const validateOptionValueRules: ValidateRule[] = [
   },
 ];
 
-const optionKeyRules = (optionKey: string) => (
-  genericRulesCheck(optionKey, validateOptionKeyRules)
-);
-
-const optionValueRules = (optionValue: string) => (
-  genericRulesCheck(optionValue, validateOptionValueRules)
-);
-
 export const customOptionValidateService = {
-  optionValueRules,
-  optionKeyRules,
+  optionValueRules: (optionValue: string) => (
+    genericRulesCheck(optionValue, validateOptionValueRules)
+  ),
+  optionKeyRules: (optionKey: string) => (
+    genericRulesCheck(optionKey, validateOptionKeyRules)
+  ),
 };

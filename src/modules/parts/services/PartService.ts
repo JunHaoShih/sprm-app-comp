@@ -14,8 +14,8 @@ export const partService = {
    * @param pagination Offset pagination data
    * @returns part array
    */
-  async getByPattern(pattern: string, pagination: OffsetPaginationInput):
-  Promise<OffsetPaginationData<Part[]> | null> {
+  getByPattern: async (pattern: string, pagination: OffsetPaginationInput):
+  Promise<OffsetPaginationData<Part[]> | null> => {
     const partsResponse = await api
       .get(encodeURI('/api/Part/Search'), {
         params: {
@@ -45,7 +45,7 @@ export const partService = {
       });
     return partsResponse;
   },
-  async getById(id: number): Promise<Part | null> {
+  getById: async (id: number): Promise<Part | null> => {
     const searchUrl = `/api/Part/${id}`;
     const partResponse = await api.get(encodeURI(searchUrl))
       .then((response): Part => {
@@ -71,7 +71,7 @@ export const partService = {
    * @param createDto Create params
    * @returns Created part
    */
-  async create(createDto: CreatePartDTO): Promise<Part | null> {
+  create: async (createDto: CreatePartDTO): Promise<Part | null> => {
     const part = await api.post('/api/Part', createDto)
       .then((response): Part => {
         const data = response.data as SPRMResponse<Part>;
@@ -91,7 +91,7 @@ export const partService = {
       });
     return part;
   },
-  async checkIn(id: number): Promise<Part | null> {
+  checkIn: async (id: number): Promise<Part | null> => {
     const part = await api.post(`/api/Part/${id}/CheckIn`)
       .then((response): Part => {
         const data = response.data as SPRMResponse<Part>;
@@ -111,7 +111,7 @@ export const partService = {
       });
     return part;
   },
-  async checkOut(id: number): Promise<Part | null> {
+  checkOut: async (id: number): Promise<Part | null> => {
     const part = await api.post(`/api/Part/${id}/CheckOut`)
       .then((response): Part => {
         const data = response.data as SPRMResponse<Part>;
@@ -131,7 +131,7 @@ export const partService = {
       });
     return part;
   },
-  async discard(id: number): Promise<Part | null> {
+  discard: async (id: number): Promise<Part | null> => {
     const part = await api.delete(`/api/Part/${id}/Discard`)
       .then((response): Part => {
         const data = response.data as SPRMResponse<Part>;
