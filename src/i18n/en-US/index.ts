@@ -38,6 +38,7 @@ export default {
     discard: 'Discard',
     discards: {
       confirm: 'Are you sure you want to discard all modified data?',
+      dataLossWarning: 'You will loss your edited data if you discard',
       success: 'Discard success',
       cannotDiscardFirstVersion: 'You cannot discard first version',
     },

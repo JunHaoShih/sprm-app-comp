@@ -38,6 +38,7 @@ export default {
     discard: '捨棄',
     discards: {
       confirm: '確定要捨棄所有編輯資料?',
+      dataLossWarning: '捨棄編輯資料將無法還原',
       success: '捨棄成功',
       cannotDiscardFirstVersion: '無法捨棄第一版資料',
     },

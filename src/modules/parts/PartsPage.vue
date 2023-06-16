@@ -217,7 +217,7 @@ function onDiscardClicked(part: Part): void {
   $q.dialog({
     dark: true,
     title: i18n.t('actions.discards.confirm'),
-    message: i18n.t('parts.wantToCheckOut'),
+    message: i18n.t('actions.discards.dataLossWarning'),
     cancel: true,
     persistent: true,
   }).onOk(async () => {
