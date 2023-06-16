@@ -56,6 +56,9 @@ export default {
     caption: 'Manage your parts',
     part: 'Part',
     routing: 'Routing',
+    routings: {
+      name: 'Routing name',
+    },
     number: 'Number',
     name: 'Name',
     view: 'View',
