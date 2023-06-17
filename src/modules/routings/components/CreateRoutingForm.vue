@@ -46,6 +46,7 @@ import ValidationInput from 'src/components/ValidationInput.vue';
 import CustomAttributesInputPanel from 'src/components/CustomAttributesInputPanel.vue';
 import { CreateRoutingDTO } from '../dtos/CreateRoutingDTO';
 import { Routing } from '../models/Routing';
+import { routingService } from '../services/RoutingService';
 
 const formRef = ref<QForm>({} as QForm);
 
@@ -73,7 +74,12 @@ const props = withDefaults(defineProps<{
 });
 
 async function createRouting(): Promise<void> {
-  // TODO create routing
+  const newRouting = await routingService.create(createDto.value);
+  if (newRouting && props.onSuccess) {
+    props.onSuccess(newRouting);
+  } else if (!newRouting && props.onError) {
+    props.onError();
+  }
 }
 
 function resetDto() {
