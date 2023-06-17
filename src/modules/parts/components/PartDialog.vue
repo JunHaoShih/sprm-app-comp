@@ -1,41 +1,32 @@
 <template>
-  <q-dialog ref="dialogRef" v-model="prompt" persistent
-    transition-show="rotate" transition-hide="rotate"
+  <PopupDialog
+    v-model="prompt"
+    :title="$t('parts.new')"
   >
-    <q-card style="min-width: 700px">
-      <q-card-section class="bg-dark text-white row items-center">
-        <div class="text-h6">{{ $t('parts.new') }}</div>
-        <q-space></q-space>
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="scroll dialog-inner-max">
-        <CreatePartForm
-          ref="formRef"
-          :on-success="onDialogConfirm"
-        />
-      </q-card-section>
-      <q-separator />
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-        <q-btn flat :label="$t('actions.confirm')" @click="submit"></q-btn>
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+    <template v-slot:center>
+      <CreatePartForm
+        ref="formRef"
+        :on-success="onDialogConfirm"
+      />
+    </template>
+    <template v-slot:bottom>
+      <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
+      <q-btn flat :label="$t('actions.confirm')" @click="submit"></q-btn>
+    </template>
+  </PopupDialog>
 </template>
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
-import { QDialog, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
+import PopupDialog from 'src/components/PopupDialog.vue';
 import CreatePartForm from './CreatePartForm.vue';
 import { Part } from '../models/Part';
 
 const $q = useQuasar();
 
 const i18n = useI18n();
-
-const dialogRef = ref<QDialog>({} as QDialog);
 
 const formRef = ref<InstanceType<typeof CreatePartForm>>();
 
@@ -70,7 +61,7 @@ async function onDialogConfirm(newPart: Part): Promise<void> {
     color: 'secondary',
     icon: 'check_circle',
   });
-  dialogRef.value.hide();
+  prompt.value = false;
 }
 </script>
 

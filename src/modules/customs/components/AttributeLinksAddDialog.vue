@@ -1,52 +1,40 @@
 <template>
-  <q-dialog
-    ref="dialogRef"
+  <PopupDialog
     v-model="prompt"
-    persistent
-    transition-show="rotate"
-    transition-hide="rotate"
+    :title="$t('customs.attributeLinks.new')"
   >
-    <q-card style="min-width: 700px">
-      <q-card-section class="bg-dark text-white row items-center">
-        <div class="text-h6">{{ $t('customs.attributeLinks.new') }}</div>
-        <q-space></q-space>
-        <q-btn icon="close" flat round dense v-close-popup />
-      </q-card-section>
-      <q-separator />
-      <q-card-section class="scroll dialog-inner-max">
-        <q-table
-          :rows="filteredAttributes"
-          :columns="columns"
-          :pagination="pagination"
-          v-model:selected="selected"
-          selection="multiple"
-          row-key="id"
-          dense
-        >
-          <!-- table header -->
-          <template v-slot:top>
-            <q-space />
-            <q-input v-model="patternInput" type="text" label="Search"
-              v-on:keyup.enter="pattern = patternInput;"
-            />
-          </template>
-          <!-- display type -->
-          <template v-slot:body-cell-displayType="props">
-            <q-td :props="props">
-              {{
-                displayTypesStore.getOption(props.row.displayType).label
-              }}
-            </q-td>
-          </template>
-        </q-table>
-      </q-card-section>
-      <q-separator />
-      <q-card-actions align="right" class="text-primary">
-        <q-btn flat :label="$t('actions.cancel')" v-close-popup />
+    <template v-slot:center>
+      <q-table
+        :rows="filteredAttributes"
+        :columns="columns"
+        :pagination="pagination"
+        v-model:selected="selected"
+        selection="multiple"
+        row-key="id"
+        dense
+      >
+        <!-- table header -->
+        <template v-slot:top>
+          <q-space />
+          <q-input v-model="patternInput" type="text" label="Search"
+            v-on:keyup.enter="pattern = patternInput;"
+          />
+        </template>
+        <!-- display type -->
+        <template v-slot:body-cell-displayType="props">
+          <q-td :props="props">
+            {{
+              displayTypesStore.getOption(props.row.displayType).label
+            }}
+          </q-td>
+        </template>
+      </q-table>
+    </template>
+    <template v-slot:bottom>
+      <q-btn flat :label="$t('actions.cancel')" v-close-popup />
         <q-btn flat :label="$t('actions.confirm')" @click="onConfirm" />
-      </q-card-actions>
-    </q-card>
-  </q-dialog>
+    </template>
+  </PopupDialog>
 </template>
 
 <script setup lang="ts">
@@ -54,7 +42,8 @@ import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QDialog, QTableProps, useQuasar } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
+import PopupDialog from 'src/components/PopupDialog.vue';
 import { CustomAttribute } from '../models/CustomAttribute';
 import { useCustomAttributesStore } from '../stores/CustomAttributesStore';
 import { useAttributeLinksStore } from '../stores/AttributeLinksStore';
@@ -90,8 +79,6 @@ const prompt = computed({
   get: (): boolean => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 });
-
-const dialogRef = ref<QDialog>({} as QDialog);
 
 const selected = ref<CustomAttribute[]>([]);
 
@@ -155,7 +142,7 @@ async function onConfirm(): Promise<void> {
     color: 'secondary',
     icon: 'check_circle',
   });
-  dialogRef.value.hide();
+  prompt.value = false;
 }
 </script>
 
