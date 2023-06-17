@@ -35,7 +35,7 @@
                 />
                 <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
                 <q-toggle
-                  v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
+                  v-for="attr in attrLinksStore.attributes(SprmObjectType.PartVersion)"
                   v-bind:key="attr.number"
                   v-model="canDisplay[attr.number]"
                   :label="attr.languages[i18n.locale.value] || attr.name"
@@ -164,7 +164,7 @@ import { QSelect, QTableProps } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
-import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import { partService } from '../services/PartService';
 import { usePartsStore } from '../stores/PartsStore';
 import { Part, ViewType } from '../models/Part';
@@ -282,7 +282,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(ObjectTypeId.PartVersion).forEach((attr) => {
+    attrLinksStore.attributes(SprmObjectType.PartVersion).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -355,9 +355,9 @@ watch(pattern, async () => {
 onBeforeMount(async () => {
   await updatePattern();
   await Promise.all([
-    attrLinksStore.initialize(ObjectTypeId.PartVersion),
+    attrLinksStore.initialize(SprmObjectType.PartVersion),
   ]);
-  const attributes = attrLinksStore.attributes(ObjectTypeId.PartVersion);
+  const attributes = attrLinksStore.attributes(SprmObjectType.PartVersion);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });

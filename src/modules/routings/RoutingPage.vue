@@ -36,7 +36,7 @@
                 />
                 <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
                 <q-toggle
-                  v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
+                  v-for="attr in attrLinksStore.attributes(SprmObjectType.PartVersion)"
                   v-bind:key="attr.number"
                   v-model="canDisplay[attr.number]"
                   :label="attr.languages[i18n.locale.value] || attr.name"
@@ -137,7 +137,7 @@ import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationIn
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
-import { ObjectTypeId } from '../objectTypes/models/ObjectType';
+import { SprmObjectType } from '../objectTypes/models/ObjectType';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 
 const i18n = useI18n();
@@ -190,7 +190,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(ObjectTypeId.RoutingVersion).forEach((attr) => {
+    attrLinksStore.attributes(SprmObjectType.RoutingVersion).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -283,9 +283,9 @@ watch(() => props.id, async () => {
 onBeforeMount(async () => {
   await initialize();
   await Promise.all([
-    attrLinksStore.initialize(ObjectTypeId.RoutingVersion),
+    attrLinksStore.initialize(SprmObjectType.RoutingVersion),
   ]);
-  const attributes = attrLinksStore.attributes(ObjectTypeId.RoutingVersion);
+  const attributes = attrLinksStore.attributes(SprmObjectType.RoutingVersion);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });

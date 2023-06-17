@@ -2,7 +2,7 @@ import { api } from 'src/boot/axios';
 import { Notify } from 'quasar';
 import { i18n } from 'src/boot/i18n';
 import { SPRMResponse } from 'src/models/SPRMResponse';
-import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import { DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { PartUsageChild } from '../models/PartUsageUses';
@@ -46,7 +46,7 @@ export const partUsageService = {
       if (!partUsage.customValues) {
         return record;
       }
-      const customAttributes = attrLinksStore.attributes(ObjectTypeId.PartUsage);
+      const customAttributes = attrLinksStore.attributes(SprmObjectType.PartUsage);
       Object.keys(partUsage.customValues).forEach((key) => {
         const targetAttribute = customAttributes.find((attr) => attr.number === key);
         if (!targetAttribute) {

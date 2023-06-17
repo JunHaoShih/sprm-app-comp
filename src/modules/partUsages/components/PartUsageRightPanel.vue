@@ -45,7 +45,7 @@
                     />
                     <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
                     <q-toggle
-                      v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartUsage)"
+                      v-for="attr in attrLinksStore.attributes(SprmObjectType.PartUsage)"
                       v-bind:key="attr.number"
                       v-model="canDisplay[attr.number]"
                       :label="attr.languages[i18n.locale.value] || attr.name"
@@ -105,7 +105,7 @@
       transition-hide="rotate"
     >
       <q-card style="min-width: 700px">
-        <q-card-section class="bg-primary text-white row items-center">
+        <q-card-section class="bg-dark text-white row items-center">
           <div class="text-h6">{{ $t('parts.usages.edit') }}</div>
           <q-space></q-space>
           <q-btn icon="close" flat round dense v-close-popup />
@@ -141,7 +141,7 @@ import 'src/extensions/date.extensions';
 import { PartVersion } from '../../parts/models/PartVersion';
 import { partUsageService } from '../services/PartUsageService';
 import { useAttributeLinksStore } from '../../customs/stores/AttributeLinksStore';
-import { ObjectTypeId } from '../../objectTypes/models/ObjectType';
+import { SprmObjectType } from '../../objectTypes/models/ObjectType';
 import PartUsageForm from './PartUsageForm.vue';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { UpdatePartUsageDTO } from '../dtos/UpdatePartUsageDTO';
@@ -208,7 +208,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(ObjectTypeId.PartUsage).forEach((attr) => {
+    attrLinksStore.attributes(SprmObjectType.PartUsage).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -271,9 +271,9 @@ onBeforeMount(async () => {
   initializing.value = true;
   await Promise.all([
     partUsaeChildrenStore.partVersionInit(props.id),
-    attrLinksStore.initialize(ObjectTypeId.PartUsage),
+    attrLinksStore.initialize(SprmObjectType.PartUsage),
   ]);
-  const attributes = attrLinksStore.attributes(ObjectTypeId.PartUsage);
+  const attributes = attrLinksStore.attributes(SprmObjectType.PartUsage);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });

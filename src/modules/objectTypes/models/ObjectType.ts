@@ -1,4 +1,4 @@
-export enum ObjectTypeId {
+export enum SprmObjectType {
   None = 0,
   PartVersion = 1,
   PartUsage = 2,
@@ -9,7 +9,7 @@ export enum ObjectTypeId {
 }
 
 export interface ObjectType {
-  id: ObjectTypeId,
+  id: SprmObjectType,
   number: string,
   name: string,
 }

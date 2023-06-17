@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
-import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import { DisplayType } from 'src/modules/customs/models/CustomAttribute';
 import { Part, PartVersionInfo } from '../models/Part';
 
@@ -38,7 +38,7 @@ export const usePartsStore = defineStore('parts', {
         if (!part.version.customValues) {
           return record;
         }
-        const customAttributes = attrLinksStore.attributes(ObjectTypeId.PartVersion);
+        const customAttributes = attrLinksStore.attributes(SprmObjectType.PartVersion);
         Object.keys(part.version.customValues).forEach((key) => {
           const targetAttribute = customAttributes.find((attr) => attr.number === key);
           if (!targetAttribute) {

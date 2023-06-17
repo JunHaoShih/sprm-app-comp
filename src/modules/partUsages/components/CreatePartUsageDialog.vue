@@ -10,7 +10,7 @@
         <q-form
           @submit="onNextStep"
         >
-          <q-card-section class="bg-primary text-white row items-center">
+          <q-card-section class="bg-dark text-white row items-center">
             <div class="text-h6">{{ $t('parts.usages.new') }}</div>
             <q-space></q-space>
             <q-btn icon="close" flat round dense v-close-popup />
