@@ -5,6 +5,7 @@ import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationRes
 import { SPRMResponse } from 'src/models/SPRMResponse';
 import { paginationService } from 'src/services/PaginationService';
 import { Routing } from '../models/Routing';
+import { CreateRoutingDTO } from '../dtos/CreateRoutingDTO';
 
 export const routingService = {
   /**
@@ -42,5 +43,30 @@ export const routingService = {
         return null;
       });
     return partsResponse;
+  },
+  /**
+   * Create a new routing
+   * @param createDto Create DTO
+   * @returns New routing if success
+   */
+  create: async (createDto: CreateRoutingDTO): Promise<Routing | null> => {
+    const part = await api.post('/api/Part', createDto)
+      .then((response): Routing => {
+        const data = response.data as SPRMResponse<Routing>;
+        return data.content;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return part;
   },
 };
