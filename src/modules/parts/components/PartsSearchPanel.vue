@@ -124,34 +124,10 @@
         <q-inner-loading showing color="red-7" />
       </template>
     </q-table>
-    <div class="q-pt-sm flex flex-center">
-      <q-pagination
-        v-model="paginationInput.page"
-        color="grey-7"
-        :max="paginationResponse.totalPages"
-        max-pages="6"
-        direction-links
-        boundary-links
-        active-color="dark"
-      />
-      <q-select
-        v-model="paginationInput.page"
-        :options="filteredPageOptions"
-        hide-bottom-space
-        dense
-        @filter="filterFn"
-        use-input
-        style="width: 200px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No results
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-    </div>
+    <FilterPagination
+      v-model="paginationInput"
+      :response-pagination="paginationResponse"
+    ></FilterPagination>
   </div>
 </template>
 
@@ -165,6 +141,7 @@ import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLink
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import FilterPagination from 'src/components/FilterPagination.vue';
 import { partService } from '../services/PartService';
 import { usePartsStore } from '../stores/PartsStore';
 import { Part, ViewType } from '../models/Part';
@@ -230,18 +207,6 @@ const paginationResponse = ref<OffsetPaginationResponse>({
   totalPages: 0,
 });
 
-const pageOptions = computed(
-  () => {
-    const options: number[] = [];
-    for (let i = 1; i <= paginationResponse.value.totalPages; i += 1) {
-      options.push(i);
-    }
-    return options;
-  },
-);
-
-const filteredPageOptions = ref<number[]>([]);
-
 const options = ref<number[]>([20, 50, 100]);
 
 const defaultColumns = computed(
@@ -302,19 +267,6 @@ const columns = computed(
 const pagination = ref<QTableProps['pagination']>({
   rowsPerPage: 20,
 });
-
-function filterFn(val: string, update: (callbackFn: () => void,
-  afterFn?: ((ref: QSelect) => void) | undefined) => void) {
-  if (val === '') {
-    update(() => {
-      filteredPageOptions.value = pageOptions.value;
-    });
-    return;
-  }
-  update(() => {
-    filteredPageOptions.value = pageOptions.value.filter((v) => v.toString().indexOf(val) > -1);
-  });
-}
 
 function onSearchEnter(): void {
   pattern.value = patternInput.value;

@@ -3,7 +3,7 @@
     <q-table
       :title="$t('parts.routing')"
       :columns="columns"
-      :rows="routings"
+      :rows="routingsStore.records"
       row-key="id"
       dense
       v-model:pagination="pagination"
@@ -97,34 +97,10 @@
         </q-td>
       </template>
     </q-table>
-    <div class="q-pt-sm flex flex-center">
-      <q-pagination
-        v-model="paginationInput.page"
-        color="grey-7"
-        :max="paginationResponse.totalPages"
-        max-pages="6"
-        direction-links
-        boundary-links
-        active-color="dark"
-      />
-      <q-select
-        v-model="paginationInput.page"
-        :options="filteredPageOptions"
-        hide-bottom-space
-        dense
-        @filter="filterFn"
-        use-input
-        style="width: 200px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No results
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-    </div>
+    <FilterPagination
+      v-model="paginationInput"
+      :response-pagination="paginationResponse"
+    ></FilterPagination>
     <CreateRoutingDialog
       v-model="prompt"
       :part-id="Number(props.id)"
@@ -141,8 +117,10 @@ import { useI18n } from 'vue-i18n';
 import { QSelect, QTableProps } from 'quasar';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
+import FilterPagination from 'src/components/FilterPagination.vue';
 import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
+import { useRoutingsStore } from './stores/RoutingStore';
 import { SprmObjectType } from '../objectTypes/models/ObjectType';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import CreateRoutingDialog from './components/CreateRoutingDialog.vue';
@@ -151,7 +129,7 @@ const i18n = useI18n();
 
 const attrLinksStore = useAttributeLinksStore();
 
-const routings = ref<Routing[]>([]);
+const routingsStore = useRoutingsStore();
 
 const prompt = ref(false);
 
@@ -241,52 +219,16 @@ const pagination = ref<QTableProps['pagination']>({
   rowsPerPage: 20,
 });
 
-/**
- * The filtered page options for page select
- */
-const filteredPageOptions = ref<number[]>([]);
-
-/**
- * The page options from pagination response
- */
-const pageOptions = computed(
-  () => {
-    const returnOptions: number[] = [];
-    for (let i = 1; i <= paginationResponse.value.totalPages; i += 1) {
-      returnOptions.push(i);
-    }
-    return returnOptions;
-  },
-);
-
-/**
- * Filter function for pagination select
- * @param val User input
- * @param update Update callback if you actually want to update select options
- */
-function filterFn(val: string, update: (callbackFn: () => void,
-  afterFn?: ((ref: QSelect) => void) | undefined) => void) {
-  if (val === '') {
-    update(() => {
-      filteredPageOptions.value = pageOptions.value;
-    });
-    return;
-  }
-  update(() => {
-    filteredPageOptions.value = pageOptions.value.filter((v) => v.toString().indexOf(val) > -1);
-  });
-}
-
 async function initialize() {
   const fetchedRoutings = await routingService.getByPartId(Number(props.id), paginationInput.value);
   if (fetchedRoutings) {
-    routings.value = fetchedRoutings.content;
+    routingsStore.routings = fetchedRoutings.content;
     paginationResponse.value = fetchedRoutings.pagination;
   }
 }
 
 function onRoutingCreated(newRouting: Routing) {
-  routings.value.push(newRouting);
+  routingsStore.unshiftRouting(newRouting);
 }
 
 watch(() => props.id, async () => {
@@ -314,10 +256,7 @@ onBeforeMount(async () => {
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 230px)
-
-.scroll-max
-  height: calc(100vh - 265px)
+  height: calc(100vh - 240px)
 
 .avatar-color
   background: #FF9933
