@@ -2,7 +2,7 @@ import { defineStore } from 'pinia';
 import { useI18n } from 'vue-i18n';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
-import { DisplayType } from 'src/modules/customs/models/CustomAttribute';
+import { customValueRecordService } from 'src/services/CustomValueRecordService';
 import { Part, PartVersionInfo } from '../models/Part';
 
 export interface PartsContainer {
@@ -39,37 +39,9 @@ export const usePartsStore = defineStore('parts', {
           return record;
         }
         const customAttributes = attrLinksStore.attributes(SprmObjectType.PartVersion);
-        Object.keys(part.version.customValues).forEach((key) => {
-          const targetAttribute = customAttributes.find((attr) => attr.number === key);
-          if (!targetAttribute) {
-            return;
-          }
-          if (targetAttribute.displayType !== DisplayType.SingleSelect) {
-            const currentValue = part.version.customValues[key];
-            record[key] = currentValue;
-            return;
-          }
-          // Get single select option
-          const currentValue = part.version.customValues[key];
-          const targetOption = targetAttribute.options.find(
-            (option) => option.key === currentValue,
-          );
-          // Display raw value if option is not found
-          if (!targetOption) {
-            record[key] = currentValue;
-            return;
-          }
-          // Get display value of current language
-          const display = targetOption.languages[lang];
-          if (display) {
-            // Display language
-            record[key] = display;
-          } else {
-            // Show default value if language display not found
-            record[key] = targetOption.value;
-          }
-        });
-        return record;
+        const newRecord = customValueRecordService
+          .toRecord(record, customAttributes, part.version.customValues, lang);
+        return newRecord;
       });
       return newRecords;
     },
