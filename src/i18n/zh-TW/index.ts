@@ -59,6 +59,7 @@ export default {
     routing: '工藝路徑',
     routings: {
       name: '工藝路徑名稱',
+      new: '新增工藝路徑',
     },
     number: '料號',
     name: '料件名稱',

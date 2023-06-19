@@ -15,6 +15,7 @@
           <q-btn
             :label="$t('actions.add')"
             class="action-btn"
+            @click="prompt = true"
           />
           <q-btn
             :label="$t('actions.delete')"
@@ -124,6 +125,11 @@
         </template>
       </q-select>
     </div>
+    <CreateRoutingDialog
+      v-model="prompt"
+      :part-id="Number(props.id)"
+      @on-routing-created="onRoutingCreated"
+    />
   </div>
 </template>
 
@@ -139,12 +145,15 @@ import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
 import { SprmObjectType } from '../objectTypes/models/ObjectType';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
+import CreateRoutingDialog from './components/CreateRoutingDialog.vue';
 
 const i18n = useI18n();
 
 const attrLinksStore = useAttributeLinksStore();
 
 const routings = ref<Routing[]>([]);
+
+const prompt = ref(false);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -274,6 +283,10 @@ async function initialize() {
     routings.value = fetchedRoutings.content;
     paginationResponse.value = fetchedRoutings.pagination;
   }
+}
+
+function onRoutingCreated(newRouting: Routing) {
+  routings.value.push(newRouting);
 }
 
 watch(() => props.id, async () => {

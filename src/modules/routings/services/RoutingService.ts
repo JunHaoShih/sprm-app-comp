@@ -50,7 +50,7 @@ export const routingService = {
    * @returns New routing if success
    */
   create: async (createDto: CreateRoutingDTO): Promise<Routing | null> => {
-    const part = await api.post('/api/Part', createDto)
+    const part = await api.post('/api/Routing', createDto)
       .then((response): Routing => {
         const data = response.data as SPRMResponse<Routing>;
         return data.content;

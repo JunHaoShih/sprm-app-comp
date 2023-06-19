@@ -91,9 +91,20 @@ function resetDto() {
   };
 }
 
+/**
+ * Submit form
+ */
+function submit(): void {
+  formRef.value.submit();
+}
+
 onBeforeMount(() => {
   initializing.value = true;
   resetDto();
   initializing.value = false;
+});
+
+defineExpose({
+  submit,
 });
 </script>
