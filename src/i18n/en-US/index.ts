@@ -85,6 +85,11 @@ export default {
     mustSelectOne: 'Please select a part',
     wantToCheckOut: 'Part does not check out, do you want to check out?',
   },
+  processes: {
+    title: 'Process management',
+    caption: 'Manage your processes',
+    process: 'Process',
+  },
   customs: {
     title: 'Customization',
     caption: 'Manage your settings',

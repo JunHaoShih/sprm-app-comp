@@ -85,6 +85,11 @@ export default {
     mustSelectOne: '請選擇一個料件',
     wantToCheckOut: '料件尚未出庫，是否要出庫?',
   },
+  processes: {
+    title: '製程管理',
+    caption: '管理製程與相關資訊',
+    process: '製程',
+  },
   customs: {
     title: '自定義',
     caption: '管理自訂屬性',

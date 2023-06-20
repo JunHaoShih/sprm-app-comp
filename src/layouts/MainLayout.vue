@@ -104,6 +104,12 @@ const essentialLinks = computed(
       to: '/parts',
     },
     {
+      title: i18n.t('processes.title'),
+      caption: i18n.t('processes.caption'),
+      icon: 'route',
+      to: '/processes',
+    },
+    {
       title: i18n.t('customs.title'),
       caption: i18n.t('customs.caption'),
       icon: 'tune',
