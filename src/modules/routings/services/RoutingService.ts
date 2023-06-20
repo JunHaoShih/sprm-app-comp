@@ -69,4 +69,25 @@ export const routingService = {
       });
     return part;
   },
+  getById: async (id: number): Promise<Routing | null> => {
+    const searchUrl = `/api/Routing/${id}`;
+    const partResponse = await api.get(encodeURI(searchUrl))
+      .then((response): Routing => {
+        const data = response.data as SPRMResponse<Routing>;
+        return data.content;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return partResponse;
+  },
 };

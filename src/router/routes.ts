@@ -28,6 +28,18 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        path: '/routings/:id',
+        component: () => import('src/modules/routings/RoutingCenterPage.vue'),
+        props: true,
+        children: [
+          {
+            path: '/routings/:id/history',
+            component: () => import('src/modules/routings/RoutingHistoryPage.vue'),
+            props: true,
+          },
+        ],
+      },
+      {
         path: '/parts/version/:id',
         component: () => import('src/modules/parts/PartVersionCenterPage.vue'),
         props: true,

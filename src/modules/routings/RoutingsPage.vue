@@ -258,7 +258,7 @@ function onRoutingCreated(newRouting: Routing) {
 }
 
 function onHistoryClicked(routing: Routing) {
-  router.push(`/routing/${routing.id}/history`);
+  router.push(`/routings/${routing.id}/history`);
 }
 
 watch(() => props.id, async () => {

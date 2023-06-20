@@ -3,7 +3,7 @@
     <q-table
       :title="$t('iterable.history')"
       :columns="columns"
-      :rows="partVersions"
+      :rows="routingVersions"
       row-key="id"
       dense
       v-model:pagination="pagination"
@@ -13,38 +13,38 @@
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
           <q-badge
-            v-if="(props.row as PartVersion).isDraft"
+            v-if="(props.row as RoutingVersion).isDraft"
             color="orange"
-            @click="onVersionClicked(props.row as PartVersion)"
+            @click="onVersionClicked(props.row as RoutingVersion)"
             class="clickable-badge"
           >
-            v. {{ (props.row as PartVersion).version }} {{ $t('actions.draft') }}
+            v. {{ (props.row as RoutingVersion).version }} {{ $t('actions.draft') }}
           </q-badge>
           <q-badge
             v-else
             color="primary"
-            @click="onVersionClicked(props.row as PartVersion)"
+            @click="onVersionClicked(props.row as RoutingVersion)"
             class="clickable-badge"
           >
-            v. {{ (props.row as PartVersion).version }}
+            v. {{ (props.row as RoutingVersion).version }}
           </q-badge>
         </q-td>
       </template>
       <!-- create date -->
       <template v-slot:body-cell-createDate="props">
         <q-td :props="props">
-          {{ new Date((props.row as PartVersion).createDate).getDateStr() }}
+          {{ new Date((props.row as RoutingVersion).createDate).getDateStr() }}
           <q-tooltip>
-            {{ new Date((props.row as PartVersion).createDate).toString() }}
+            {{ new Date((props.row as RoutingVersion).createDate).toString() }}
           </q-tooltip>
         </q-td>
       </template>
       <!-- modified date -->
       <template v-slot:body-cell-updateDate="props">
         <q-td :props="props">
-          {{ new Date((props.row as PartVersion).updateDate).getDateStr() }}
+          {{ new Date((props.row as RoutingVersion).updateDate).getDateStr() }}
           <q-tooltip>
-            {{ new Date((props.row as PartVersion).updateDate).toString() }}
+            {{ new Date((props.row as RoutingVersion).updateDate).toString() }}
           </q-tooltip>
         </q-td>
       </template>
@@ -66,15 +66,15 @@ import { useRouter } from 'vue-router';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import FilterPagination from 'src/components/FilterPagination.vue';
-import { partVersionService } from './services/PartVersionService';
-import { PartVersion } from './models/PartVersion';
 import 'src/extensions/date.extensions';
+import { RoutingVersion } from './models/RoutingVersion';
+import { routingVersionService } from './services/RoutingVersionService';
 
 const i18n = useI18n();
 
 const router = useRouter();
 
-const partVersions = ref<PartVersion[]>([]);
+const routingVersions = ref<RoutingVersion[]>([]);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -124,19 +124,19 @@ const columns = computed(
   ],
 );
 
-async function onVersionClicked(version: PartVersion) {
-  if (version.isDraft) {
+async function onVersionClicked(version: RoutingVersion) {
+  /* if (version.isDraft) {
     router.push(`/parts/version/edit/${version.id}/info`);
     return;
   }
-  router.push(`/parts/version/${version.id}/info`);
+  router.push(`/parts/version/${version.id}/info`); */
 }
 
 async function initialize() {
-  const versionsPagination = await partVersionService
-    .getPartVersions(Number(props.id), paginationInput.value);
+  const versionsPagination = await routingVersionService
+    .getRoutingVersions(Number(props.id), paginationInput.value);
   if (versionsPagination) {
-    partVersions.value = versionsPagination.content;
+    routingVersions.value = versionsPagination.content;
     paginationResponse.value = versionsPagination.pagination;
   }
 }
