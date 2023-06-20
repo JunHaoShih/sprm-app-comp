@@ -65,6 +65,10 @@ const routes: RouteRecordRaw[] = [
           { path: '/customizations/attributeLinks', component: () => import('src/modules/customs/AttributeLinksPage.vue') },
         ],
       },
+      {
+        path: '/processes',
+        component: () => import('src/modules/processes/ProcessesPage.vue'),
+      },
     ],
   },
   {
