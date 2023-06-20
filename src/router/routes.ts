@@ -22,7 +22,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: '/parts/:id/routing',
-            component: () => import('src/modules/routings/RoutingPage.vue'),
+            component: () => import('src/modules/routings/RoutingsPage.vue'),
             props: true,
           },
         ],

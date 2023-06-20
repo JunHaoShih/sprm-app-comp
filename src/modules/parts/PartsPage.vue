@@ -168,11 +168,11 @@ const prompt = ref(false);
 const selected = ref<Part[]>([]);
 
 function onInfoClicked(part: Part): void {
-  router.push(`parts/version/${part.version.id}/info`);
+  router.push(`/parts/version/${part.version.id}/info`);
 }
 
 function onHistoryClicked(part: Part) {
-  router.push(`parts/${part.id}/history`);
+  router.push(`/parts/${part.id}/history`);
 }
 
 async function onCheckInClicked(part: Part): Promise<void> {
@@ -202,7 +202,7 @@ async function onCheckOutClicked(part: Part): Promise<Part | null> {
 }
 
 function onRoutingClicked(part: Part): void {
-  router.push(`parts/${part.id}/routing`);
+  router.push(`/parts/${part.id}/routing`);
 }
 
 function onDiscardClicked(part: Part): void {
@@ -244,11 +244,11 @@ function onEditClicked(part: Part): void {
     }).onOk(async () => {
       const checkoutPart = await onCheckOutClicked(part);
       if (checkoutPart) {
-        router.push(`parts/version/edit/${checkoutPart.draftId}/info`);
+        router.push(`/parts/version/edit/${checkoutPart.draftId}/info`);
       }
     });
   } else {
-    router.push(`parts/version/edit/${part.draftId}/info`);
+    router.push(`/parts/version/edit/${part.draftId}/info`);
   }
 }
 
