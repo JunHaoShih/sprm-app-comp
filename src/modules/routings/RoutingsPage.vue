@@ -96,6 +96,29 @@
           </q-tooltip>
         </q-td>
       </template>
+      <template v-slot:body-cell="props">
+        <!-- display table value -->
+        <q-td :props="props">
+          {{props.value}}
+        </q-td>
+        <q-menu touch-position context-menu>
+          <q-list dense style="min-width: 100px">
+            <q-item clickable v-close-popup>
+              <q-item-section
+                @click="onHistoryClicked((props.row as Routing))"
+              >
+                <div>
+                  <q-icon name="history" color="primary"/>
+                  {{ $t('iterable.history') }}
+                </div>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="red-7" />
+      </template>
     </q-table>
     <FilterPagination
       v-model="paginationInput"
@@ -115,12 +138,13 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QSelect, QTableProps } from 'quasar';
+import { useRouter } from 'vue-router';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import FilterPagination from 'src/components/FilterPagination.vue';
 import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
-import { useRoutingsStore } from './stores/RoutingStore';
+import { useRoutingsStore } from './stores/RoutingsStore';
 import { SprmObjectType } from '../objectTypes/models/ObjectType';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import CreateRoutingDialog from './components/CreateRoutingDialog.vue';
@@ -130,6 +154,8 @@ const i18n = useI18n();
 const attrLinksStore = useAttributeLinksStore();
 
 const routingsStore = useRoutingsStore();
+
+const router = useRouter();
 
 const prompt = ref(false);
 
@@ -229,6 +255,10 @@ async function initialize() {
 
 function onRoutingCreated(newRouting: Routing) {
   routingsStore.unshiftRouting(newRouting);
+}
+
+function onHistoryClicked(routing: Routing) {
+  router.push(`/routing/${routing.id}/history`);
 }
 
 watch(() => props.id, async () => {
