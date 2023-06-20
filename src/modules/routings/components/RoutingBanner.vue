@@ -5,7 +5,7 @@
       style="border-radius: 10px"
     >
       <div class="text-h6 row">
-        <q-icon name="settings" size="24px" class="q-mt-xs q-mr-sm"/>
+        <q-icon name="route" size="24px" class="q-mt-xs q-mr-sm"/>
         <div>{{ routing.name }}</div>
         <div
           v-if="routing.checkout"
