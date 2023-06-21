@@ -1,0 +1,51 @@
+import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
+import { defineStore } from 'pinia';
+import { useI18n } from 'vue-i18n';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { customValueRecordService } from 'src/services/CustomValueRecordService';
+import { Process } from '../models/Process';
+
+export interface ProcessesContainer {
+  processes: Process[],
+}
+
+export const useProcessesStore = defineStore('processes', {
+  state: (): ProcessesContainer => ({
+    processes: [],
+  }),
+  getters: {
+    /**
+     * Convert parts to records, so custom values are able to display in table
+     * @param state store state
+     * @returns record array
+     */
+    records: (state): Record<string, unknown>[] => {
+      const attrLinksStore = useAttributeLinksStore();
+      const i18n = useI18n();
+      const lang = i18n.locale.value;
+      const newRecords = state.processes.map((process) => {
+        const record: Record<string, unknown> = process;
+        if (!process.customValues) {
+          return record;
+        }
+        const customAttributes = attrLinksStore.attributes(SprmObjectType.PartVersion);
+        const newRecord = customValueRecordService
+          .toRecord(record, customAttributes, process.customValues, lang);
+        return newRecord;
+      });
+      return newRecords;
+    },
+  },
+  actions: {
+    addPart(process: Process): void {
+      this.processes.push(process);
+    },
+    unshiftPart(process: Process): void {
+      this.processes.unshift(process);
+    },
+    updatePart(process: Process): void {
+      const index = this.processes.findIndex((currentProcess) => currentProcess.id === process.id);
+      this.processes[index] = process;
+    },
+  },
+});

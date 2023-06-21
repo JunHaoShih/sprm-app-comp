@@ -89,6 +89,13 @@ export default {
     title: '製程管理',
     caption: '管理製程與相關資訊',
     process: '製程',
+    number: '編號',
+    name: '名稱',
+    processType: '製程類型',
+    makeType: '製造類型',
+    defaultImportTime: '預設進站時間(毫秒)',
+    defaultExportTime: '預設出站時間(毫秒)',
+    new: '新增製程',
   },
   customs: {
     title: '自定義',
@@ -151,6 +158,12 @@ export default {
       longerThan20: '字數不可大於20',
       invalidChar: '不可含有任何非法字元',
     },
+    processes: {
+      shorterThan2: '字數不可少於2',
+      longerThan20: '字數不可大於20',
+      invalidChar: '不可含有任何非法字元',
+    },
+    cannotSmallerThan0: '不可小於0',
   },
   columns: {
     display: '欄位顯示',

@@ -89,6 +89,13 @@ export default {
     title: 'Process management',
     caption: 'Manage your processes',
     process: 'Process',
+    number: 'Number',
+    name: 'Name',
+    processType: 'Process type',
+    makeType: 'Make type',
+    defaultImportTime: 'Default import time(ms)',
+    defaultExportTime: 'Default export time(ms)',
+    new: 'New process',
   },
   customs: {
     title: 'Customization',
@@ -150,6 +157,12 @@ export default {
       longerThan20: 'Cannot be longer than 20',
       invalidChar: 'Only number, alphabets, dash and underscore are valid',
     },
+    processes: {
+      shorterThan2: 'Cannot be shorter than 2',
+      longerThan20: 'Cannot be longer than 20',
+      nameInvalidChar: 'Cannot cantain any invalid characters',
+    },
+    cannotSmallerThan0: 'Cannot be smaller than 0',
   },
   columns: {
     display: 'Columns display',

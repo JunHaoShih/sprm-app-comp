@@ -5,7 +5,7 @@ export interface ValidateRule {
   message: string,
 }
 
-export const genericRulesCheck = (val: string, rules: ValidateRule[]) => {
+export const genericRulesCheck = (val: string | number | undefined, rules: ValidateRule[]) => {
   const errors: string[] = [];
   rules
     .filter((rule) => !rule.validate(val))

@@ -2,8 +2,8 @@
   <div>
     <!-- product files table -->
     <q-table
-      title="Parts"
-      :rows="partsStore.records"
+      title="Processes"
+      :rows="processesStore.records"
       :class="props.tableClass"
       :columns="columns"
       v-model:selected="selected"
@@ -35,7 +35,7 @@
                 />
                 <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
                 <q-toggle
-                  v-for="attr in attrLinksStore.attributes(SprmObjectType.PartVersion)"
+                  v-for="attr in attrLinksStore.attributes(processObjType)"
                   v-bind:key="attr.number"
                   v-model="canDisplay[attr.number]"
                   :label="attr.languages[i18n.locale.value] || attr.name"
@@ -64,51 +64,24 @@
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <slot name="row-actions" :part="(props.row as Part)"></slot>
-        </q-td>
-      </template>
-      <!-- is checkout -->
-      <template v-slot:body-cell-isCheckout="props">
-        <q-td :props="props">
-          <q-badge
-            v-if="(props.row as Part).checkout"
-            color="orange"
-            class="q-ml-sm"
-          >
-            {{ $t('actions.checkout') }}
-          </q-badge>
-        </q-td>
-      </template>
-      <!-- version -->
-      <template v-slot:body-cell-version="props">
-        <q-td :props="props">
-          {{ partsStore.getVersion(props.row.version) }}
-        </q-td>
-      </template>
-      <!-- view -->
-      <template v-slot:body-cell-view="props">
-        <q-td v-if="props.row.viewType === ViewType.Design" :props="props">
-          {{ $t('parts.views.design') }}
-        </q-td>
-        <q-td v-else :props="props">
-          {{ $t('parts.views.manufacturing') }}
+          <slot name="row-actions" :part="(props.row as Process)"></slot>
         </q-td>
       </template>
       <!-- create date -->
       <template v-slot:body-cell-createDate="props">
         <q-td :props="props">
-          {{ new Date((props.row as Part).version.createDate).getDateStr() }}
+          {{ new Date((props.row as Process).createDate).getDateStr() }}
           <q-tooltip>
-            {{ (props.row as Part).version.createDate.toString() }}
+            {{ (props.row as Process).createDate.toString() }}
           </q-tooltip>
         </q-td>
       </template>
       <!-- modified date -->
       <template v-slot:body-cell-updateDate="props">
         <q-td :props="props">
-          {{ new Date((props.row as Part).version.updateDate).getDateStr() }}
+          {{ new Date((props.row as Process).updateDate).getDateStr() }}
           <q-tooltip>
-            {{ (props.row as Part).version.updateDate.toString() }}
+            {{ (props.row as Process).updateDate.toString() }}
           </q-tooltip>
         </q-td>
       </template>
@@ -118,7 +91,7 @@
         <q-td :props="props">
           {{props.value}}
         </q-td>
-        <slot name="cell-after" :part="(props.row as Part)"></slot>
+        <slot name="cell-after" :part="(props.row as Process)"></slot>
       </template>
       <template v-slot:loading>
         <q-inner-loading showing color="red-7" />
@@ -142,16 +115,16 @@ import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginatio
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import FilterPagination from 'src/components/FilterPagination.vue';
-import { partService } from '../services/PartService';
-import { usePartsStore } from '../stores/PartsStore';
-import { Part, ViewType } from '../models/Part';
 import 'src/extensions/date.extensions';
+import { useProcessesStore } from '../stores/ProcessesStore';
+import { Process } from '../models/Process';
+import { processService } from '../services/ProcessService';
 
 const i18n = useI18n();
 
 const attrLinksStore = useAttributeLinksStore();
 
-const partsStore = usePartsStore();
+const processesStore = useProcessesStore();
 
 const patternInput = ref('');
 
@@ -161,10 +134,12 @@ const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
+const processObjType = SprmObjectType.Process;
+
 interface Props {
   readonly: boolean;
   tableClass: string;
-  selected?: Part[];
+  selected?: Process[];
   selection: QTableProps['selection'],
   modelValue: string;
 }
@@ -179,7 +154,7 @@ const props = withDefaults(defineProps<Props>(), {
 type Emit = {
   (e: 'update:modelValue', value: string): void
   (e: 'onSearch', value: string): void
-  (e: 'update:selected', value: Part[] | undefined): void
+  (e: 'update:selected', value: Process[] | undefined): void
 }
 const emit = defineEmits<Emit>();
 
@@ -215,19 +190,10 @@ const defaultColumns = computed(
       name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
     },
     {
-      name: 'isCheckout', label: i18n.t('actions.checkout'), field: '', align: 'center', sortable: false,
-    },
-    {
       name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
     },
     {
       name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
-    },
-    {
-      name: 'view', label: i18n.t('parts.view'), field: '', align: 'left', sortable: true,
-    },
-    {
-      name: 'version', label: i18n.t('iterable.version'), field: '', align: 'left', sortable: true,
     },
     {
       name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
@@ -247,7 +213,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(SprmObjectType.PartVersion).forEach((attr) => {
+    attrLinksStore.attributes(processObjType).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -275,12 +241,12 @@ function onSearchEnter(): void {
 
 async function searchParts(): Promise<void> {
   loading.value = true;
-  const parts = await partService.getByPattern(patternInput.value, paginationInput.value);
-  if (parts) {
-    partsStore.parts = parts.content;
-    paginationResponse.value = parts.pagination;
+  const processes = await processService.getByPattern(patternInput.value, paginationInput.value);
+  if (processes) {
+    processesStore.processes = processes.content;
+    paginationResponse.value = processes.pagination;
     if (pagination.value && pagination.value.rowsPerPage) {
-      pagination.value.rowsPerPage = parts.pagination.perPage;
+      pagination.value.rowsPerPage = processes.pagination.perPage;
     }
   }
   selected.value.length = 0;
@@ -307,9 +273,9 @@ watch(pattern, async () => {
 onBeforeMount(async () => {
   await updatePattern();
   await Promise.all([
-    attrLinksStore.initialize(SprmObjectType.PartVersion),
+    attrLinksStore.initialize(processObjType),
   ]);
-  const attributes = attrLinksStore.attributes(SprmObjectType.PartVersion);
+  const attributes = attrLinksStore.attributes(processObjType);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
