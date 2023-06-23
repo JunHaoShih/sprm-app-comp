@@ -74,7 +74,10 @@
         </q-menu>
       </template>
     </ProcessesSearchPanel>
-    <CreateProcessDialog v-model="prompt" @onPartCreated="onProcessCreated"></CreateProcessDialog>
+    <CreateProcessDialog
+      v-model="prompt"
+      @onProcessCreated="onProcessCreated">
+    </CreateProcessDialog>
   </div>
 </template>
 
