@@ -151,7 +151,6 @@ function onSelectedMakesTypeOptionUpdated(option: SelectOption<number>) {
 }
 
 async function createProcess(): Promise<void> {
-  console.log(createDto.value);
   const newProcess = await processService.create(createDto.value);
   if (newProcess && props.onSuccess) {
     props.onSuccess(newProcess);
