@@ -141,3 +141,8 @@ onBeforeMount(async () => {
   await updatePattern(route.query.pattern);
 });
 </script>
+
+<style lang="sass" scoped>
+:deep(.outer-max)
+  height: calc(100vh - 125px)
+</style>
