@@ -67,6 +67,18 @@
           <slot name="row-actions" :part="(props.row as Process)"></slot>
         </q-td>
       </template>
+      <!-- Process type -->
+      <template v-slot:body-cell-processType="props">
+        <q-td :props="props">
+          {{ processesStore.displayProcessTypeName((props.row as Process)) }}
+        </q-td>
+      </template>
+      <!-- Make type -->
+      <template v-slot:body-cell-makeType="props">
+        <q-td :props="props">
+          {{ processesStore.displayMakeTypeName((props.row as Process)) }}
+        </q-td>
+      </template>
       <!-- create date -->
       <template v-slot:body-cell-createDate="props">
         <q-td :props="props">
@@ -115,6 +127,10 @@ import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginatio
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import FilterPagination from 'src/components/FilterPagination.vue';
+import { processTypeService } from 'src/modules/processTypes/services/ProcessTypeService';
+import { makeTypeService } from 'src/modules/makeTypes/services/MakeTypeService';
+import { ProcessType } from 'src/modules/processTypes/models/ProcessType';
+import { MakeType } from 'src/modules/makeTypes/models/MakeType';
 import 'src/extensions/date.extensions';
 import { useProcessesStore } from '../stores/ProcessesStore';
 import { Process } from '../models/Process';
@@ -129,6 +145,10 @@ const processesStore = useProcessesStore();
 const patternInput = ref('');
 
 const loading = ref(false);
+
+const processTypes = ref<ProcessType[]>([]);
+
+const makeTypes = ref<MakeType[]>([]);
 
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
@@ -190,10 +210,22 @@ const defaultColumns = computed(
       name: 'actions', label: i18n.t('actions.action'), field: '', align: 'center', style: 'width: 60px',
     },
     {
-      name: 'number', required: true, label: i18n.t('parts.number'), align: 'left', field: 'number', sortable: true,
+      name: 'number', required: true, label: i18n.t('processes.number'), align: 'left', field: 'number', sortable: true,
     },
     {
-      name: 'name', label: i18n.t('parts.name'), field: 'name', align: 'left', sortable: true,
+      name: 'name', label: i18n.t('processes.name'), field: 'name', align: 'left', sortable: true,
+    },
+    {
+      name: 'defaultImportTime', label: i18n.t('processes.defaultImportTime'), field: 'defaultImportTime', align: 'left', sortable: true,
+    },
+    {
+      name: 'defaultExportTime', label: i18n.t('processes.defaultExportTime'), field: 'defaultExportTime', align: 'left', sortable: true,
+    },
+    {
+      name: 'processType', label: i18n.t('processes.processType'), field: '', align: 'left', sortable: true,
+    },
+    {
+      name: 'makeType', label: i18n.t('processes.makeType'), field: '', align: 'left', sortable: true,
     },
     {
       name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
@@ -270,10 +302,32 @@ watch(pattern, async () => {
   deep: true,
 });
 
+/**
+ * Initialize process types before mount
+ */
+async function initializeProcessTypes() {
+  const fetchedProcessTypes = await processTypeService.getAll();
+  if (fetchedProcessTypes) {
+    processTypes.value = fetchedProcessTypes;
+  }
+}
+
+/**
+ * Initialize make types before mount
+ */
+async function initializeMakeTypes() {
+  const fetchedMakeTypes = await makeTypeService.getAll();
+  if (fetchedMakeTypes) {
+    makeTypes.value = fetchedMakeTypes;
+  }
+}
+
 onBeforeMount(async () => {
   await updatePattern();
   await Promise.all([
     attrLinksStore.initialize(processObjType),
+    initializeProcessTypes(),
+    initializeMakeTypes(),
   ]);
   const attributes = attrLinksStore.attributes(processObjType);
   attributes.forEach((attr) => {

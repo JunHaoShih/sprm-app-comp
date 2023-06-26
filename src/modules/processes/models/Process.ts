@@ -8,6 +8,6 @@ export interface Process extends ReturnBase {
   defaultImportTime: number,
   defaultExportTime: number,
   processType: ProcessType,
-  makeType: MakeType,
+  defaultMakeType: MakeType,
   customValues: Record<string, string>,
 }

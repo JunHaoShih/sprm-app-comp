@@ -69,6 +69,22 @@ const routes: RouteRecordRaw[] = [
         path: '/processes',
         component: () => import('src/modules/processes/ProcessesPage.vue'),
       },
+      {
+        path: '/processes/:id',
+        component: () => import('src/modules/processes/ProcessCenterPage.vue'),
+        props: true,
+        children: [
+          { path: '/processes/:id/info', component: () => import('src/modules/processes/ProcessPage.vue'), props: true },
+        ],
+      },
+      {
+        path: '/processes/edit/:id',
+        component: () => import('src/modules/processes/ProcessEditCenterPage.vue'),
+        props: true,
+        children: [
+          { path: '/processes/edit/:id/info', component: () => import('src/modules/processes/ProcessEditPage.vue'), props: true },
+        ],
+      },
     ],
   },
   {

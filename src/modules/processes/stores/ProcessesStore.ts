@@ -35,6 +35,24 @@ export const useProcessesStore = defineStore('processes', {
       });
       return newRecords;
     },
+    displayProcessTypeName: () => (process: Process): string => {
+      const i18n = useI18n();
+      const lang = i18n.locale.value;
+      if (!process.processType.languages) {
+        return process.processType.name;
+      }
+      const display = process.processType.languages[lang];
+      return display ?? process.processType.name;
+    },
+    displayMakeTypeName: () => (process: Process): string => {
+      const i18n = useI18n();
+      const lang = i18n.locale.value;
+      if (!process.defaultMakeType.languages) {
+        return process.defaultMakeType.name;
+      }
+      const display = process.defaultMakeType.languages[lang];
+      return display ?? process.defaultMakeType.name;
+    },
   },
   actions: {
     addPart(process: Process): void {

@@ -70,4 +70,25 @@ export const processService = {
       });
     return part;
   },
+  getById: async (id: number): Promise<Process | null> => {
+    const partsResponse = await api
+      .get(encodeURI(`/api/Process/${id}`))
+      .then((response): Process => {
+        const data = response.data as SPRMResponse<Process>;
+        return data.content;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return partsResponse;
+  },
 };
