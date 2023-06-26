@@ -6,6 +6,7 @@ import { paginationService } from 'src/services/PaginationService';
 import { Notify } from 'quasar';
 import { Process } from '../models/Process';
 import { CreateProcessDTO } from '../dtos/CreateProcessDTO';
+import { UpdateProcessDTO } from '../dtos/UpdateProcessDTO';
 
 export const processService = {
   /**
@@ -90,5 +91,26 @@ export const processService = {
         return null;
       });
     return partsResponse;
+  },
+  update: async (id: number, dto: UpdateProcessDTO): Promise<number | null> => {
+    const updateUrl = `/api/Process/${id}`;
+    const code = await api.put(encodeURI(updateUrl), dto)
+      .then((response): number => {
+        const data = response.data as SPRMResponse<string>;
+        return data.code;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return code;
   },
 };
