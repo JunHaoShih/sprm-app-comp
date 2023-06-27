@@ -85,17 +85,11 @@
 import {
   LocationQueryValue, onBeforeRouteUpdate, useRoute, useRouter,
 } from 'vue-router';
-import { useQuasar } from 'quasar';
-import { useI18n } from 'vue-i18n';
 import { onBeforeMount, ref } from 'vue';
 import ProcessesSearchPanel from './components/ProcessesSearchPanel.vue';
 import { useProcessesStore } from './stores/ProcessesStore';
 import { Process } from './models/Process';
 import CreateProcessDialog from './components/CreateProcessDialog.vue';
-
-const $q = useQuasar();
-
-const i18n = useI18n();
 
 const route = useRoute();
 
@@ -109,12 +103,12 @@ const prompt = ref(false);
 
 const selected = ref<Process[]>([]);
 
-function onInfoClicked(part: Process): void {
-  // router.push(`/parts/version/${part.version.id}/info`);
+function onInfoClicked(process: Process): void {
+  router.push(`/processes/${process.id}/info`);
 }
 
-function onEditClicked(part: Process): void {
-  // TODO
+function onEditClicked(process: Process): void {
+  router.push(`/processes/edit/${process.id}/info`);
 }
 
 function onProcessCreated(newProcess: Process) {
