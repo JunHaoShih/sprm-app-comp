@@ -279,7 +279,7 @@ async function searchParts(): Promise<void> {
   if (parts) {
     partsStore.parts = parts.content;
     paginationResponse.value = parts.pagination;
-    if (pagination.value && pagination.value.rowsPerPage) {
+    if (pagination.value?.rowsPerPage) {
       pagination.value.rowsPerPage = parts.pagination.perPage;
     }
   }
