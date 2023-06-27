@@ -17,7 +17,7 @@
           {{ $t('title') }}
         </q-toolbar-title>
         <q-avatar>
-          <img :src="currentUserStore.getGravatar">
+          <img :src="currentUserStore.getGravatar" alt="icon">
           <q-menu>
             <q-item clickable v-close-popup>
               <q-item-section>{{ currentUserStore.username }}</q-item-section>
