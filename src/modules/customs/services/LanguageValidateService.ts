@@ -10,7 +10,7 @@ const validateLanguageRules: ValidateRule[] = [
     message: 'validations.languages.longerThan20',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
+    validate: (val) => /^[^\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.languages.invalidChar',
   },
 ];
