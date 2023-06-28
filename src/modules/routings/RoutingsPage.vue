@@ -37,7 +37,7 @@
                 />
                 <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
                 <q-toggle
-                  v-for="attr in attrLinksStore.attributes(SprmObjectType.PartVersion)"
+                  v-for="attr in attrLinksStore.attributes(sprmObjectType)"
                   v-bind:key="attr.number"
                   v-model="canDisplay[attr.number]"
                   :label="attr.languages[i18n.locale.value] || attr.name"
@@ -173,9 +173,11 @@ import FilterPagination from 'src/components/FilterPagination.vue';
 import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
 import { useRoutingsStore } from './stores/RoutingsStore';
-import { SprmObjectType } from '../objectTypes/models/ObjectType';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import CreateRoutingDialog from './components/CreateRoutingDialog.vue';
+import { SprmObjectType } from '../objectTypes/models/ObjectType';
+
+const sprmObjectType = SprmObjectType.RoutingVersion;
 
 const i18n = useI18n();
 
@@ -231,7 +233,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(SprmObjectType.RoutingVersion).forEach((attr) => {
+    attrLinksStore.attributes(sprmObjectType).forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -304,9 +306,9 @@ watch(() => props.id, async () => {
 onBeforeMount(async () => {
   await initialize();
   await Promise.all([
-    attrLinksStore.initialize(SprmObjectType.RoutingVersion),
+    attrLinksStore.initialize(sprmObjectType),
   ]);
-  const attributes = attrLinksStore.attributes(SprmObjectType.RoutingVersion);
+  const attributes = attrLinksStore.attributes(sprmObjectType);
   attributes.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
