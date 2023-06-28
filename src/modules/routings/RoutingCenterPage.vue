@@ -13,7 +13,7 @@
       <q-route-tab
         icon="history"
         :label="$t('iterable.history')"
-        :to="'/parts/' + id + '/history'"
+        :to="'/routings/' + id + '/history'"
         exact
       />
     </q-tabs>
