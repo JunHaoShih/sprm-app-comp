@@ -40,6 +40,14 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        path: '/routings/version/edit/:id',
+        component: () => import('src/modules/routings/RoutingVersionEditCenterPage.vue'),
+        props: true,
+        children: [
+          { path: '/routings/version/edit/:id/info', component: () => import('src/modules/routings/RoutingInfoEditPage.vue') },
+        ],
+      },
+      {
         path: '/parts/version/:id',
         component: () => import('src/modules/parts/PartVersionCenterPage.vue'),
         props: true,

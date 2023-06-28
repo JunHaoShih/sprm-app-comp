@@ -56,6 +56,34 @@
           style="min-width: 120px;"
         />
       </template>
+      <template v-slot:body-cell-actions="props">
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="edit"
+          size="12px"
+          @click="onEditClicked(props.row as Routing)"
+        />
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="delete"
+          size="12px"
+        />
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="info"
+          size="12px"
+          @click="onInfoClicked(props.row as Routing)"
+        />
+      </template>
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
           <q-badge
@@ -259,6 +287,14 @@ function onRoutingCreated(newRouting: Routing) {
 
 function onHistoryClicked(routing: Routing) {
   router.push(`/routings/${routing.id}/history`);
+}
+
+function onInfoClicked(routing: Routing) {
+  router.push(`/routings/version/${routing.id}/info`);
+}
+
+function onEditClicked(routing: Routing) {
+  router.push(`/routings/version/edit/${routing.id}/info`);
 }
 
 watch(() => props.id, async () => {
