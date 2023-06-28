@@ -5,6 +5,7 @@
     >
       <div class="text-h6 row">
         <slot name="front"></slot>
+        <q-icon name="settings" size="24px" class="q-mt-xs q-mr-sm"/>
         <div>{{ props.partVersion.master.number }}</div>
         <div>
           <q-badge color="primary" class="q-ml-sm">

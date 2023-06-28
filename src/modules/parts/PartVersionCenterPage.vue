@@ -4,7 +4,12 @@
       :part-version="partVersionStore.content"
     >
       <template v-slot:front>
-        <q-icon name="info" size="24px" class="q-mt-xs q-mr-sm"/>
+        <q-icon
+          name="info"
+          size="24px"
+          class="q-mt-xs q-mr-sm"
+          color="primary"
+        />
       </template>
       <template v-slot:before-history>
         <q-btn
