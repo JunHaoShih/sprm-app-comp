@@ -31,7 +31,7 @@ const useRoutingUsagesTreeStore = defineStore('routingUsagesTree', {
         childrenMap.forEach((value: RoutingUsage) => {
           const rootNode: RoutingUsageTreeNode = {
             label: `${value.number} - ${value.processNumber}`,
-            icon: 'settings',
+            icon: 'arrow_forward',
             parentUsageId: value.parentUsageId,
             rootVersionId: value.rootVersionId,
             number: value.number,

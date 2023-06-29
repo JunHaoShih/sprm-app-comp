@@ -106,7 +106,7 @@ const essentialLinks = computed(
     {
       title: i18n.t('processes.title'),
       caption: i18n.t('processes.caption'),
-      icon: 'route',
+      icon: 'arrow_forward',
       to: '/processes',
     },
     {
