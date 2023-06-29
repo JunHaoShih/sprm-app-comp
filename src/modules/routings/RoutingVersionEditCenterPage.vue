@@ -28,13 +28,13 @@
     >
       <q-route-tab
         icon="info"
-        :label="$t('parts.info')"
+        :label="$t('info')"
         :to="'/routings/version/edit/' + id + '/info'"
         exact
       />
       <q-route-tab
         icon="list"
-        :label="$t('parts.bom')"
+        :label="$t('parts.routings.process')"
         :to="'/routings/version/edit/' + id + '/usages'"
         exact
       />

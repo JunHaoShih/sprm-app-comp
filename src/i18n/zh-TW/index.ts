@@ -60,6 +60,7 @@ export default {
     routings: {
       name: '工藝路徑名稱',
       new: '新增工藝路徑',
+      process: '路徑製程',
     },
     number: '料號',
     name: '料件名稱',

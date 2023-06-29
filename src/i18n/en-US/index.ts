@@ -60,6 +60,7 @@ export default {
     routings: {
       name: 'Routing name',
       new: 'New routing',
+      process: 'Routing process',
     },
     number: 'Number',
     name: 'Name',
