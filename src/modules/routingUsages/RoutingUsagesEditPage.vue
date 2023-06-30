@@ -68,8 +68,6 @@ const parentUsageId = computed(
 );
 
 async function onDeleteButtonClicked() {
-  console.log(`Root version id: ${rootVersionId.value}`);
-  console.log(`Parent usage id: ${parentUsageId.value}`);
   /* const success = await partUsageService.remove(selectedNode.value.usageId);
   if (success) {
     partUsaeChildrenStore.deleteUses(
