@@ -8,6 +8,7 @@ export default {
     adds: {
       newPart: '加入新料件',
       existingPart: '加入現有料件',
+      existingProcess: '加入現有製程',
     },
     edit: '編輯',
     delete: '刪除',
@@ -61,6 +62,10 @@ export default {
       name: '工藝路徑名稱',
       new: '新增工藝路徑',
       process: '路徑製程',
+      processes: {
+        number: '路徑製程編號',
+        new: '新增路徑製程',
+      },
     },
     number: '料號',
     name: '料件名稱',
@@ -97,6 +102,7 @@ export default {
     defaultImportTime: '預設進站時間(毫秒)',
     defaultExportTime: '預設出站時間(毫秒)',
     new: '新增製程',
+    search: '搜尋製程',
   },
   customs: {
     title: '自定義',

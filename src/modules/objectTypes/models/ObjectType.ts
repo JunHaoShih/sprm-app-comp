@@ -5,7 +5,7 @@ export enum SprmObjectType {
   Routing = 3,
   RoutingVersion = 4,
   Process = 5,
-  RoutingProcess = 6,
+  RoutingUsage = 6,
 }
 
 export interface ObjectType {

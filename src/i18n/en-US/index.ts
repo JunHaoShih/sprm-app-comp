@@ -8,6 +8,7 @@ export default {
     adds: {
       newPart: 'Add new part',
       existingPart: 'Add existing part',
+      existingProcess: 'Add existing process',
     },
     edit: 'Edit',
     delete: 'Delete',
@@ -61,6 +62,10 @@ export default {
       name: 'Routing name',
       new: 'New routing',
       process: 'Routing process',
+      processes: {
+        new: 'New routing process',
+        number: 'Routing process number',
+      },
     },
     number: 'Number',
     name: 'Name',
@@ -97,6 +102,7 @@ export default {
     defaultImportTime: 'Default import time(ms)',
     defaultExportTime: 'Default export time(ms)',
     new: 'New process',
+    search: 'Search process',
   },
   customs: {
     title: 'Customization',

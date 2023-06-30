@@ -13,6 +13,12 @@
       <template v-slot:default-header="prop">
         <div class="row items-center">
           <q-icon :name="prop.node.icon" class="q-mr-sm"></q-icon>
+          <q-badge
+            color="secondary"
+            class="q-mr-sm"
+          >
+            {{ (prop.node as RoutingUsageTreeNode).number }}
+          </q-badge>
           <div>{{ prop.node.label }}</div>
         </div>
       </template>
@@ -33,7 +39,7 @@ const routingUsagesMapStore = useRoutingUsagesMapStore();
 
 const qtree = ref<QTree>();
 
-const selectedUsageId = ref(0);
+const selectedUsageId = ref<number | null>(0);
 
 const props = withDefaults(defineProps<{
   id: number,
@@ -56,6 +62,7 @@ async function initializePage(routingVersionId: number) {
   if (uses) {
     // await partVersionStore.partVersionInit(partVersionId);
     routingUsagesMapStore.initialize(uses);
+    selectedUsageId.value = null;
   }
 }
 

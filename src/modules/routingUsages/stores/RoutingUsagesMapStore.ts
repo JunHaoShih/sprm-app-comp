@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
-import { QTreeNode, QTreeProps } from 'quasar';
+import { QTreeNode } from 'quasar';
 import { RoutingUsage } from '../models/RoutingUsage';
 
 export interface RoutingUsageTreeNode extends QTreeNode {
   parentUsageId: number | null,
   rootVersionId: number,
   number: string,
-  usageId: number,
+  usageId: number | null,
   processId: number,
   processNumber: string,
   processName: string,
@@ -14,6 +14,7 @@ export interface RoutingUsageTreeNode extends QTreeNode {
 
 interface RoutingUsagesTreeContainer {
   nodeMap: Map<number, RoutingUsageTreeNode>,
+  rootNode?: RoutingUsageTreeNode,
 }
 
 const useRoutingUsagesTreeStore = defineStore('routingUsagesTree', {
@@ -25,12 +26,15 @@ const useRoutingUsagesTreeStore = defineStore('routingUsagesTree', {
       usageMap: Map<number | null, Map<number, RoutingUsage>>,
       parentUsageId: number| null,
     ): RoutingUsageTreeNode[] {
+      if (!parentUsageId) {
+        this.nodeMap.clear();
+      }
       const nodes: RoutingUsageTreeNode[] = [];
       const childrenMap = usageMap.get(parentUsageId);
       if (childrenMap) {
         childrenMap.forEach((value: RoutingUsage) => {
           const rootNode: RoutingUsageTreeNode = {
-            label: `${value.number} - ${value.processNumber}`,
+            label: `${value.processNumber}`,
             icon: 'arrow_forward',
             parentUsageId: value.parentUsageId,
             rootVersionId: value.rootVersionId,
@@ -42,6 +46,7 @@ const useRoutingUsagesTreeStore = defineStore('routingUsagesTree', {
           };
           rootNode.children = this.getTreeNode(usageMap, rootNode.usageId);
           nodes.push(rootNode);
+          this.nodeMap.set(value.id, rootNode);
         });
       }
       return nodes.sort((node1, node2) => {
@@ -54,8 +59,12 @@ const useRoutingUsagesTreeStore = defineStore('routingUsagesTree', {
         return 0;
       });
     },
-    getByNodeId(usageId: number): RoutingUsageTreeNode | undefined {
-      return this.nodeMap.get(usageId);
+    getByNodeId(usageId: number | null): RoutingUsageTreeNode | undefined {
+      return usageId ? this.nodeMap.get(usageId) : this.rootNode;
+    },
+    getNextNumber() {
+      const length = (this.nodeMap.size + 1) * 10;
+      return length.toString().padStart(4, '0');
     },
   },
 });
@@ -69,17 +78,27 @@ export const useRoutingUsagesMapStore = defineStore('routingUsagesMap', {
     usageMap: new Map<number, Map<number, RoutingUsage>>(),
   }),
   getters: {
-    treeNodes: (state): QTreeProps['nodes'] => {
-      if (state.usageMap.size === 0) {
-        return [{
-          label: '',
-          icon: 'room_service',
-        }];
-      }
+    treeNodes: (state): RoutingUsageTreeNode[] => {
       const treeNodesStore = useRoutingUsagesTreeStore();
-      return treeNodesStore.getTreeNode(state.usageMap, null);
+      treeNodesStore.rootNode = {
+        label: 'root',
+        icon: 'route',
+        parentUsageId: null,
+        rootVersionId: 0,
+        number: '',
+        usageId: null,
+        processId: 0,
+        processNumber: '',
+        processName: '',
+      };
+      treeNodesStore.rootNode.children = treeNodesStore.getTreeNode(state.usageMap, null);
+      return [treeNodesStore.rootNode];
     },
-    selectedTreeNode: () => (usageId: number): RoutingUsageTreeNode | undefined => {
+    nextNumber: () => {
+      const treeNodesStore = useRoutingUsagesTreeStore();
+      return treeNodesStore.getNextNumber();
+    },
+    selectedTreeNode: () => (usageId: number | null): RoutingUsageTreeNode | undefined => {
       const treeNodesStore = useRoutingUsagesTreeStore();
       return treeNodesStore.getByNodeId(usageId);
     },
@@ -87,6 +106,15 @@ export const useRoutingUsagesMapStore = defineStore('routingUsagesMap', {
   actions: {
     initialize(usages: RoutingUsage[]) {
       this.usageMap.clear();
+      for (let i = 0; i < usages.length; i += 1) {
+        const usage = usages[i];
+        if (!this.usageMap.has(usage.parentUsageId)) {
+          this.usageMap.set(usage.parentUsageId, new Map<number, RoutingUsage>());
+        }
+        this.usageMap.get(usage.parentUsageId)?.set(usage.id, usage);
+      }
+    },
+    addUses(usages: RoutingUsage[]) {
       for (let i = 0; i < usages.length; i += 1) {
         const usage = usages[i];
         if (!this.usageMap.has(usage.parentUsageId)) {
