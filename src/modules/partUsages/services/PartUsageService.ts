@@ -3,7 +3,7 @@ import { Notify } from 'quasar';
 import { i18n } from 'src/boot/i18n';
 import { SPRMResponse } from 'src/models/SPRMResponse';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
-import { DisplayType } from 'src/modules/customs/models/CustomAttribute';
+import { customValueRecordService } from 'src/services/CustomValueRecordService';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { CreatePartUsagesDTO } from '../dtos/CreatePartUsagesDTO';
@@ -18,22 +18,15 @@ export const partUsageService = {
         return data.content;
       })
       .catch((error) => {
-        let message = '';
         if (error.response) {
           const body: SPRMResponse<string> = error.response.data;
-          message = `Error: ${body.code}, ${body.message}`;
-        } else if (error.request) {
-          // The request was made but no response was received
-          message = 'Error: No response';
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          message = 'Something went wrong';
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
         }
-        Notify.create({
-          message,
-          color: 'red',
-          icon: 'error',
-        });
         return null;
       });
     return partUsages;
@@ -41,43 +34,15 @@ export const partUsageService = {
   toRecords: (partUsageChildren: PartUsageChild[]): Record<string, unknown>[] => {
     const attrLinksStore = useAttributeLinksStore();
     const lang = i18n.global.locale.value;
-    const newRecords = partUsageChildren.map((partUsage) => {
-      const record: Record<keyof PartUsageChild, unknown> = partUsage;
-      if (!partUsage.customValues) {
+    const newRecords = partUsageChildren.map((routingUsage) => {
+      const record: Record<keyof PartUsageChild, unknown> = routingUsage;
+      if (!routingUsage.customValues) {
         return record;
       }
       const customAttributes = attrLinksStore.attributes(SprmObjectType.PartUsage);
-      Object.keys(partUsage.customValues).forEach((key) => {
-        const targetAttribute = customAttributes.find((attr) => attr.number === key);
-        if (!targetAttribute) {
-          return;
-        }
-        if (targetAttribute.displayType !== DisplayType.SingleSelect) {
-          const currentValue = partUsage.customValues[key];
-          record[key as keyof PartUsageChild] = currentValue;
-          return;
-        }
-        // Get single select option
-        const currentValue = partUsage.customValues[key];
-        const targetOption = targetAttribute.options.find(
-          (option) => option.key === currentValue,
-        );
-        // Display raw value if option is not found
-        if (!targetOption) {
-          record[key as keyof PartUsageChild] = currentValue;
-          return;
-        }
-        // Get display value of current language
-        const display = targetOption.languages[lang];
-        if (display) {
-          // Display language
-          record[key as keyof PartUsageChild] = display;
-        } else {
-          // Show default value if language display not found
-          record[key as keyof PartUsageChild] = targetOption.value;
-        }
-      });
-      return record;
+      const newRecord = customValueRecordService
+        .toRecord(record, customAttributes, routingUsage.customValues, lang);
+      return newRecord;
     });
     return newRecords;
   },
@@ -88,7 +53,6 @@ export const partUsageService = {
         return data.content;
       })
       .catch((error) => {
-        let message = '';
         if (error.response) {
           const body: SPRMResponse<string> = error.response.data;
           let bodyMessage = '';
@@ -97,19 +61,13 @@ export const partUsageService = {
           } else {
             bodyMessage = body.message;
           }
-          message = `Error: ${body.code}, ${bodyMessage}`;
-        } else if (error.request) {
-          // The request was made but no response was received
-          message = 'Error: No response';
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          message = 'Something went wrong';
+          const message = `Error: ${body.code}, ${bodyMessage}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
         }
-        Notify.create({
-          message,
-          color: 'red',
-          icon: 'error',
-        });
         return null;
       });
     return partUsages;
@@ -118,7 +76,6 @@ export const partUsageService = {
     const success = await api.delete(`/api/PartUsage/${id}`)
       .then((): boolean => true)
       .catch((error): boolean => {
-        let message = '';
         if (error.response) {
           const body: SPRMResponse<string> = error.response.data;
           let bodyMessage = '';
@@ -127,19 +84,13 @@ export const partUsageService = {
           } else {
             bodyMessage = body.message;
           }
-          message = `Error: ${body.code}, ${bodyMessage}`;
-        } else if (error.request) {
-          // The request was made but no response was received
-          message = 'Error: No response';
-        } else {
-          // Something happened in setting up the request that triggered an Error
-          message = 'Something went wrong';
+          const message = `Error: ${body.code}, ${bodyMessage}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
         }
-        Notify.create({
-          message,
-          color: 'red',
-          icon: 'error',
-        });
         return false;
       });
     return success;
