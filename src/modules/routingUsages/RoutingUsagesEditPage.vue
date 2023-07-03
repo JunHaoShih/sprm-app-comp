@@ -29,7 +29,12 @@
       </template>
 
       <template v-slot:after>
-        {{ 456 }}
+        <RoutibgUsagesRightPanel
+          :id="selectedUsageId"
+          :readonly="false"
+        >
+
+        </RoutibgUsagesRightPanel>
       </template>
     </q-splitter>
     <CreateRoutingUsageDialog
@@ -46,6 +51,7 @@ import { useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import 'src/extensions/date.extensions';
 import RoutingUsagesTreePanel from './components/RoutingUsagesTreePanel.vue';
+import RoutibgUsagesRightPanel from './components/RoutingUsagesRightPanel.vue';
 import { RoutingUsageTreeNode, useRoutingUsagesMapStore } from './stores/RoutingUsagesMapStore';
 import CreateRoutingUsageDialog from './components/CreateRoutingUsageDialog.vue';
 import { routingUsageService } from './services/RoutingUsageService';
@@ -61,6 +67,15 @@ const splitterModel = ref(50);
 const searchPrompt = ref(false);
 
 const selectedNode = ref<RoutingUsageTreeNode>({} as RoutingUsageTreeNode);
+
+const selectedUsageId = computed(
+  (): number | null => {
+    if (Object.keys(selectedNode).length === 0) {
+      return null;
+    }
+    return selectedNode.value.usageId;
+  },
+);
 
 const props = withDefaults(defineProps<{
   id: string,

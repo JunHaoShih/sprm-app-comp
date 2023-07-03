@@ -102,6 +102,15 @@ export const useRoutingUsagesMapStore = defineStore('routingUsagesMap', {
       const treeNodesStore = useRoutingUsagesTreeStore();
       return treeNodesStore.getByNodeId(usageId);
     },
+    children: (state) => (parentUsageId: number | null): RoutingUsage[] | null => {
+      const childrenMap = state.usageMap.get(parentUsageId);
+      if (!childrenMap) {
+        return null;
+      }
+      const children = [] as RoutingUsage[];
+      childrenMap.forEach((value) => children.push(value));
+      return children;
+    },
   },
   actions: {
     initialize(usages: RoutingUsage[]) {

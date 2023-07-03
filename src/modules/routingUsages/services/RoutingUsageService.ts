@@ -1,6 +1,10 @@
 import { Notify } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import { api } from 'src/boot/axios';
 import { SPRMResponse } from 'src/models/SPRMResponse';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { customValueRecordService } from 'src/services/CustomValueRecordService';
+import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { RoutingUsage } from '../models/RoutingUsage';
 import { CreateRoutingUsageDTO } from '../dtos/CreateRoutingUsageDTO';
 
@@ -62,5 +66,26 @@ export const routingUsageService = {
         return false;
       });
     return success;
+  },
+  /**
+   * Convert routing usages to records
+   * @param routingUsages Routing usages
+   * @returns Parsed records
+   */
+  toRecords: (routingUsages: RoutingUsage[]): Record<string, unknown>[] => {
+    const attrLinksStore = useAttributeLinksStore();
+    const i18n = useI18n();
+    const lang = i18n.locale.value;
+    const newRecords = routingUsages.map((routingUsage) => {
+      const record: Record<keyof RoutingUsage, unknown> = routingUsage;
+      if (!routingUsage.customValues) {
+        return record;
+      }
+      const customAttributes = attrLinksStore.attributes(SprmObjectType.RoutingUsage);
+      const newRecord = customValueRecordService
+        .toRecord(record, customAttributes, routingUsage.customValues, lang);
+      return newRecord;
+    });
+    return newRecords;
   },
 };
