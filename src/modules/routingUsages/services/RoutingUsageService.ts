@@ -46,4 +46,21 @@ export const routingUsageService = {
       });
     return partUsages;
   },
+  remove: async (id: number): Promise<boolean> => {
+    const success = await api.delete(`/api/RoutingUsage/${id}`)
+      .then((): boolean => true)
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return false;
+      });
+    return success;
+  },
 };

@@ -42,10 +42,19 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import 'src/extensions/date.extensions';
 import RoutingUsagesTreePanel from './components/RoutingUsagesTreePanel.vue';
-import { RoutingUsageTreeNode } from './stores/RoutingUsagesMapStore';
+import { RoutingUsageTreeNode, useRoutingUsagesMapStore } from './stores/RoutingUsagesMapStore';
 import CreateRoutingUsageDialog from './components/CreateRoutingUsageDialog.vue';
+import { routingUsageService } from './services/RoutingUsageService';
+
+const $q = useQuasar();
+
+const i18n = useI18n();
+
+const routingUsagesMapStore = useRoutingUsagesMapStore();
 
 const splitterModel = ref(50);
 
@@ -68,18 +77,21 @@ const parentUsageId = computed(
 );
 
 async function onDeleteButtonClicked() {
-  /* const success = await partUsageService.remove(selectedNode.value.usageId);
-  if (success) {
-    partUsaeChildrenStore.deleteUses(
-      selectedNode.value.parentId,
-      selectedNode.value.versionId,
-    );
-    $q.notify({
-      message: i18n.t('actions.deletes.success'),
-      color: 'secondary',
-      icon: 'check_circle',
-    });
-  } */
+  const targetUsageId = selectedNode.value.usageId;
+  if (targetUsageId) {
+    const success = await routingUsageService.remove(targetUsageId);
+    if (success) {
+      routingUsagesMapStore.deleteUses(
+        selectedNode.value.parentUsageId,
+        targetUsageId,
+      );
+      $q.notify({
+        message: i18n.t('actions.deletes.success'),
+        color: 'secondary',
+        icon: 'check_circle',
+      });
+    }
+  }
 }
 </script>
 

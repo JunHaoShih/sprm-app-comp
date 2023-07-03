@@ -123,5 +123,12 @@ export const useRoutingUsagesMapStore = defineStore('routingUsagesMap', {
         this.usageMap.get(usage.parentUsageId)?.set(usage.id, usage);
       }
     },
+    deleteUses(parentUsageId: number | null, usageId: number) {
+      if (this.usageMap.has(parentUsageId)) {
+        if (this.usageMap.get(parentUsageId)?.has(usageId)) {
+          this.usageMap.get(parentUsageId)?.delete(usageId);
+        }
+      }
+    },
   },
 });
