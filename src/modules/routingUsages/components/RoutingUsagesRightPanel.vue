@@ -43,7 +43,8 @@
                       v-model="displayMap[column.name]"
                       :label="column.label"
                     />
-                    <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
+                    <q-separator/>
+                    <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
                     <q-toggle
                       v-for="attr in attrLinksStore.attributes(sprmObjectType)"
                       v-bind:key="attr.number"
