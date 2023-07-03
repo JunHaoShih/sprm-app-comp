@@ -70,20 +70,44 @@
         </q-table>
       </q-tab-panel>
     </q-tab-panels>
+    <PopupDialog
+      v-model="prompt"
+      :title="$t('parts.routings.processes.edit')"
+    >
+      <template v-slot:center>
+        <RoutingUsageForm
+          ref="formRef"
+          v-model="modifiedUsage"
+          :readonly="false"
+          :on-submit="updateUsage"
+        >
+
+        </RoutingUsageForm>
+      </template>
+      <template v-slot:bottom>
+        <q-btn flat :label="$t('actions.cancel')" v-close-popup />
+        <q-btn flat :label="$t('actions.confirm')" @click="onConfirm" />
+      </template>
+    </PopupDialog>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue';
-import { QTableProps } from 'quasar';
+import { QTableProps, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { CustomAttribute } from 'src/modules/customs/models/CustomAttribute';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
+import PopupDialog from 'src/components/PopupDialog.vue';
 import { useRoutingUsagesMapStore } from '../stores/RoutingUsagesMapStore';
 import { routingUsageService } from '../services/RoutingUsageService';
 import { RoutingUsage } from '../models/RoutingUsage';
+import { UpdateRoutingUsageDTO } from '../dtos/UpdateRoutingUsageDTO';
+import RoutingUsageForm from './RoutingUsageForm.vue';
+
+const $q = useQuasar();
 
 const i18n = useI18n();
 
@@ -91,9 +115,13 @@ const routingUsagesMapStore = useRoutingUsagesMapStore();
 
 const attrLinksStore = useAttributeLinksStore();
 
+const formRef = ref<InstanceType<typeof RoutingUsageForm>>();
+
 const tab = ref('usage');
 
 const initializing = ref(true);
+
+const prompt = ref(false);
 
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
@@ -102,6 +130,8 @@ const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
 const sprmObjectType = SprmObjectType.RoutingUsage;
 
 const attributes = ref<CustomAttribute[]>([]);
+
+const modifiedUsage = ref<RoutingUsage>({} as RoutingUsage);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
@@ -165,7 +195,31 @@ const columns = computed(
 );
 
 function onEditClicked(row: RoutingUsage) {
-  console.log(row.number);
+  modifiedUsage.value = row;
+  prompt.value = true;
+}
+
+function onConfirm() {
+  formRef.value?.submit();
+}
+
+async function updateUsage() {
+  const dto: UpdateRoutingUsageDTO = {
+    remarks: modifiedUsage.value.remarks,
+    number: modifiedUsage.value.number,
+    processId: modifiedUsage.value.processId,
+    customValues: modifiedUsage.value.customValues,
+  };
+  const success = await routingUsageService.update(modifiedUsage.value.id, dto);
+  if (success) {
+    routingUsagesMapStore.updateUsage(modifiedUsage.value);
+    $q.notify({
+      message: i18n.t('actions.updates.success'),
+      icon: 'check_circle',
+      color: 'secondary',
+    });
+    prompt.value = false;
+  }
 }
 
 onBeforeMount(async () => {
@@ -184,3 +238,8 @@ onBeforeMount(async () => {
   initializing.value = false;
 });
 </script>
+
+<style lang="sass" scoped>
+.outer-max
+  height: calc(100vh - 270px)
+</style>

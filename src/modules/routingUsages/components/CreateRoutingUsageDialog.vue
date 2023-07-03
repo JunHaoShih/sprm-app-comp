@@ -26,7 +26,7 @@
               v-model:selected="selected"
               selection="single"
               class="main-panel"
-              table-class="table-max"
+              table-class="dialog-stepper-table"
             />
           </q-step>
           <q-step
@@ -184,9 +184,6 @@ async function usageCreated(usages: RoutingUsage) {
 <style lang="sass" scoped>
 .dialog-inner-max
   height: calc(90vh - 250px)
-
-:deep(.table-max)
-  height: calc(90vh - 300px)
 
 .my-custom-paddding
   .q-stepper

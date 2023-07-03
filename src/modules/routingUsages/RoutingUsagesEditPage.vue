@@ -29,12 +29,13 @@
       </template>
 
       <template v-slot:after>
-        <RoutibgUsagesRightPanel
-          :id="selectedUsageId"
-          :readonly="false"
-        >
-
-        </RoutibgUsagesRightPanel>
+        <div class="q-gutter-sm">
+          <RoutibgUsagesRightPanel
+            :id="selectedUsageId"
+            :readonly="false"
+          >
+          </RoutibgUsagesRightPanel>
+        </div>
       </template>
     </q-splitter>
     <CreateRoutingUsageDialog

@@ -22,6 +22,15 @@
           :readonly="readonly"
           :input-validator="partUsageValiationService.quantityRules"
         />
+        <div class="column">
+          <q-input
+            v-model="formUsage.remarks"
+            :label="$t('remarks')"
+            filled
+            type="textarea"
+            :readonly="readonly"
+          />
+        </div>
       </div>
       </q-expansion-item>
 

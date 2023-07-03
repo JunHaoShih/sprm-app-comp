@@ -21,6 +21,15 @@
           :readonly="readonly"
           :input-validator="partUsageValiationService.quantityRules"
         />
+        <div class="column">
+          <q-input
+            v-model="usageChildDTO.remarks"
+            :label="$t('remarks')"
+            filled
+            type="textarea"
+            :readonly="readonly"
+          />
+        </div>
       </div>
       </q-expansion-item>
 
@@ -70,6 +79,7 @@ const props = withDefaults(defineProps<{
 const usageChildDTO = ref<CreatePartUsageChildDTO>({
   partId: 0,
   quantity: 1,
+  remarks: '',
   customValues: {},
 });
 

@@ -44,12 +44,10 @@ import { computed } from 'vue';
 /**
  * Define props with default value
  */
-const props = withDefaults(defineProps<{
+const props = defineProps<{
   modelValue: boolean,
   title: string,
-}>(), {
-  modelValue: false,
-});
+}>();
 
 type Emit = {
   (e: 'update:modelValue', value: boolean): void

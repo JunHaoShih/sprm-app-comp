@@ -26,7 +26,7 @@
               v-model:selected="selected"
               selection="single"
               class="main-panel"
-              table-class="table-max"
+              table-class="dialog-stepper-table"
             />
             <q-scroll-area
               v-if="createType === 'create'"
@@ -210,9 +210,6 @@ async function usageCreated(usages: PartUsageChild[]) {
 <style lang="sass" scoped>
 .dialog-inner-max
   height: calc(90vh - 250px)
-
-:deep(.table-max)
-  height: calc(90vh - 300px)
 
 .my-custom-paddding
   .q-stepper

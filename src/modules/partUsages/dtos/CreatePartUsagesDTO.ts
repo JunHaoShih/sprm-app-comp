@@ -8,6 +8,10 @@ export interface CreatePartUsageChildDTO {
    */
   quantity: number,
   /**
+   * Remarks
+   */
+  remarks?: string,
+  /**
    * Custom values of this part usage
    */
   customValues: Record<string, string>,

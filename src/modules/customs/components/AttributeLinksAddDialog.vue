@@ -32,7 +32,7 @@
     </template>
     <template v-slot:bottom>
       <q-btn flat :label="$t('actions.cancel')" v-close-popup />
-        <q-btn flat :label="$t('actions.confirm')" @click="onConfirm" />
+      <q-btn flat :label="$t('actions.confirm')" @click="onConfirm" />
     </template>
   </PopupDialog>
 </template>

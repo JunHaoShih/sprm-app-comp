@@ -64,6 +64,7 @@ export default {
       process: 'Routing process',
       processes: {
         new: 'New routing process',
+        edit: 'Edit routing process',
         number: 'Routing process number',
       },
     },
@@ -95,8 +96,8 @@ export default {
     title: 'Process management',
     caption: 'Manage your processes',
     process: 'Process',
-    number: 'Number',
-    name: 'Name',
+    number: 'Process number',
+    name: 'Process name',
     processType: 'Process type',
     makeType: 'Make type',
     defaultImportTime: 'Default import time(ms)',

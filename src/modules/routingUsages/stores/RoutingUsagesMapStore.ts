@@ -139,5 +139,12 @@ export const useRoutingUsagesMapStore = defineStore('routingUsagesMap', {
         }
       }
     },
+    updateUsage(updatedUsage: RoutingUsage) {
+      if (this.usageMap.has(updatedUsage.parentUsageId)) {
+        if (this.usageMap.get(updatedUsage.parentUsageId)?.has(updatedUsage.id)) {
+          this.usageMap.get(updatedUsage.parentUsageId)?.set(updatedUsage.id, updatedUsage);
+        }
+      }
+    },
   },
 });
