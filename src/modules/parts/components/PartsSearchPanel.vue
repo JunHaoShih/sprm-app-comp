@@ -20,29 +20,13 @@
         <div class="q-gutter-xs">
           <slot name="table-top"></slot>
           <!-- column display switch -->
-          <q-btn-dropdown
-            class="action-btn"
-            :label="$t('columns.display')"
-          >
-            <div class="row no-wrap q-pa-md">
-              <div class="column">
-                <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
-                <q-toggle
-                  v-for="column in defaultColumns"
-                  v-bind:key="column.name"
-                  v-model="displayMap[column.name]"
-                  :label="column.label"
-                />
-                <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
-                <q-toggle
-                  v-for="attr in attrLinksStore.attributes(SprmObjectType.PartVersion)"
-                  v-bind:key="attr.number"
-                  v-model="canDisplay[attr.number]"
-                  :label="attr.languages[i18n.locale.value] || attr.name"
-                />
-              </div>
-            </div>
-          </q-btn-dropdown>
+          <ColumnDisplaySwitchPanel
+            :locale="i18n.locale.value"
+            :attributes="attributes"
+            :can-display="canDisplay"
+            :display-map="displayMap"
+            :default-columns="defaultColumns">
+          </ColumnDisplaySwitchPanel>
         </div>
         <q-space />
         <q-select
@@ -141,7 +125,9 @@ import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLink
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { CustomAttribute } from 'src/modules/customs/models/CustomAttribute';
 import FilterPagination from 'src/components/FilterPagination.vue';
+import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
 import { partService } from '../services/PartService';
 import { usePartsStore } from '../stores/PartsStore';
 import { Part, ViewType } from '../models/Part';
@@ -160,6 +146,8 @@ const loading = ref(false);
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
+const attributes = ref<CustomAttribute[]>([]);
 
 interface Props {
   readonly: boolean;
@@ -247,7 +235,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(SprmObjectType.PartVersion).forEach((attr) => {
+    attributes.value.forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -309,8 +297,8 @@ onBeforeMount(async () => {
   await Promise.all([
     attrLinksStore.initialize(SprmObjectType.PartVersion),
   ]);
-  const attributes = attrLinksStore.attributes(SprmObjectType.PartVersion);
-  attributes.forEach((attr) => {
+  attributes.value = attrLinksStore.attributes(SprmObjectType.PartVersion);
+  attributes.value.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
   defaultColumns.value?.forEach((column) => {

@@ -22,29 +22,13 @@
             class="action-btn"
           />
           <!-- column display switch -->
-          <q-btn-dropdown
-            class="action-btn"
-            :label="$t('columns.display')"
-          >
-            <div class="row no-wrap q-pa-md">
-              <div class="column">
-                <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
-                <q-toggle
-                  v-for="column in defaultColumns"
-                  v-bind:key="column.name"
-                  v-model="displayMap[column.name]"
-                  :label="column.label"
-                />
-                <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
-                <q-toggle
-                  v-for="attr in attrLinksStore.attributes(sprmObjectType)"
-                  v-bind:key="attr.number"
-                  v-model="canDisplay[attr.number]"
-                  :label="attr.languages[i18n.locale.value] || attr.name"
-                />
-              </div>
-            </div>
-          </q-btn-dropdown>
+          <ColumnDisplaySwitchPanel
+            :locale="i18n.locale.value"
+            :attributes="attributes"
+            :can-display="canDisplay"
+            :display-map="displayMap"
+            :default-columns="defaultColumns">
+          </ColumnDisplaySwitchPanel>
         </div>
         <q-space />
         <q-select
@@ -170,12 +154,14 @@ import { useRouter } from 'vue-router';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import FilterPagination from 'src/components/FilterPagination.vue';
+import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
 import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
 import { useRoutingsStore } from './stores/RoutingsStore';
 import { useAttributeLinksStore } from '../customs/stores/AttributeLinksStore';
 import CreateRoutingDialog from './components/CreateRoutingDialog.vue';
 import { SprmObjectType } from '../objectTypes/models/ObjectType';
+import { CustomAttribute } from '../customs/models/CustomAttribute';
 
 const sprmObjectType = SprmObjectType.RoutingVersion;
 
@@ -200,6 +186,8 @@ const options = ref<number[]>([20, 50, 100]);
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
+const attributes = ref<CustomAttribute[]>([]);
 
 const defaultColumns = computed(
   (): QTableProps['columns'] => [
@@ -233,7 +221,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(sprmObjectType).forEach((attr) => {
+    attributes.value.forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -308,8 +296,8 @@ onBeforeMount(async () => {
   await Promise.all([
     attrLinksStore.initialize(sprmObjectType),
   ]);
-  const attributes = attrLinksStore.attributes(sprmObjectType);
-  attributes.forEach((attr) => {
+  attributes.value = attrLinksStore.attributes(sprmObjectType);
+  attributes.value.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
   defaultColumns.value?.forEach((column) => {

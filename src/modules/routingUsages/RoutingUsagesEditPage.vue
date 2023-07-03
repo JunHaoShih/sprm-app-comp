@@ -70,7 +70,7 @@ const selectedNode = ref<RoutingUsageTreeNode>({} as RoutingUsageTreeNode);
 
 const selectedUsageId = computed(
   (): number | null => {
-    if (Object.keys(selectedNode).length === 0) {
+    if (Object.keys(selectedNode.value).length === 0) {
       return null;
     }
     return selectedNode.value.usageId;

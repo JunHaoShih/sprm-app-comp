@@ -30,30 +30,13 @@
           <!-- button at table header -->
           <template v-slot:top>
             <div class="q-gutter-xs">
-              <q-btn-dropdown
-                class="action-btn"
-                :label="$t('columns.display')"
-              >
-                <div class="row no-wrap q-pa-md">
-                  <div class="column">
-                    <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
-                    <q-toggle
-                      v-for="column in defaultColumns"
-                      v-bind:key="column.name"
-                      v-model="displayMap[column.name]"
-                      :label="column.label"
-                    />
-                    <q-separator/>
-                    <div class="text-h6">{{ $t('customs.attributes.title') }}</div>
-                    <q-toggle
-                      v-for="attr in attrLinksStore.attributes(SprmObjectType.PartUsage)"
-                      v-bind:key="attr.number"
-                      v-model="canDisplay[attr.number]"
-                      :label="attr.languages[i18n.locale.value] || attr.name"
-                    />
-                  </div>
-                </div>
-              </q-btn-dropdown>
+              <ColumnDisplaySwitchPanel
+                :locale="i18n.locale.value"
+                :attributes="attributes"
+                :can-display="canDisplay"
+                :display-map="displayMap"
+                :default-columns="defaultColumns">
+              </ColumnDisplaySwitchPanel>
             </div>
             <q-space />
           </template>
@@ -136,6 +119,8 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QTableProps, useQuasar } from 'quasar';
+import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
+import { CustomAttribute } from 'src/modules/customs/models/CustomAttribute';
 import PartInfoForm from '../../parts/components/PartInfoForm.vue';
 import { usePartUsageTreeStore } from '../stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
@@ -165,7 +150,11 @@ const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const prompt = ref(false);
 
+const tab = ref('usage');
+
 const modifiedUsage = ref<PartUsageChild>({} as PartUsageChild);
+
+const attributes = ref<CustomAttribute[]>([]);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
@@ -209,7 +198,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(SprmObjectType.PartUsage).forEach((attr) => {
+    attributes.value.forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -274,8 +263,8 @@ onBeforeMount(async () => {
     partUsaeChildrenStore.partVersionInit(props.id),
     attrLinksStore.initialize(SprmObjectType.PartUsage),
   ]);
-  const attributes = attrLinksStore.attributes(SprmObjectType.PartUsage);
-  attributes.forEach((attr) => {
+  attributes.value = attrLinksStore.attributes(SprmObjectType.PartUsage);
+  attributes.value.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
   defaultColumns.value?.forEach((column) => {
@@ -283,7 +272,6 @@ onBeforeMount(async () => {
   });
   initializing.value = false;
 });
-const tab = ref('usage');
 </script>
 
 <style lang="sass" scoped>
