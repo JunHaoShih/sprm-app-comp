@@ -60,7 +60,6 @@ const selectedNode = computed({
 async function initializePage(routingVersionId: number) {
   const uses = await routingUsageService.getByRootVersionId(routingVersionId);
   if (uses) {
-    // await partVersionStore.partVersionInit(partVersionId);
     routingUsagesMapStore.initialize(uses);
     selectedUsageId.value = null;
   }
