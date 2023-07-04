@@ -1,10 +1,11 @@
 <template>
   <div>
     <q-banner
-      class="info-banner"
+      class="info-banner q-ma-sm"
       style="border-radius: 10px"
     >
       <div class="text-h6 row">
+        <q-icon name="settings" size="24px" class="q-mt-xs q-mr-sm"/>
         <div>{{ part.number }}</div>
         <div
           v-if="part.checkout"

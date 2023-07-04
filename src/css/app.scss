@@ -31,6 +31,14 @@
   border-color: black;
 }
 
+.dialog-stepper-table {
+  height: calc(90vh - 330px);
+}
+
+.dialog-table {
+  height: calc(90vh - 200px);
+}
+
 .info-card-header {
   @extend .text-h6;
   @extend .bg-secondary;

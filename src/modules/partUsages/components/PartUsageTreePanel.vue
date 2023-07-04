@@ -130,6 +130,9 @@ watch(() => selectedUsageId.value, async () => {
   const node = partUsaeChildrenStore.selectedTreeNode(selectedUsageId.value);
   if (node) {
     selectedNode.value = node;
+    if (node.lazy) {
+      await updateChildrenStore(node.versionId);
+    }
   }
 });
 

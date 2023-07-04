@@ -30,15 +30,11 @@ const validateAttributeNameRules: ValidateRule[] = [
   },
 ];
 
-const attributeNumberRules = (number: string) => (
-  genericRulesCheck(number, validateAttributeNumberRules)
-);
-
-const attributeNameRules = (number: string) => (
-  genericRulesCheck(number, validateAttributeNameRules)
-);
-
 export const customAttributeValidationService = {
-  attributeNumberRules,
-  attributeNameRules,
+  attributeNumberRules: (number: string) => (
+    genericRulesCheck(number, validateAttributeNumberRules)
+  ),
+  attributeNameRules: (number: string) => (
+    genericRulesCheck(number, validateAttributeNameRules)
+  ),
 };

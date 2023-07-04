@@ -8,6 +8,7 @@ export default {
     adds: {
       newPart: '加入新料件',
       existingPart: '加入現有料件',
+      existingProcess: '加入現有製程',
     },
     edit: '編輯',
     delete: '刪除',
@@ -38,6 +39,7 @@ export default {
     discard: '捨棄',
     discards: {
       confirm: '確定要捨棄所有編輯資料?',
+      dataLossWarning: '捨棄編輯資料將無法還原',
       success: '捨棄成功',
       cannotDiscardFirstVersion: '無法捨棄第一版資料',
     },
@@ -55,7 +57,18 @@ export default {
     title: '料件管理',
     caption: '管理料件以及其他關連',
     part: '料件',
-    routing: '產品途程',
+    routing: '工藝路徑',
+    routings: {
+      name: '工藝路徑名稱',
+      new: '新增工藝路徑',
+      process: '路徑製程',
+      processes: {
+        new: '新增路徑製程',
+        edit: '編輯路徑製程',
+        number: '路徑製程編號',
+      },
+      wantToCheckOut: '工藝路徑尚未出庫，是否要出庫?',
+    },
     number: '料號',
     name: '料件名稱',
     view: 'View',
@@ -79,6 +92,19 @@ export default {
     versionMustCheckout: '料件版本尚未簽出',
     mustSelectOne: '請選擇一個料件',
     wantToCheckOut: '料件尚未出庫，是否要出庫?',
+  },
+  processes: {
+    title: '製程管理',
+    caption: '管理製程與相關資訊',
+    process: '製程',
+    number: '製程編號',
+    name: '製程名稱',
+    processType: '製程類型',
+    makeType: '製造類型',
+    defaultImportTime: '預設進站時間(毫秒)',
+    defaultExportTime: '預設出站時間(毫秒)',
+    new: '新增製程',
+    search: '搜尋製程',
   },
   customs: {
     title: '自定義',
@@ -141,6 +167,12 @@ export default {
       longerThan20: '字數不可大於20',
       invalidChar: '不可含有任何非法字元',
     },
+    processes: {
+      shorterThan2: '字數不可少於2',
+      longerThan20: '字數不可大於20',
+      invalidChar: '不可含有任何非法字元',
+    },
+    cannotSmallerThan0: '不可小於0',
   },
   columns: {
     display: '欄位顯示',

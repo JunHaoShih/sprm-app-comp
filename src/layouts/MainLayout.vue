@@ -17,7 +17,7 @@
           {{ $t('title') }}
         </q-toolbar-title>
         <q-avatar>
-          <img :src="currentUserStore.getGravatar">
+          <img :src="currentUserStore.getGravatar" alt="icon">
           <q-menu>
             <q-item clickable v-close-popup>
               <q-item-section>{{ currentUserStore.username }}</q-item-section>
@@ -102,6 +102,12 @@ const essentialLinks = computed(
       caption: i18n.t('parts.caption'),
       icon: 'settings',
       to: '/parts',
+    },
+    {
+      title: i18n.t('processes.title'),
+      caption: i18n.t('processes.caption'),
+      icon: 'arrow_forward',
+      to: '/processes',
     },
     {
       title: i18n.t('customs.title'),

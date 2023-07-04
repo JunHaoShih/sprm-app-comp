@@ -44,67 +44,25 @@
       </q-expansion-item>
 
       <q-separator class="q-mb-md"/>
-
-      <q-expansion-item
-        v-model="customValuesExpanded"
-        icon="language"
-        :label="$t('customs.attributes.title')"
-        header-class="info-card-header"
-        class="info-card-body"
-        style="border-radius: 10px"
-      >
-        <div class="q-pa-sm">
-          <div
-            v-for="attribute in targetAttributes"
-            :key="attribute.id"
-          >
-            <div
-              v-if="attribute.displayType === DisplayType.SingleSelect"
-            >
-              <div class="q-mx-sm text-caption">
-                {{ attribute.languages[i18n.locale.value] }}
-              </div>
-              <q-select
-                v-if="attribute.displayType === DisplayType.SingleSelect"
-                filled
-                dense
-                v-model="middleCustomOptions[attribute.id]"
-                :options="getSelectOption(attribute.options, attribute.number)"
-                @update:modelValue="onSelectOptionUpdated"
-              />
-            </div>
-            <ValidationInput
-              v-else
-              :label="attribute.languages[i18n.locale.value]"
-              v-model="createDto.customValues[attribute.number]"
-            />
-          </div>
-        </div>
-      </q-expansion-item>
+      <CustomAttributesInputPanel
+        v-model="createDto.customValues"
+        :sprmObjectType="sprmObjectType"
+      ></CustomAttributesInputPanel>
     </q-form>
   </div>
 </template>
 
 <script setup lang="ts">
-import {
-  computed, onBeforeMount, ref, watch,
-} from 'vue';
+import { onBeforeMount, ref } from 'vue';
 import { QForm } from 'quasar';
-import { useI18n } from 'vue-i18n';
-import { SelectOption } from 'src/models/SelectOption';
-import { CustomAttribute, CustomOption, DisplayType } from 'src/modules/customs/models/CustomAttribute';
-import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
-import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import ValidationInput from 'src/components/ValidationInput.vue';
+import CustomAttributesInputPanel from 'src/components/CustomAttributesInputPanel.vue';
 import { partService } from '../services/PartService';
 import { partValidationService } from '../services/PartValidateService';
 import { useViewTypeOptionsStore } from '../stores/ViewTypeOptionsStore';
 import { Part, ViewType, ViewTypeOption } from '../models/Part';
 import { CreatePartDTO } from '../dtos/CreatePartDTO';
-
-const i18n = useI18n();
-
-const attrLinksStore = useAttributeLinksStore();
 
 const viewTypeOptionsStore = useViewTypeOptionsStore();
 
@@ -114,11 +72,9 @@ const viewTypeOption = ref<ViewTypeOption>({} as ViewTypeOption);
 
 const infoExpanded = ref(true);
 
-const customValuesExpanded = ref(true);
-
 const initializing = ref(false);
 
-const middleCustomOptions = ref<Record<number, string>>({} as Record<number, string>);
+const sprmObjectType = SprmObjectType.PartVersion;
 
 const createDto = ref<CreatePartDTO>({
   number: '',
@@ -137,10 +93,6 @@ const props = withDefaults(defineProps<{
 }>(), {
 });
 
-const targetAttributes = computed(
-  (): CustomAttribute[] => attrLinksStore.attributes(ObjectTypeId.PartVersion),
-);
-
 function onViewTypeUpdated(value: ViewTypeOption) {
   createDto.value.viewType = value.value;
 }
@@ -152,29 +104,6 @@ async function createPart(): Promise<void> {
   } else if (!newPart && props.onError) {
     props.onError();
   }
-}
-
-function getSelectOption(customOptions: CustomOption[], attributeNumber: string) {
-  return customOptions.map((option): SelectOption<string> => ({
-    label: option.languages[i18n.locale.value],
-    value: option.key,
-    attributeNumber,
-  }));
-}
-
-function onSelectOptionUpdated(selectOption: SelectOption<string>) {
-  createDto.value.customValues[selectOption.attributeNumber] = selectOption.value;
-}
-
-function updateSingleSelectAttribute() {
-  targetAttributes.value.forEach((attr) => {
-    if (attr.displayType === DisplayType.SingleSelect) {
-      // Get option by single select value
-      const targetOption = attr.options[0];
-      middleCustomOptions.value[attr.id] = targetOption.languages[i18n.locale.value]
-          || targetOption.value;
-    }
-  });
 }
 
 function resetDto() {
@@ -194,18 +123,11 @@ function submit(): void {
   formRef.value.submit();
 }
 
-watch(() => i18n.locale.value, () => {
-  updateSingleSelectAttribute();
-});
-
 onBeforeMount(async () => {
   initializing.value = true;
   resetDto();
-  await attrLinksStore.initialize(ObjectTypeId.PartVersion);
   const option = viewTypeOptionsStore.i18nOptions[0];
   viewTypeOption.value = option;
-  createDto.value.customValues = Object.fromEntries(targetAttributes.value.map((attr) => [attr.number, '']));
-  updateSingleSelectAttribute();
   initializing.value = false;
 });
 

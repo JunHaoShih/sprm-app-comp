@@ -72,6 +72,16 @@
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section
+                @click="onBomClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="list" color="primary"/>
+                  {{ $t('parts.bom') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section
                 @click="onHistoryClicked(props.part)"
               >
                 <div>
@@ -81,8 +91,13 @@
               </q-item-section>
             </q-item>
             <q-item clickable v-close-popup>
-              <q-item-section>
-                {{ $t('parts.routing') }}
+              <q-item-section
+                @click="onRoutingClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="route" color="primary"/>
+                  {{ $t('parts.routing') }}
+                </div>
               </q-item-section>
             </q-item>
             <q-item
@@ -163,11 +178,15 @@ const prompt = ref(false);
 const selected = ref<Part[]>([]);
 
 function onInfoClicked(part: Part): void {
-  router.push(`parts/version/${part.version.id}/info`);
+  router.push(`/parts/version/${part.version.id}/info`);
 }
 
 function onHistoryClicked(part: Part) {
-  router.push(`parts/${part.id}/history`);
+  router.push(`/parts/${part.id}/history`);
+}
+
+function onBomClicked(part: Part) {
+  router.push(`/parts/version/${part.version.id}/usages`);
 }
 
 async function onCheckInClicked(part: Part): Promise<void> {
@@ -196,6 +215,10 @@ async function onCheckOutClicked(part: Part): Promise<Part | null> {
   return null;
 }
 
+function onRoutingClicked(part: Part): void {
+  router.push(`/parts/${part.id}/routing`);
+}
+
 function onDiscardClicked(part: Part): void {
   if (part.draftId === part.version.id) {
     $q.notify({
@@ -208,7 +231,7 @@ function onDiscardClicked(part: Part): void {
   $q.dialog({
     dark: true,
     title: i18n.t('actions.discards.confirm'),
-    message: i18n.t('parts.wantToCheckOut'),
+    message: i18n.t('actions.discards.dataLossWarning'),
     cancel: true,
     persistent: true,
   }).onOk(async () => {
@@ -235,11 +258,11 @@ function onEditClicked(part: Part): void {
     }).onOk(async () => {
       const checkoutPart = await onCheckOutClicked(part);
       if (checkoutPart) {
-        router.push(`parts/version/edit/${checkoutPart.draftId}/info`);
+        router.push(`/parts/version/edit/${checkoutPart.draftId}/info`);
       }
     });
   } else {
-    router.push(`parts/version/edit/${part.draftId}/info`);
+    router.push(`/parts/version/edit/${part.draftId}/info`);
   }
 }
 
@@ -248,9 +271,7 @@ function onPartCreated(newPart: Part) {
 }
 
 async function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {
-  const newPattern = Array.isArray(queryValue)
-    ? queryValue[0] === null || queryValue[0] === undefined ? '' : queryValue[0]
-    : queryValue === null || queryValue === undefined ? '' : queryValue;
+  const newPattern = queryValue as string;
   pattern.value = newPattern;
 }
 

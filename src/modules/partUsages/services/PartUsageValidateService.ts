@@ -11,10 +11,8 @@ const validateQuantityRules: ValidateRule[] = [
   },
 ];
 
-const quantityRules = (quantity: string) => (
-  genericRulesCheck(String(quantity), validateQuantityRules)
-);
-
 export const partUsageValiationService = {
-  quantityRules,
+  quantityRules: (quantity: string) => (
+    genericRulesCheck(String(quantity), validateQuantityRules)
+  ),
 };

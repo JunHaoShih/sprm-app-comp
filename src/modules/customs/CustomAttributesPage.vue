@@ -26,25 +26,30 @@
     >
       <template v-slot:before>
         <div class="q-pa-md">
-          <q-list bordered padding class="rounded-borders text-black">
-            <q-item
-              v-for="attr in attributes"
-              :key="attr.id"
-              clickable
-              v-ripple
-              :active="defaultAttr.id === attr.id"
-              @click="defaultAttr = attr"
-              active-class="bg-secondary text-white"
-            >
-              <q-item-section avatar>
-                <q-avatar class="avatar-color" text-color="white">{{ attr.name[0] }}</q-avatar>
-              </q-item-section>
+          <q-scroll-area
+            visible
+            class="scroll-max"
+          >
+            <q-list bordered padding class="rounded-borders text-black">
+              <q-item
+                v-for="attr in attributes"
+                :key="attr.id"
+                clickable
+                v-ripple
+                :active="defaultAttr.id === attr.id"
+                @click="defaultAttr = attr"
+                active-class="bg-secondary text-white"
+              >
+                <q-item-section avatar>
+                  <q-avatar class="avatar-color" text-color="white">{{ attr.name[0] }}</q-avatar>
+                </q-item-section>
 
-              <q-item-section>
-                {{ attr.number }} {{ attr.name }} [{{ attr.languages[i18n.locale.value] }}]
-              </q-item-section>
-            </q-item>
-          </q-list>
+                <q-item-section>
+                  {{ attr.number }} {{ attr.name }} [{{ attr.languages[i18n.locale.value] }}]
+                </q-item-section>
+              </q-item>
+            </q-list>
+          </q-scroll-area>
         </div>
       </template>
 
@@ -167,6 +172,9 @@ onBeforeMount(async () => {
 
 .outer-max
   height: calc(100vh - 180px)
+
+.scroll-max
+  height: calc(100vh - 215px)
 
 .avatar-color
   background: #FF9933

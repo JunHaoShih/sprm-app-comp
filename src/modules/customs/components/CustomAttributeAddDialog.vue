@@ -1,33 +1,23 @@
 <template>
   <div>
-    <!-- action bar -->
-    <q-dialog ref="dialogRef" v-model="prompt" persistent
-      transition-show="rotate" transition-hide="rotate"
+    <PopupDialog
+      v-model="prompt"
+      :title="$t('customs.attributes.new')"
     >
-      <q-card style="min-width: 700px">
-        <q-card-section class="bg-dark text-white row items-center">
-          <div class="text-h6">{{ $t('customs.attributes.new') }}</div>
-          <q-space></q-space>
-          <q-btn icon="close" flat round dense v-close-popup />
-        </q-card-section>
-        <q-separator />
-        <q-card-section class="scroll dialog-inner-max">
-          <!-- info area -->
-          <CustomAttributeForm
-            ref="formRef"
-            :on-submit="addAttribute"
-            v-model="defaultAttr"
-            :readonly="readonly"
-          />
-        </q-card-section>
-        <q-separator />
-        <q-card-actions align="right" class="text-primary">
-          <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
-          <q-btn flat :label="$t('actions.confirm')" @click="submit"></q-btn>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
+      <template v-slot:center>
+        <!-- info area -->
+        <CustomAttributeForm
+          ref="formRef"
+          :on-submit="addAttribute"
+          v-model="defaultAttr"
+          :readonly="readonly"
+        />
+      </template>
+      <template v-slot:bottom>
+        <q-btn flat :label="$t('actions.cancel')" v-close-popup></q-btn>
+        <q-btn flat :label="$t('actions.confirm')" @click="submit"></q-btn>
+      </template>
+    </PopupDialog>
   </div>
 </template>
 
@@ -36,8 +26,9 @@ import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QDialog, useQuasar } from 'quasar';
+import { useQuasar } from 'quasar';
 import { availableLocales } from 'src/models/Locale';
+import PopupDialog from 'src/components/PopupDialog.vue';
 import CustomAttributeForm from './CustomAttributeForm.vue';
 import { AttributeType, CustomAttribute, DisplayType } from '../models/CustomAttribute';
 import { customAttributeService } from '../services/CustomAttributeService';
@@ -69,8 +60,6 @@ const prompt = computed({
 const defaultAttr = ref<CustomAttribute>({} as CustomAttribute);
 
 const readonly = ref(false);
-
-const dialogRef = ref<QDialog>({} as QDialog);
 
 function initialize(): void {
   defaultAttr.value = {
@@ -114,7 +103,7 @@ async function addAttribute(): Promise<void> {
     color: 'secondary',
     icon: 'check_circle',
   });
-  dialogRef.value.hide();
+  prompt.value = false;
 }
 
 onBeforeMount(() => {

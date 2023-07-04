@@ -20,29 +20,13 @@
         <div class="q-gutter-xs">
           <slot name="table-top"></slot>
           <!-- column display switch -->
-          <q-btn-dropdown
-            class="action-btn"
-            :label="$t('columns.display')"
-          >
-            <div class="row no-wrap q-pa-md">
-              <div class="column">
-                <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
-                <q-toggle
-                  v-for="column in defaultColumns"
-                  v-bind:key="column.name"
-                  v-model="displayMap[column.name]"
-                  :label="column.label"
-                />
-                <div class="text-h7">{{ $t('customs.attributes.title') }}</div>
-                <q-toggle
-                  v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartVersion)"
-                  v-bind:key="attr.number"
-                  v-model="canDisplay[attr.number]"
-                  :label="attr.languages[i18n.locale.value] || attr.name"
-                />
-              </div>
-            </div>
-          </q-btn-dropdown>
+          <ColumnDisplaySwitchPanel
+            :locale="i18n.locale.value"
+            :attributes="attributes"
+            :can-display="canDisplay"
+            :display-map="displayMap"
+            :default-columns="defaultColumns">
+          </ColumnDisplaySwitchPanel>
         </div>
         <q-space />
         <q-select
@@ -97,18 +81,18 @@
       <!-- create date -->
       <template v-slot:body-cell-createDate="props">
         <q-td :props="props">
-          {{ new Date(props.row.version.createDate).getDateStr() }}
+          {{ new Date((props.row as Part).version.createDate).getDateStr() }}
           <q-tooltip>
-            {{ new Date(props.row.version.createDate).toString() }}
+            {{ (props.row as Part).version.createDate.toString() }}
           </q-tooltip>
         </q-td>
       </template>
       <!-- modified date -->
       <template v-slot:body-cell-updateDate="props">
         <q-td :props="props">
-          {{ new Date(props.row.version.updateDate).getDateStr() }}
+          {{ new Date((props.row as Part).version.updateDate).getDateStr() }}
           <q-tooltip>
-            {{ new Date(props.row.version.updateDate).toString() }}
+            {{ (props.row as Part).version.updateDate.toString() }}
           </q-tooltip>
         </q-td>
       </template>
@@ -124,34 +108,10 @@
         <q-inner-loading showing color="red-7" />
       </template>
     </q-table>
-    <div class="q-pt-sm flex flex-center">
-      <q-pagination
-        v-model="paginationInput.page"
-        color="grey-7"
-        :max="paginationResponse.totalPages"
-        max-pages="6"
-        direction-links
-        boundary-links
-        active-color="dark"
-      />
-      <q-select
-        v-model="paginationInput.page"
-        :options="filteredPageOptions"
-        hide-bottom-space
-        dense
-        @filter="filterFn"
-        use-input
-        style="width: 200px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No results
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-    </div>
+    <FilterPagination
+      v-model="paginationInput"
+      :response-pagination="paginationResponse"
+    ></FilterPagination>
   </div>
 </template>
 
@@ -164,7 +124,10 @@ import { QSelect, QTableProps } from 'quasar';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
-import { ObjectTypeId } from 'src/modules/objectTypes/models/ObjectType';
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { CustomAttribute } from 'src/modules/customs/models/CustomAttribute';
+import FilterPagination from 'src/components/FilterPagination.vue';
+import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
 import { partService } from '../services/PartService';
 import { usePartsStore } from '../stores/PartsStore';
 import { Part, ViewType } from '../models/Part';
@@ -183,6 +146,8 @@ const loading = ref(false);
 const canDisplay = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
+
+const attributes = ref<CustomAttribute[]>([]);
 
 interface Props {
   readonly: boolean;
@@ -230,18 +195,6 @@ const paginationResponse = ref<OffsetPaginationResponse>({
   totalPages: 0,
 });
 
-const pageOptions = computed(
-  () => {
-    const options: number[] = [];
-    for (let i = 1; i <= paginationResponse.value.totalPages; i += 1) {
-      options.push(i);
-    }
-    return options;
-  },
-);
-
-const filteredPageOptions = ref<number[]>([]);
-
 const options = ref<number[]>([20, 50, 100]);
 
 const defaultColumns = computed(
@@ -282,7 +235,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(ObjectTypeId.PartVersion).forEach((attr) => {
+    attributes.value.forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -303,19 +256,6 @@ const pagination = ref<QTableProps['pagination']>({
   rowsPerPage: 20,
 });
 
-function filterFn(val: string, update: (callbackFn: () => void,
-  afterFn?: ((ref: QSelect) => void) | undefined) => void) {
-  if (val === '') {
-    update(() => {
-      filteredPageOptions.value = pageOptions.value;
-    });
-    return;
-  }
-  update(() => {
-    filteredPageOptions.value = pageOptions.value.filter((v) => v.toString().indexOf(val) > -1);
-  });
-}
-
 function onSearchEnter(): void {
   pattern.value = patternInput.value;
   emit('onSearch', patternInput.value);
@@ -327,7 +267,7 @@ async function searchParts(): Promise<void> {
   if (parts) {
     partsStore.parts = parts.content;
     paginationResponse.value = parts.pagination;
-    if (pagination.value && pagination.value.rowsPerPage) {
+    if (pagination.value?.rowsPerPage) {
       pagination.value.rowsPerPage = parts.pagination.perPage;
     }
   }
@@ -355,10 +295,10 @@ watch(pattern, async () => {
 onBeforeMount(async () => {
   await updatePattern();
   await Promise.all([
-    attrLinksStore.initialize(ObjectTypeId.PartVersion),
+    attrLinksStore.initialize(SprmObjectType.PartVersion),
   ]);
-  const attributes = attrLinksStore.attributes(ObjectTypeId.PartVersion);
-  attributes.forEach((attr) => {
+  attributes.value = attrLinksStore.attributes(SprmObjectType.PartVersion);
+  attributes.value.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
   defaultColumns.value?.forEach((column) => {

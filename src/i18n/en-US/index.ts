@@ -8,6 +8,7 @@ export default {
     adds: {
       newPart: 'Add new part',
       existingPart: 'Add existing part',
+      existingProcess: 'Add existing process',
     },
     edit: 'Edit',
     delete: 'Delete',
@@ -38,6 +39,7 @@ export default {
     discard: 'Discard',
     discards: {
       confirm: 'Are you sure you want to discard all modified data?',
+      dataLossWarning: 'You will loss your edited data if you discard',
       success: 'Discard success',
       cannotDiscardFirstVersion: 'You cannot discard first version',
     },
@@ -56,6 +58,17 @@ export default {
     caption: 'Manage your parts',
     part: 'Part',
     routing: 'Routing',
+    routings: {
+      name: 'Routing name',
+      new: 'New routing',
+      process: 'Routing process',
+      processes: {
+        new: 'New routing process',
+        edit: 'Edit routing process',
+        number: 'Routing process number',
+      },
+      wantToCheckOut: 'Routing does not check out, do you want to check out?',
+    },
     number: 'Number',
     name: 'Name',
     view: 'View',
@@ -79,6 +92,19 @@ export default {
     versionMustCheckout: 'This part version does not checkout',
     mustSelectOne: 'Please select a part',
     wantToCheckOut: 'Part does not check out, do you want to check out?',
+  },
+  processes: {
+    title: 'Process management',
+    caption: 'Manage your processes',
+    process: 'Process',
+    number: 'Process number',
+    name: 'Process name',
+    processType: 'Process type',
+    makeType: 'Make type',
+    defaultImportTime: 'Default import time(ms)',
+    defaultExportTime: 'Default export time(ms)',
+    new: 'New process',
+    search: 'Search process',
   },
   customs: {
     title: 'Customization',
@@ -140,6 +166,12 @@ export default {
       longerThan20: 'Cannot be longer than 20',
       invalidChar: 'Only number, alphabets, dash and underscore are valid',
     },
+    processes: {
+      shorterThan2: 'Cannot be shorter than 2',
+      longerThan20: 'Cannot be longer than 20',
+      nameInvalidChar: 'Cannot cantain any invalid characters',
+    },
+    cannotSmallerThan0: 'Cannot be smaller than 0',
   },
   columns: {
     display: 'Columns display',

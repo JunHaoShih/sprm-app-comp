@@ -1,8 +1,5 @@
 <template>
   <div class="q-pa-sm">
-    <PartBanner
-      :part="part"
-    />
     <q-table
       :title="$t('iterable.history')"
       :columns="columns"
@@ -52,34 +49,10 @@
         </q-td>
       </template>
     </q-table>
-    <div class="q-pt-sm flex flex-center">
-      <q-pagination
-        v-model="paginationInput.page"
-        color="grey-7"
-        :max="paginationResponse.totalPages"
-        max-pages="6"
-        direction-links
-        boundary-links
-        active-color="dark"
-      />
-      <q-select
-        v-model="paginationInput.page"
-        :options="filteredPageOptions"
-        hide-bottom-space
-        dense
-        @filter="filterFn"
-        use-input
-        style="width: 200px"
-      >
-        <template v-slot:no-option>
-          <q-item>
-            <q-item-section class="text-grey">
-              No results
-            </q-item-section>
-          </q-item>
-        </template>
-      </q-select>
-    </div>
+    <FilterPagination
+      v-model="paginationInput"
+      :response-pagination="paginationResponse"
+    ></FilterPagination>
   </div>
 </template>
 
@@ -87,22 +60,19 @@
 import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
-import { QSelect, QTableProps } from 'quasar';
+import { QTableProps } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
+import FilterPagination from 'src/components/FilterPagination.vue';
 import { partVersionService } from './services/PartVersionService';
 import { PartVersion } from './models/PartVersion';
-import { Part } from './models/Part';
-import PartBanner from './components/PartBanner.vue';
-import { partService } from './services/PartService';
+import 'src/extensions/date.extensions';
 
 const i18n = useI18n();
 
 const router = useRouter();
-
-const part = ref<Part>({} as Part);
 
 const partVersions = ref<PartVersion[]>([]);
 
@@ -134,31 +104,6 @@ const pagination = ref<QTableProps['pagination']>({
   rowsPerPage: 20,
 });
 
-const filteredPageOptions = ref<number[]>([]);
-
-const pageOptions = computed(
-  () => {
-    const options: number[] = [];
-    for (let i = 1; i <= paginationResponse.value.totalPages; i += 1) {
-      options.push(i);
-    }
-    return options;
-  },
-);
-
-function filterFn(val: string, update: (callbackFn: () => void,
-  afterFn?: ((ref: QSelect) => void) | undefined) => void) {
-  if (val === '') {
-    update(() => {
-      filteredPageOptions.value = pageOptions.value;
-    });
-    return;
-  }
-  update(() => {
-    filteredPageOptions.value = pageOptions.value.filter((v) => v.toString().indexOf(val) > -1);
-  });
-}
-
 const columns = computed(
   (): QTableProps['columns'] => [
     {
@@ -188,10 +133,6 @@ async function onVersionClicked(version: PartVersion) {
 }
 
 async function initialize() {
-  const targetPart = await partService.getById(Number(props.id));
-  if (targetPart) {
-    part.value = targetPart;
-  }
   const versionsPagination = await partVersionService
     .getPartVersions(Number(props.id), paginationInput.value);
   if (versionsPagination) {
@@ -214,5 +155,5 @@ onBeforeMount(async () => {
   cursor: pointer
 
 .outer-max
-  height: calc(100vh - 175px)
+  height: calc(100vh - 240px)
 </style>

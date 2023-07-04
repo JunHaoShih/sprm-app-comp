@@ -1,6 +1,11 @@
 <template>
   <div>
-    <div class="q-mx-sm text-caption">{{ label }}</div>
+    <div
+      v-if="label"
+      class="q-mx-sm text-caption"
+    >
+      {{ label }}
+    </div>
     <q-input
       v-model="inputValue"
       dense
@@ -11,7 +16,11 @@
       ]"
       :readonly="readonly"
       hide-bottom-space
-    />
+    >
+      <template v-slot:after>
+        <slot name="after"></slot>
+      </template>
+    </q-input>
   </div>
 </template>
 

@@ -30,29 +30,13 @@
           <!-- button at table header -->
           <template v-slot:top>
             <div class="q-gutter-xs">
-              <q-btn-dropdown
-                class="action-btn"
-                :label="$t('columns.display')"
-              >
-                <div class="row no-wrap q-pa-md">
-                  <div class="column">
-                    <div class="text-h7">{{ $t('columns.defaultColumn') }}</div>
-                    <q-toggle
-                      v-for="column in defaultColumns"
-                      v-bind:key="column.name"
-                      v-model="displayMap[column.name]"
-                      :label="column.label"
-                    />
-                    <div class="text-h6 q-mb-md">{{ $t('customs.attributes.title') }}</div>
-                    <q-toggle
-                      v-for="attr in attrLinksStore.attributes(ObjectTypeId.PartUsage)"
-                      v-bind:key="attr.number"
-                      v-model="canDisplay[attr.number]"
-                      :label="attr.languages[i18n.locale.value] || attr.name"
-                    />
-                  </div>
-                </div>
-              </q-btn-dropdown>
+              <ColumnDisplaySwitchPanel
+                :locale="i18n.locale.value"
+                :attributes="attributes"
+                :can-display="canDisplay"
+                :display-map="displayMap"
+                :default-columns="defaultColumns">
+              </ColumnDisplaySwitchPanel>
             </div>
             <q-space />
           </template>
@@ -105,7 +89,7 @@
       transition-hide="rotate"
     >
       <q-card style="min-width: 700px">
-        <q-card-section class="bg-primary text-white row items-center">
+        <q-card-section class="bg-dark text-white row items-center">
           <div class="text-h6">{{ $t('parts.usages.edit') }}</div>
           <q-space></q-space>
           <q-btn icon="close" flat round dense v-close-popup />
@@ -135,13 +119,15 @@ import {
 } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { QTableProps, useQuasar } from 'quasar';
+import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
+import { CustomAttribute } from 'src/modules/customs/models/CustomAttribute';
 import PartInfoForm from '../../parts/components/PartInfoForm.vue';
 import { usePartUsageTreeStore } from '../stores/PartUsageUsesStore';
 import 'src/extensions/date.extensions';
 import { PartVersion } from '../../parts/models/PartVersion';
 import { partUsageService } from '../services/PartUsageService';
 import { useAttributeLinksStore } from '../../customs/stores/AttributeLinksStore';
-import { ObjectTypeId } from '../../objectTypes/models/ObjectType';
+import { SprmObjectType } from '../../objectTypes/models/ObjectType';
 import PartUsageForm from './PartUsageForm.vue';
 import { PartUsageChild } from '../models/PartUsageUses';
 import { UpdatePartUsageDTO } from '../dtos/UpdatePartUsageDTO';
@@ -164,7 +150,11 @@ const displayMap = ref<Record<string, boolean>>({} as Record<string, boolean>);
 
 const prompt = ref(false);
 
+const tab = ref('usage');
+
 const modifiedUsage = ref<PartUsageChild>({} as PartUsageChild);
+
+const attributes = ref<CustomAttribute[]>([]);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
@@ -208,7 +198,7 @@ const defaultColumns = computed(
 const columns = computed(
   (): QTableProps['columns'] => {
     const filteredColumns = defaultColumns.value?.filter((column) => displayMap.value[column.name]);
-    attrLinksStore.attributes(ObjectTypeId.PartUsage).forEach((attr) => {
+    attributes.value.forEach((attr) => {
       if (!canDisplay.value[attr.number]) {
         return;
       }
@@ -271,10 +261,10 @@ onBeforeMount(async () => {
   initializing.value = true;
   await Promise.all([
     partUsaeChildrenStore.partVersionInit(props.id),
-    attrLinksStore.initialize(ObjectTypeId.PartUsage),
+    attrLinksStore.initialize(SprmObjectType.PartUsage),
   ]);
-  const attributes = attrLinksStore.attributes(ObjectTypeId.PartUsage);
-  attributes.forEach((attr) => {
+  attributes.value = attrLinksStore.attributes(SprmObjectType.PartUsage);
+  attributes.value.forEach((attr) => {
     canDisplay.value[attr.number] = true;
   });
   defaultColumns.value?.forEach((column) => {
@@ -282,7 +272,6 @@ onBeforeMount(async () => {
   });
   initializing.value = false;
 });
-const tab = ref('usage');
 </script>
 
 <style lang="sass" scoped>

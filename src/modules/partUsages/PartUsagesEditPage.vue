@@ -18,11 +18,13 @@
               class="action-btn"
               :label="$t('actions.adds.newPart')"
               @click="createPrompt = true"
+              :disable="!selectedNode.checkout"
             />
             <q-btn
               class="action-btn"
               :label="$t('actions.adds.existingPart')"
               @click="searchPrompt = true"
+              :disable="!selectedNode.checkout"
             />
             <q-btn
               class="action-btn"
