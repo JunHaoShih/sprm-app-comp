@@ -125,11 +125,11 @@ const columns = computed(
 );
 
 async function onVersionClicked(version: RoutingVersion) {
-  /* if (version.isDraft) {
-    router.push(`/parts/version/edit/${version.id}/info`);
+  if (version.isDraft) {
+    router.push(`/routings/version/edit/${version.id}/info`);
     return;
   }
-  router.push(`/parts/version/${version.id}/info`); */
+  router.push(`/routings/version/${version.id}/info`);
 }
 
 async function initialize() {

@@ -41,32 +41,34 @@
         />
       </template>
       <template v-slot:body-cell-actions="props">
-        <q-btn
-          dense
-          round
-          flat
-          color="grey"
-          icon="edit"
-          size="12px"
-          @click="onEditClicked(props.row as Routing)"
-        />
-        <q-btn
-          dense
-          round
-          flat
-          color="grey"
-          icon="delete"
-          size="12px"
-        />
-        <q-btn
-          dense
-          round
-          flat
-          color="grey"
-          icon="info"
-          size="12px"
-          @click="onInfoClicked(props.row as Routing)"
-        />
+        <q-td :props="props">
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="edit"
+            size="12px"
+            @click="onEditClicked(props.row as Routing)"
+          />
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="delete"
+            size="12px"
+          />
+          <q-btn
+            dense
+            round
+            flat
+            color="grey"
+            icon="info"
+            size="12px"
+            @click="onInfoClicked(props.row as Routing)"
+          />
+        </q-td>
       </template>
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
@@ -117,11 +119,70 @@
           <q-list dense style="min-width: 100px">
             <q-item clickable v-close-popup>
               <q-item-section
+                @click="onEditClicked((props.row as Routing))"
+              >
+                <div>
+                  <q-icon name="edit" color="primary"/>
+                  {{ $t('actions.edit') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section
                 @click="onHistoryClicked((props.row as Routing))"
               >
                 <div>
                   <q-icon name="history" color="primary"/>
                   {{ $t('iterable.history') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section
+                @click="onRoutingProcessClicked((props.row as Routing))"
+              >
+                <div>
+                  <q-icon name="list" color="primary"/>
+                  {{ $t('parts.routings.process') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="!(props.row as Routing).checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onCheckOutClicked((props.row as Routing))"
+              >
+                <div>
+                  <q-icon name="south_east" color="red"/>
+                  {{ $t('actions.checkout') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="(props.row as Routing).checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onCheckInClicked((props.row as Routing))"
+              >
+                <div>
+                  <q-icon name="south_east" color="secondary"/>
+                  {{ $t('actions.checkin') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item
+              v-if="(props.row as Routing).checkout"
+              clickable v-close-popup
+            >
+              <q-item-section
+                @click="onDiscardClicked((props.row as Routing))"
+              >
+                <div>
+                  <q-icon name="backspace" color="red"/>
+                  {{ $t('actions.discard') }}
                 </div>
               </q-item-section>
             </q-item>
@@ -149,7 +210,7 @@ import {
   computed, onBeforeMount, ref, watch,
 } from 'vue';
 import { useI18n } from 'vue-i18n';
-import { QSelect, QTableProps } from 'quasar';
+import { QSelect, QTableProps, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationResponse } from 'src/models/paginations/OffsetPaginationResponse';
@@ -164,6 +225,8 @@ import { SprmObjectType } from '../objectTypes/models/ObjectType';
 import { CustomAttribute } from '../customs/models/CustomAttribute';
 
 const sprmObjectType = SprmObjectType.RoutingVersion;
+
+const $q = useQuasar();
 
 const i18n = useI18n();
 
@@ -279,12 +342,86 @@ function onHistoryClicked(routing: Routing) {
   router.push(`/routings/${routing.id}/history`);
 }
 
+function onRoutingProcessClicked(routing: Routing) {
+  router.push(`/routings/version/${routing.id}/usages`);
+}
+
 function onInfoClicked(routing: Routing) {
-  router.push(`/routings/version/${routing.id}/info`);
+  router.push(`/routings/version/${routing.version.id}/info`);
+}
+
+async function onCheckInClicked(routing: Routing): Promise<void> {
+  const checkinRouting = await routingService.checkIn(routing.id);
+  if (checkinRouting) {
+    routingsStore.updateRouting(checkinRouting);
+    $q.notify({
+      message: i18n.t('actions.checkins.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+  }
+}
+
+async function onCheckOutClicked(routing: Routing): Promise<Routing | null> {
+  const checkoutRouting = await routingService.checkOut(routing.id);
+  if (checkoutRouting) {
+    routingsStore.updateRouting(checkoutRouting);
+    $q.notify({
+      message: i18n.t('actions.checkouts.success'),
+      color: 'secondary',
+      icon: 'check_circle',
+    });
+    return checkoutRouting;
+  }
+  return null;
+}
+
+function onDiscardClicked(routing: Routing): void {
+  if (routing.draftId === routing.version.id) {
+    $q.notify({
+      message: i18n.t('actions.discards.cannotDiscardFirstVersion'),
+      color: 'red',
+      icon: 'error',
+    });
+    return;
+  }
+  $q.dialog({
+    dark: true,
+    title: i18n.t('actions.discards.confirm'),
+    message: i18n.t('actions.discards.dataLossWarning'),
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    const discardRouting = await routingService.discard(routing.id);
+    if (discardRouting) {
+      routingsStore.updateRouting(discardRouting);
+      $q.notify({
+        message: i18n.t('actions.discards.success'),
+        color: 'secondary',
+        icon: 'check_circle',
+      });
+    }
+  });
 }
 
 function onEditClicked(routing: Routing) {
   router.push(`/routings/version/edit/${routing.id}/info`);
+  if (!routing.checkout) {
+    $q.dialog({
+      dark: true,
+      title: i18n.t('actions.checkout'),
+      message: i18n.t('parts.processes.wantToCheckOut'),
+      cancel: true,
+      persistent: true,
+    }).onOk(async () => {
+      const checkoutRouting = await onCheckOutClicked(routing);
+      if (checkoutRouting) {
+        router.push(`/routings/version/edit/${checkoutRouting.draftId}/info`);
+      }
+    });
+  } else {
+    router.push(`/routings/version/edit/${routing.draftId}/info`);
+  }
 }
 
 watch(() => props.id, async () => {

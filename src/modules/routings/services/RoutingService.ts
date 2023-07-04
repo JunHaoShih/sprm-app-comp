@@ -90,4 +90,64 @@ export const routingService = {
       });
     return partResponse;
   },
+  checkIn: async (id: number): Promise<Routing | null> => {
+    const part = await api.post(`/api/Routing/${id}/CheckIn`)
+      .then((response): Routing => {
+        const data = response.data as SPRMResponse<Routing>;
+        return data.content;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return part;
+  },
+  checkOut: async (id: number): Promise<Routing | null> => {
+    const part = await api.post(`/api/Routing/${id}/CheckOut`)
+      .then((response): Routing => {
+        const data = response.data as SPRMResponse<Routing>;
+        return data.content;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return part;
+  },
+  discard: async (id: number): Promise<Routing | null> => {
+    const part = await api.delete(`/api/Routing/${id}/Discard`)
+      .then((response): Routing => {
+        const data = response.data as SPRMResponse<Routing>;
+        return data.content;
+      })
+      .catch((error) => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          const message = `Error: ${body.code}, ${body.message}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return null;
+      });
+    return part;
+  },
 };

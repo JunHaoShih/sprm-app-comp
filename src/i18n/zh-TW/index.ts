@@ -67,6 +67,7 @@ export default {
         edit: '編輯路徑製程',
         number: '路徑製程編號',
       },
+      wantToCheckOut: '工藝路徑尚未出庫，是否要出庫?',
     },
     number: '料號',
     name: '料件名稱',

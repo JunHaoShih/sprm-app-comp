@@ -67,6 +67,7 @@ export default {
         edit: 'Edit routing process',
         number: 'Routing process number',
       },
+      wantToCheckOut: 'Routing does not check out, do you want to check out?',
     },
     number: 'Number',
     name: 'Name',

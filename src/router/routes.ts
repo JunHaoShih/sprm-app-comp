@@ -49,6 +49,15 @@ const routes: RouteRecordRaw[] = [
         ],
       },
       {
+        path: '/routings/version/:id',
+        component: () => import('src/modules/routings/RoutingVersionCenterPage.vue'),
+        props: true,
+        children: [
+          { path: '/routings/version/:id/info', component: () => import('src/modules/routings/RoutingInfoPage.vue') },
+          { path: '/routings/version/:id/usages', component: () => import('src/modules/routingUsages/RoutingUsagesPage.vue'), props: true },
+        ],
+      },
+      {
         path: '/parts/version/:id',
         component: () => import('src/modules/parts/PartVersionCenterPage.vue'),
         props: true,

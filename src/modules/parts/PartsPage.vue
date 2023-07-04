@@ -72,6 +72,16 @@
             </q-item>
             <q-item clickable v-close-popup>
               <q-item-section
+                @click="onBomClicked(props.part)"
+              >
+                <div>
+                  <q-icon name="list" color="primary"/>
+                  {{ $t('parts.bom') }}
+                </div>
+              </q-item-section>
+            </q-item>
+            <q-item clickable v-close-popup>
+              <q-item-section
                 @click="onHistoryClicked(props.part)"
               >
                 <div>
@@ -173,6 +183,10 @@ function onInfoClicked(part: Part): void {
 
 function onHistoryClicked(part: Part) {
   router.push(`/parts/${part.id}/history`);
+}
+
+function onBomClicked(part: Part) {
+  router.push(`/parts/version/${part.version.id}/usages`);
 }
 
 async function onCheckInClicked(part: Part): Promise<void> {
