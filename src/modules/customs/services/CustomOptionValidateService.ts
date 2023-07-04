@@ -25,7 +25,7 @@ const validateOptionValueRules: ValidateRule[] = [
     message: 'validations.customAttributes.options.longerThan20',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
+    validate: (val) => /^[^\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.customAttributes.options.valueInvalidChar',
   },
 ];

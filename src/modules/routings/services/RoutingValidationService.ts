@@ -10,8 +10,8 @@ const validateNameRules: ValidateRule[] = [
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
-    message: 'validations.parts.invalidChar',
+    validate: (val) => /^[^\\/:*?"<>|]+$/.test(String(val)),
+    message: 'validations.processes.invalidChar',
   },
 ];
 

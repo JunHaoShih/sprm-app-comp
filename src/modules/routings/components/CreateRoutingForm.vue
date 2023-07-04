@@ -16,6 +16,7 @@
         <ValidationInput
           v-model="createDto.name"
           :label="$t('parts.routings.name')"
+          :inputValidator="routingValidationService.nameRules"
         />
         <div class="column">
           <div class="q-mx-sm text-caption">{{ $t('remarks') }}</div>
@@ -47,6 +48,7 @@ import CustomAttributesInputPanel from 'src/components/CustomAttributesInputPane
 import { CreateRoutingDTO } from '../dtos/CreateRoutingDTO';
 import { Routing } from '../models/Routing';
 import { routingService } from '../services/RoutingService';
+import { routingValidationService } from '../services/RoutingValidationService';
 
 const formRef = ref<QForm>({} as QForm);
 
