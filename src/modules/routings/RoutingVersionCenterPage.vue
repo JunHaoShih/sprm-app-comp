@@ -5,7 +5,7 @@
     >
       <template v-slot:front>
         <q-icon
-          name="edit"
+          name="info"
           size="24px"
           class="q-mt-xs q-mr-sm"
           color="primary"
