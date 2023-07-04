@@ -55,13 +55,13 @@ export const useProcessesStore = defineStore('processes', {
     },
   },
   actions: {
-    addPart(process: Process): void {
+    addProcess(process: Process): void {
       this.processes.push(process);
     },
-    unshiftPart(process: Process): void {
+    unshiftProcess(process: Process): void {
       this.processes.unshift(process);
     },
-    updatePart(process: Process): void {
+    updateProcess(process: Process): void {
       const index = this.processes.findIndex((currentProcess) => currentProcess.id === process.id);
       this.processes[index] = process;
     },

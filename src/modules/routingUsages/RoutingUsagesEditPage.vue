@@ -31,7 +31,7 @@
       <template v-slot:after>
         <div class="q-gutter-sm">
           <RoutibgUsagesRightPanel
-            :id="selectedUsageId"
+            :selected-node="selectedNode"
             :readonly="false"
           >
           </RoutibgUsagesRightPanel>
@@ -68,15 +68,6 @@ const splitterModel = ref(50);
 const searchPrompt = ref(false);
 
 const selectedNode = ref<RoutingUsageTreeNode>({} as RoutingUsageTreeNode);
-
-const selectedUsageId = computed(
-  (): number | null => {
-    if (Object.keys(selectedNode.value).length === 0) {
-      return null;
-    }
-    return selectedNode.value.usageId;
-  },
-);
 
 const props = withDefaults(defineProps<{
   id: string,

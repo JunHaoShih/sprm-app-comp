@@ -10,13 +10,13 @@
       align="justify"
       narrow-indicator
     >
-      <q-tab name="usage" :label="$t('parts.usage')" />
-      <q-tab name="info" :label="$t('parts.info')" />
+      <q-tab name="usage" :label="$t('parts.routings.process')" />
+      <q-tab name="process" :label="$t('processes.process')" />
     </q-tabs>
 
     <q-separator />
 
-    <q-tab-panels v-model="tab" animated>
+    <q-tab-panels v-model="tab" animated keep-alive>
       <q-tab-panel name="usage">
         <q-table
           :rows="routingUsages"
@@ -69,6 +69,14 @@
           </template>
         </q-table>
       </q-tab-panel>
+      <q-tab-panel name="process">
+        <ProcessForm
+          v-if="targetProcess"
+          :readonly="true"
+          v-model="targetProcess"
+          panel-class="info-outer-max"
+        />
+      </q-tab-panel>
     </q-tab-panels>
     <PopupDialog
       v-model="prompt"
@@ -81,7 +89,6 @@
           :readonly="false"
           :on-submit="updateUsage"
         >
-
         </RoutingUsageForm>
       </template>
       <template v-slot:bottom>
@@ -93,15 +100,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue';
+import {
+  computed, onBeforeMount, ref, watch,
+} from 'vue';
 import { QTableProps, useQuasar } from 'quasar';
 import { useI18n } from 'vue-i18n';
 import { useAttributeLinksStore } from 'src/modules/customs/stores/AttributeLinksStore';
 import { CustomAttribute } from 'src/modules/customs/models/CustomAttribute';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { processService } from 'src/modules/processes/services/ProcessService';
+import { useProcessesStore } from 'src/modules/processes/stores/ProcessesStore';
 import ColumnDisplaySwitchPanel from 'src/components/ColumnDisplaySwitchPanel.vue';
 import PopupDialog from 'src/components/PopupDialog.vue';
-import { useRoutingUsagesMapStore } from '../stores/RoutingUsagesMapStore';
+import ProcessForm from 'src/modules/processes/components/ProcessForm.vue';
+import { RoutingUsageTreeNode, useRoutingUsagesMapStore } from '../stores/RoutingUsagesMapStore';
 import { routingUsageService } from '../services/RoutingUsageService';
 import { RoutingUsage } from '../models/RoutingUsage';
 import { UpdateRoutingUsageDTO } from '../dtos/UpdateRoutingUsageDTO';
@@ -110,6 +122,8 @@ import RoutingUsageForm from './RoutingUsageForm.vue';
 const $q = useQuasar();
 
 const i18n = useI18n();
+
+const processesStore = useProcessesStore();
 
 const routingUsagesMapStore = useRoutingUsagesMapStore();
 
@@ -135,19 +149,23 @@ const modifiedUsage = ref<RoutingUsage>({} as RoutingUsage);
 
 const props = withDefaults(defineProps<{
   readonly: boolean,
-  id: number | null,
+  selectedNode: RoutingUsageTreeNode,
 }>(), {
   readonly: true,
 });
 
 const routingUsages = computed(
   () => {
-    const children = routingUsagesMapStore.children(props.id);
+    const children = routingUsagesMapStore.children(props.selectedNode.usageId);
     if (children) {
       return routingUsageService.toRecords(children);
     }
     return [];
   },
+);
+
+const targetProcess = computed(
+  () => processesStore.processes.find((process) => process.id === props.selectedNode.processId),
 );
 
 const pagination: QTableProps['pagination'] = {
@@ -222,10 +240,28 @@ async function updateUsage() {
   }
 }
 
+async function processInit() {
+  if (props.selectedNode.processId === undefined) {
+    return;
+  }
+  const index = processesStore.processes
+    .findIndex((currentProcess) => currentProcess.id === props.selectedNode.processId);
+  if (index === -1) {
+    const process = await processService.getById(props.selectedNode.processId);
+    if (process) {
+      processesStore.addProcess(process);
+    }
+  }
+}
+
+watch(() => props.selectedNode.processId, async () => {
+  await processInit();
+});
+
 onBeforeMount(async () => {
   initializing.value = true;
   await Promise.all([
-    // partUsaeChildrenStore.partVersionInit(props.id),
+    processInit(),
     attrLinksStore.initialize(sprmObjectType),
   ]);
   attributes.value = attrLinksStore.attributes(sprmObjectType);
@@ -240,6 +276,9 @@ onBeforeMount(async () => {
 </script>
 
 <style lang="sass" scoped>
+:deep(.info-outer-max)
+  height: calc(100vh - 300px)
+
 .outer-max
   height: calc(100vh - 270px)
 </style>

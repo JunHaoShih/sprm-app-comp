@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!initializing">
+  <div>
     <q-card style="min-width: 400px">
       <q-form
         @submit="props.onSubmit"
@@ -84,6 +84,9 @@
           <slot name="after"></slot>
         </q-card-section>
       </q-form>
+      <q-inner-loading
+        :showing="initializing"
+      />
     </q-card>
   </div>
 </template>
@@ -138,7 +141,7 @@ const process = computed({
 
 const processTypes = ref<ProcessType[]>([]);
 
-const processTypeOption = ref<SelectOption<number>>({} as SelectOption<number>);
+const processTypeOption = ref<SelectOption<number>>({ label: '' } as SelectOption<number>);
 
 const processTypeOptions = computed(
   () => processTypes.value.map((processType): SelectOption<number> => ({
@@ -150,7 +153,7 @@ const processTypeOptions = computed(
 
 const makeTypes = ref<MakeType[]>([]);
 
-const makeTypeOption = ref<SelectOption<number>>({} as SelectOption<number>);
+const makeTypeOption = ref<SelectOption<number>>({ label: '' } as SelectOption<number>);
 
 const makeTypeOptions = computed(
   () => makeTypes.value.map((makeType): SelectOption<number> => ({
