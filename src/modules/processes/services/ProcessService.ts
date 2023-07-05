@@ -1,4 +1,5 @@
 import { api } from 'src/boot/axios';
+import { i18n } from 'src/boot/i18n';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationResponse';
 import { SPRMResponse } from 'src/models/SPRMResponse';
@@ -112,5 +113,30 @@ export const processService = {
         return null;
       });
     return code;
+  },
+  remove: async (id: number): Promise<boolean> => {
+    const success = await api.delete(`/api/Process/${id}`)
+      .then((): boolean => true)
+      .catch((error): boolean => {
+        if (error.response) {
+          const body: SPRMResponse<string> = error.response.data;
+          let bodyMessage = '';
+          if (body.code === 302) {
+            bodyMessage = i18n.global.t('processes.notExist');
+          } else if (body.code === 303) {
+            bodyMessage = i18n.global.t('processes.alreadyInUse');
+          } else {
+            bodyMessage = body.message;
+          }
+          const message = `Error: ${body.code}, ${bodyMessage}`;
+          Notify.create({
+            message,
+            color: 'red',
+            icon: 'error',
+          });
+        }
+        return false;
+      });
+    return success;
   },
 };

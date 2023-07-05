@@ -105,6 +105,8 @@ export default {
     defaultExportTime: 'Default export time(ms)',
     new: 'New process',
     search: 'Search process',
+    notExist: 'Process does not exist',
+    alreadyInUse: 'Process already in use',
   },
   customs: {
     title: 'Customization',

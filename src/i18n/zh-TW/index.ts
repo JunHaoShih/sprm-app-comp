@@ -105,6 +105,8 @@ export default {
     defaultExportTime: '預設出站時間(毫秒)',
     new: '新增製程',
     search: '搜尋製程',
+    notExist: '製程不存在',
+    alreadyInUse: '製程已經在使用',
   },
   customs: {
     title: '自定義',
