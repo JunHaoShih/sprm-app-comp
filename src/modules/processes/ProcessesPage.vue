@@ -139,9 +139,7 @@ function onProcessCreated(newProcess: Process) {
 }
 
 async function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {
-  const newPattern = Array.isArray(queryValue)
-    ? queryValue[0] === null || queryValue[0] === undefined ? '' : queryValue[0]
-    : queryValue === null || queryValue === undefined ? '' : queryValue;
+  const newPattern = queryValue as string;
   pattern.value = newPattern;
 }
 
