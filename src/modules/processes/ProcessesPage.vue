@@ -16,10 +16,6 @@
           @click="prompt=true"
           class="action-btn"
         />
-        <q-btn
-          :label="$t('actions.delete')"
-          class="action-btn"
-        />
       </template>
       <template v-slot:row-actions="props">
         <q-btn
@@ -29,7 +25,7 @@
           color="grey"
           icon="edit"
           size="12px"
-          @click="onEditClicked(props.part)"
+          @click="onEditClicked(props.process)"
         />
         <q-btn
           dense
@@ -38,6 +34,7 @@
           color="grey"
           icon="delete"
           size="12px"
+          @click="onDeleteClicked(props.process)"
         />
         <q-btn
           dense
@@ -46,7 +43,7 @@
           color="grey"
           icon="info"
           size="12px"
-          @click="onInfoClicked(props.part)"
+          @click="onInfoClicked(props.process)"
         />
       </template>
       <template v-slot:cell-after="props">
@@ -54,7 +51,7 @@
           <q-list dense style="min-width: 100px">
             <q-item clickable v-close-popup>
               <q-item-section
-                @click="onEditClicked(props.part)"
+                @click="onEditClicked(props.process)"
               >
                 <div>
                   <q-icon name="edit" color="primary"/>
@@ -85,11 +82,18 @@
 import {
   LocationQueryValue, onBeforeRouteUpdate, useRoute, useRouter,
 } from 'vue-router';
+import { useQuasar } from 'quasar';
+import { useI18n } from 'vue-i18n';
 import { onBeforeMount, ref } from 'vue';
 import ProcessesSearchPanel from './components/ProcessesSearchPanel.vue';
 import { useProcessesStore } from './stores/ProcessesStore';
 import { Process } from './models/Process';
 import CreateProcessDialog from './components/CreateProcessDialog.vue';
+import { processService } from './services/ProcessService';
+
+const $q = useQuasar();
+
+const i18n = useI18n();
 
 const route = useRoute();
 
@@ -111,8 +115,27 @@ function onEditClicked(process: Process): void {
   router.push(`/processes/edit/${process.id}/info`);
 }
 
+function onDeleteClicked(process: Process): void {
+  $q.dialog({
+    title: 'Confirm',
+    message: `${i18n.t('actions.deletes.confirm')} ${process.number}?`,
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    const success = await processService.remove(process.id);
+    if (success) {
+      $q.notify({
+        message: `${process.number}: ${i18n.t('actions.deletes.success')}`,
+        color: 'secondary',
+        icon: 'check_circle',
+      });
+      processesStore.removeProcess(process);
+    }
+  });
+}
+
 function onProcessCreated(newProcess: Process) {
-  processesStore.unshiftPart(newProcess);
+  processesStore.unshiftProcess(newProcess);
 }
 
 async function updatePattern(queryValue: LocationQueryValue | LocationQueryValue[]) {

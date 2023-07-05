@@ -48,7 +48,7 @@
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <slot name="row-actions" :part="(props.row as Process)"></slot>
+          <slot name="row-actions" :process="(props.row as Process)"></slot>
         </q-td>
       </template>
       <!-- Process type -->
@@ -87,7 +87,7 @@
         <q-td :props="props">
           {{props.value}}
         </q-td>
-        <slot name="cell-after" :part="(props.row as Process)"></slot>
+        <slot name="cell-after" :process="(props.row as Process)"></slot>
       </template>
       <template v-slot:loading>
         <q-inner-loading showing color="red-7" />

@@ -65,5 +65,11 @@ export const useProcessesStore = defineStore('processes', {
       const index = this.processes.findIndex((currentProcess) => currentProcess.id === process.id);
       this.processes[index] = process;
     },
+    removeProcess(process: Process): void {
+      const index = this.processes.findIndex((currentProcess) => currentProcess.id === process.id);
+      if (index >= 0) {
+        this.processes.splice(index, 1);
+      }
+    },
   },
 });
