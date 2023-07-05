@@ -173,6 +173,7 @@ export default {
       invalidChar: '不可含有任何非法字元',
     },
     cannotSmallerThan0: '不可小於0',
+    invalidChar: '不可含有任何非法字元',
   },
   columns: {
     display: '欄位顯示',

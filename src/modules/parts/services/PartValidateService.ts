@@ -1,4 +1,4 @@
-import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
+import { ValidateRule, genericRulesCheck, invalidChars } from 'src/models/ValidateRule';
 
 const validateNumberRules: ValidateRule[] = [
   {
@@ -29,7 +29,7 @@ const validateNameRules: ValidateRule[] = [
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[^\\/:*?"<>|]+$/.test(String(val)),
+    validate: invalidChars,
     message: 'validations.parts.invalidChar',
   },
 ];
