@@ -1,4 +1,6 @@
-import { ValidateRule, genericRulesCheck } from 'src/models/ValidateRule';
+import {
+  VaildateType, ValidateRule, genericRulesCheck, invalidChars,
+} from 'src/models/ValidateRule';
 
 const validateNumberRules: ValidateRule[] = [
   {
@@ -29,8 +31,8 @@ const validateNameRules: ValidateRule[] = [
     message: 'validations.parts.longerThan50',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
-    message: 'validations.parts.invalidChar',
+    validate: invalidChars,
+    message: 'validations.invalidChar',
   },
 ];
 
@@ -46,13 +48,13 @@ const validateImportTimeRules: ValidateRule[] = [
 ];
 
 export const processValidationService = {
-  numberRules: (val: string | number | undefined) => (
+  numberRules: (val: VaildateType) => (
     genericRulesCheck(val, validateNumberRules)
   ),
-  nameRules: (val: string | number | undefined) => (
+  nameRules: (val: VaildateType) => (
     genericRulesCheck(val, validateNameRules)
   ),
-  timeRules: (val: string | number | undefined) => (
+  timeRules: (val: VaildateType) => (
     genericRulesCheck(val, validateImportTimeRules)
   ),
 };

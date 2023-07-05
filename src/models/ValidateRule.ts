@@ -1,11 +1,13 @@
 import { i18n } from 'src/boot/i18n';
 
+export type VaildateType = string | number | undefined;
+
 export interface ValidateRule {
-  validate: (val: string | number | undefined) => boolean,
+  validate: (val: VaildateType) => boolean,
   message: string,
 }
 
-export const genericRulesCheck = (val: string | number | undefined, rules: ValidateRule[]) => {
+export const genericRulesCheck = (val: VaildateType, rules: ValidateRule[]) => {
   const errors: string[] = [];
   rules
     .filter((rule) => !rule.validate(val))
@@ -16,3 +18,7 @@ export const genericRulesCheck = (val: string | number | undefined, rules: Valid
   }
   return true;
 };
+
+export function invalidChars(val: VaildateType) {
+  return /^[^\\/:*?"<>|]+$/.test(String(val));
+}

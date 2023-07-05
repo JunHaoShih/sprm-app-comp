@@ -172,6 +172,7 @@ export default {
       nameInvalidChar: 'Cannot cantain any invalid characters',
     },
     cannotSmallerThan0: 'Cannot be smaller than 0',
+    invalidChar: 'Cannot cantain any invalid characters',
   },
   columns: {
     display: 'Columns display',

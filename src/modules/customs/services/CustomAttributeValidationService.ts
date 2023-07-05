@@ -25,7 +25,7 @@ const validateAttributeNameRules: ValidateRule[] = [
     message: 'validations.customAttributes.longerThan20',
   },
   {
-    validate: (val) => /^[^\\\\/:*?"<>|]+$/.test(String(val)),
+    validate: (val) => /^[^\\/:*?"<>|]+$/.test(String(val)),
     message: 'validations.customAttributes.nameInvalidChar',
   },
 ];
