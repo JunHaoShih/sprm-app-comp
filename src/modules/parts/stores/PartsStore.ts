@@ -57,5 +57,11 @@ export const usePartsStore = defineStore('parts', {
       const index = this.parts.findIndex((currentPart) => currentPart.id === part.id);
       this.parts[index] = part;
     },
+    removePart(part: Part): void {
+      const index = this.parts.findIndex((currentPart) => currentPart.id === part.id);
+      if (index >= 0) {
+        this.parts.splice(index, 1);
+      }
+    },
   },
 });
