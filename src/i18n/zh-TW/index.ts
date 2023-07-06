@@ -92,6 +92,7 @@ export default {
     versionMustCheckout: '料件版本尚未簽出',
     mustSelectOne: '請選擇一個料件',
     wantToCheckOut: '料件尚未出庫，是否要出庫?',
+    notExist: '料件不存在',
     alreadyInUse: '料件經在使用',
   },
   processes: {
