@@ -16,10 +16,6 @@
           @click="prompt=true"
           class="action-btn"
         />
-        <q-btn
-          :label="$t('actions.delete')"
-          class="action-btn"
-        />
       </template>
       <template v-slot:row-actions="props">
         <q-btn
@@ -38,6 +34,7 @@
           color="grey"
           icon="delete"
           size="12px"
+          @click="onDeleteClicked(props.part)"
         />
         <q-btn
           dense
@@ -264,6 +261,25 @@ function onEditClicked(part: Part): void {
   } else {
     router.push(`/parts/version/edit/${part.draftId}/info`);
   }
+}
+
+function onDeleteClicked(part: Part): void {
+  $q.dialog({
+    title: 'Confirm',
+    message: `${i18n.t('actions.deletes.confirm')} ${part.number}?`,
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    const success = await partService.remove(part.id);
+    if (success) {
+      $q.notify({
+        message: `${part.number}: ${i18n.t('actions.deletes.success')}`,
+        color: 'secondary',
+        icon: 'check_circle',
+      });
+      partsStore.removePart(part);
+    }
+  });
 }
 
 function onPartCreated(newPart: Part) {

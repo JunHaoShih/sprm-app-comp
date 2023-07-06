@@ -92,6 +92,7 @@ export default {
     versionMustCheckout: 'This part version does not checkout',
     mustSelectOne: 'Please select a part',
     wantToCheckOut: 'Part does not check out, do you want to check out?',
+    alreadyInUse: 'Part already in use',
   },
   processes: {
     title: 'Process management',
