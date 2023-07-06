@@ -1,9 +1,7 @@
 import { api } from 'src/boot/axios';
-import { Notify } from 'quasar';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationResponse';
-import { SPRMResponse } from 'src/models/SPRMResponse';
-import { paginationService } from 'src/services/PaginationService';
+import { handleGenericError, handleGenericResponse, handlePaginationResponse } from 'src/services/AxiosHandlingService';
 import { Routing } from '../models/Routing';
 import { CreateRoutingDTO } from '../dtos/CreateRoutingDTO';
 
@@ -23,25 +21,8 @@ export const routingService = {
           perPage: pagination.perPage,
         },
       })
-      .then((response): OffsetPaginationData<Routing[]> => {
-        const data = response.data as SPRMResponse<Routing[]>;
-        return {
-          pagination: paginationService.getHeaderPagination(response),
-          content: data.content,
-        };
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handlePaginationResponse<Routing>)
+      .catch(handleGenericError);
     return partsResponse;
   },
   /**
@@ -51,103 +32,33 @@ export const routingService = {
    */
   create: async (createDto: CreateRoutingDTO): Promise<Routing | null> => {
     const part = await api.post('/api/Routing', createDto)
-      .then((response): Routing => {
-        const data = response.data as SPRMResponse<Routing>;
-        return data.content;
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handleGenericResponse<Routing>)
+      .catch(handleGenericError);
     return part;
   },
   getById: async (id: number): Promise<Routing | null> => {
     const searchUrl = `/api/Routing/${id}`;
     const partResponse = await api.get(encodeURI(searchUrl))
-      .then((response): Routing => {
-        const data = response.data as SPRMResponse<Routing>;
-        return data.content;
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handleGenericResponse<Routing>)
+      .catch(handleGenericError);
     return partResponse;
   },
   checkIn: async (id: number): Promise<Routing | null> => {
     const part = await api.post(`/api/Routing/${id}/CheckIn`)
-      .then((response): Routing => {
-        const data = response.data as SPRMResponse<Routing>;
-        return data.content;
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handleGenericResponse<Routing>)
+      .catch(handleGenericError);
     return part;
   },
   checkOut: async (id: number): Promise<Routing | null> => {
     const part = await api.post(`/api/Routing/${id}/CheckOut`)
-      .then((response): Routing => {
-        const data = response.data as SPRMResponse<Routing>;
-        return data.content;
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handleGenericResponse<Routing>)
+      .catch(handleGenericError);
     return part;
   },
   discard: async (id: number): Promise<Routing | null> => {
     const part = await api.delete(`/api/Routing/${id}/Discard`)
-      .then((response): Routing => {
-        const data = response.data as SPRMResponse<Routing>;
-        return data.content;
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handleGenericResponse<Routing>)
+      .catch(handleGenericError);
     return part;
   },
 };
