@@ -1,12 +1,14 @@
 import { api } from 'src/boot/axios';
 import { i18n } from 'src/boot/i18n';
-import axios from 'axios';
 import { Notify } from 'quasar';
 import { OffsetPaginationInput } from 'src/models/paginations/OffsetPaginationInput';
 import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationResponse';
-import { SPRMResponse } from 'src/models/SPRMResponse';
 import {
-  AxiosBaseError, handleGenericError, handleGenericResponse, handlePaginationResponse,
+  AxiosBaseError,
+  handleGenericError,
+  handleGenericResponse,
+  handlePaginationResponse,
+  selfManageError,
 } from 'src/services/AxiosHandlingService';
 import { Part } from '../models/Part';
 import { CreatePartDTO } from '../dtos/CreatePartDTO';
@@ -71,34 +73,22 @@ export const partService = {
   remove: async (id: number): Promise<boolean> => {
     const success = await api.delete(`/api/Part/${id}`)
       .then((): boolean => true)
-      .catch((error: AxiosBaseError): boolean => {
-        if (axios.isAxiosError(error)) {
-          if (error.response) {
-            const body: SPRMResponse<string> = error.response.data;
-            let bodyMessage = '';
-            if (body.code === 302) {
-              bodyMessage = i18n.global.t('processes.notExist');
-            } else if (body.code === 303) {
-              bodyMessage = i18n.global.t('parts.alreadyInUse');
-            } else {
-              bodyMessage = body.message;
-            }
-            const message = `Error: ${body.code}, ${bodyMessage}`;
-            Notify.create({
-              message,
-              color: 'red',
-              icon: 'error',
-            });
-          }
+      .catch((error: AxiosBaseError): false => selfManageError<string>((body) => {
+        let bodyMessage = '';
+        if (body.code === 302) {
+          bodyMessage = i18n.global.t('processes.notExist');
+        } else if (body.code === 303) {
+          bodyMessage = i18n.global.t('parts.alreadyInUse');
         } else {
-          Notify.create({
-            message: 'Something went wrong',
-            color: 'red',
-            icon: 'error',
-          });
+          bodyMessage = body.message;
         }
-        return false;
-      });
+        const message = `Error: ${body.code}, ${bodyMessage}`;
+        Notify.create({
+          message,
+          color: 'red',
+          icon: 'error',
+        });
+      }, error));
     return success;
   },
 };

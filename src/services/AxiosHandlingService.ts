@@ -6,6 +6,14 @@ import { paginationService } from './PaginationService';
 
 export type AxiosBaseError = Error | AxiosError;
 
+function displayUnknownErrorNotify() {
+  Notify.create({
+    message: 'Something went wrong',
+    color: 'red',
+    icon: 'error',
+  });
+}
+
 export function handleGenericError(error: AxiosBaseError) {
   if (axios.isAxiosError(error)) {
     if (error.response) {
@@ -18,11 +26,7 @@ export function handleGenericError(error: AxiosBaseError) {
       });
     }
   } else {
-    Notify.create({
-      message: 'Something went wrong',
-      color: 'red',
-      icon: 'error',
-    });
+    displayUnknownErrorNotify();
   }
   return null;
 }
@@ -38,4 +42,19 @@ export function handlePaginationResponse<T>(response: AxiosResponse): OffsetPagi
     pagination: paginationService.getHeaderPagination(response),
     content: data.content,
   };
+}
+
+export function selfManageError<T>(
+  onAxiosError: (body: SPRMResponse<T>, error: AxiosError) => void,
+  error: AxiosBaseError,
+): false {
+  if (axios.isAxiosError(error)) {
+    if (error.response) {
+      const body: SPRMResponse<T> = error.response.data;
+      onAxiosError(body, error);
+    }
+  } else {
+    displayUnknownErrorNotify();
+  }
+  return false;
 }
