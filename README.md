@@ -1,6 +1,5 @@
 # Simple Production Routing Manager (sprm-app-comp)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=JunHaoShih_sprm-app-comp&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=JunHaoShih_sprm-app-comp)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=JunHaoShih_sprm-app-comp&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=JunHaoShih_sprm-app-comp)
 ---
 
 A side project purely for fun
