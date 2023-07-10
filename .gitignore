@@ -6,6 +6,12 @@ node_modules
 .quasar
 /dist
 
+# nyc
+.nyc_output
+
+#cypress
+coverage
+
 # Cordova related directories and files
 /src-cordova/node_modules
 /src-cordova/platforms
