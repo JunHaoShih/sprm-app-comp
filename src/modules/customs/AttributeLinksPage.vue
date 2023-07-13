@@ -55,7 +55,7 @@ const objectTypes = ref<ObjectType[]>([]);
 const defaultObjectType = ref<ObjectType>({} as ObjectType);
 
 onBeforeMount(async () => {
-  const objTypes = await objectTypeService.getAll();
+  const objTypes = await objectTypeService.getCustomizables();
   if (objTypes) {
     objectTypes.value = objTypes;
     const firstObjType = objectTypes.value[0];
