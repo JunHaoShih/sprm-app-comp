@@ -183,6 +183,9 @@ export default {
     display: '欄位顯示',
     defaultColumn: '預設欄位',
   },
+  permissions: {
+    accessDenied: '拒絕訪問',
+  },
   quantity: '數量',
   remarks: '備註',
   language: '語言',

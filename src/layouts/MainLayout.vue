@@ -16,11 +16,22 @@
         <q-toolbar-title>
           {{ $t('title') }}
         </q-toolbar-title>
+        <q-btn
+          v-if="currentUserStore.appUser.isAdmin"
+          label="Admin panel"
+          to="/admin"
+          class="action-btn q-mr-md"
+        ></q-btn>
         <q-avatar>
           <img :src="currentUserStore.getGravatar" alt="icon">
           <q-menu>
             <q-item clickable v-close-popup>
-              <q-item-section>{{ currentUserStore.username }}</q-item-section>
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="currentUserStore.getGravatar" alt="icon">
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>{{ currentUserStore.appUser.username }}</q-item-section>
             </q-item>
             <q-separator />
             <!-- language -->
@@ -83,8 +94,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref } from 'vue';
-import { CurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
+import { computed, ref } from 'vue';
+import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
 import NavItem, { NavNode } from 'src/components/navItem/NavItem.vue';
 import { useI18n } from 'vue-i18n';
 import { useRouter } from 'vue-router';
@@ -93,7 +104,7 @@ const i18n = useI18n();
 
 const router = useRouter();
 
-const currentUserStore = CurrentUserStore();
+const currentUserStore = useCurrentUserStore();
 
 const essentialLinks = computed(
   (): NavNode[] => [
@@ -131,13 +142,6 @@ const essentialLinks = computed(
     },
   ],
 );
-
-onBeforeMount(async () => {
-  const currentUser = await currentUserStore.getCurrentUser();
-  if (currentUser) {
-    currentUserStore.$state = currentUser;
-  }
-});
 
 const leftDrawerOpen = ref(true);
 

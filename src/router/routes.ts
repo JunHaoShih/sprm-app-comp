@@ -1,3 +1,5 @@
+import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { RoutePermission } from 'src/modules/permissions/models/Permission';
 import { RouteRecordRaw } from 'vue-router';
 
 const routes: RouteRecordRaw[] = [
@@ -9,6 +11,11 @@ const routes: RouteRecordRaw[] = [
       {
         path: '/parts',
         component: () => import('src/modules/parts/PartsPage.vue'),
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.PartVersion, cruds: ['read'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/parts/:id',
@@ -19,11 +26,21 @@ const routes: RouteRecordRaw[] = [
             path: '/parts/:id/history',
             component: () => import('src/modules/parts/PartHistoryPage.vue'),
             props: true,
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.PartVersion, cruds: ['read'] },
+              ] as RoutePermission[],
+            },
           },
           {
             path: '/parts/:id/routing',
             component: () => import('src/modules/routings/RoutingsPage.vue'),
             props: true,
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.RoutingVersion, cruds: ['read'] },
+              ] as RoutePermission[],
+            },
           },
         ],
       },
@@ -38,6 +55,11 @@ const routes: RouteRecordRaw[] = [
             props: true,
           },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.RoutingVersion, cruds: ['read'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/routings/version/edit/:id',
@@ -47,6 +69,11 @@ const routes: RouteRecordRaw[] = [
           { path: '/routings/version/edit/:id/info', component: () => import('src/modules/routings/RoutingInfoEditPage.vue') },
           { path: '/routings/version/edit/:id/usages', component: () => import('src/modules/routingUsages/RoutingUsagesEditPage.vue'), props: true },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.RoutingVersion, cruds: ['update'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/routings/version/:id',
@@ -56,6 +83,11 @@ const routes: RouteRecordRaw[] = [
           { path: '/routings/version/:id/info', component: () => import('src/modules/routings/RoutingInfoPage.vue') },
           { path: '/routings/version/:id/usages', component: () => import('src/modules/routingUsages/RoutingUsagesPage.vue'), props: true },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.RoutingVersion, cruds: ['read'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/parts/version/:id',
@@ -65,35 +97,98 @@ const routes: RouteRecordRaw[] = [
           { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue') },
           { path: '/parts/version/:id/usages', component: () => import('src/modules/partUsages/PartUsagesPage.vue'), props: true },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.PartVersion, cruds: ['read'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/parts/version/edit/:id',
         component: () => import('src/modules/parts/PartVersionEditCenterPage.vue'),
         props: true,
         children: [
-          { path: '/parts/version/edit/:id/info', component: () => import('src/modules/parts/PartInfoEditPage.vue'), props: true },
-          { path: '/parts/version/edit/:id/usages', component: () => import('src/modules/partUsages/PartUsagesEditPage.vue'), props: true },
+          {
+            path: '/parts/version/edit/:id/info',
+            component: () => import('src/modules/parts/PartInfoEditPage.vue'),
+            props: true,
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.PartVersion, cruds: ['update'] },
+              ] as RoutePermission[],
+            },
+          },
+          {
+            path: '/parts/version/edit/:id/usages',
+            component: () => import('src/modules/partUsages/PartUsagesEditPage.vue'),
+            props: true,
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.PartUsage, cruds: ['update'] },
+              ] as RoutePermission[],
+            },
+          },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.PartVersion, cruds: ['update'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/customizations',
         component: () => import('src/modules/customs/CustomPage.vue'),
         children: [
-          { path: '/customizations/attributes', component: () => import('src/modules/customs/CustomAttributesPage.vue') },
-          { path: '/customizations/attributeLinks', component: () => import('src/modules/customs/AttributeLinksPage.vue') },
+          {
+            path: '/customizations/attributes',
+            component: () => import('src/modules/customs/CustomAttributesPage.vue'),
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.CustomValue, cruds: ['read'] },
+              ] as RoutePermission[],
+            },
+          },
+          {
+            path: '/customizations/attributeLinks',
+            component: () => import('src/modules/customs/AttributeLinksPage.vue'),
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.AttributeLink, cruds: ['read'] },
+              ] as RoutePermission[],
+            },
+          },
         ],
       },
       {
         path: '/processes',
         component: () => import('src/modules/processes/ProcessesPage.vue'),
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.Process, cruds: ['read'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/processes/:id',
         component: () => import('src/modules/processes/ProcessCenterPage.vue'),
         props: true,
         children: [
-          { path: '/processes/:id/info', component: () => import('src/modules/processes/ProcessPage.vue'), props: true },
+          {
+            path: '/processes/:id/info',
+            component: () => import('src/modules/processes/ProcessPage.vue'),
+            props: true,
+            meta: {
+              permissions: [
+                { objectType: SprmObjectType.Process, cruds: ['read'] },
+              ] as RoutePermission[],
+            },
+          },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.Process, cruds: ['read'] },
+          ] as RoutePermission[],
+        },
       },
       {
         path: '/processes/edit/:id',
@@ -102,6 +197,15 @@ const routes: RouteRecordRaw[] = [
         children: [
           { path: '/processes/edit/:id/info', component: () => import('src/modules/processes/ProcessEditPage.vue'), props: true },
         ],
+        meta: {
+          permissions: [
+            { objectType: SprmObjectType.Process, cruds: ['update'] },
+          ] as RoutePermission[],
+        },
+      },
+      {
+        path: '/admin',
+        component: () => import('src/modules/admins/AdminHomePage.vue'),
       },
     ],
   },

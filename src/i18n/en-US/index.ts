@@ -182,6 +182,9 @@ export default {
     display: 'Columns display',
     defaultColumn: 'Default column',
   },
+  permissions: {
+    accessDenied: 'Access denied',
+  },
   quantity: 'Quantity',
   remarks: 'Remarks',
   language: 'Language',
