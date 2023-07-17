@@ -187,6 +187,7 @@ function setLanguage(lang: string): void {
 
 function onLogoutClicked(): void {
   localStorage.removeItem('token');
+  currentUserStore.clear();
   router.push('/login');
 }
 
