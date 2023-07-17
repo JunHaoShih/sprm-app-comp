@@ -34,7 +34,7 @@ export default route((/* { store, ssrContext } */) => {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  Router.beforeEach((to) => {
+  Router.beforeEach(async (to) => {
     // Step 1: check token
     const token = localStorage.getItem('token');
     if (to.path === '/login' && !!token) {
@@ -50,7 +50,7 @@ export default route((/* { store, ssrContext } */) => {
     // Step 2: get user info
     const currentUserStore = useCurrentUserStore();
     if (currentUserStore.appUser.id === 0) {
-      Promise.all([
+      await Promise.all([
         currentUserStore.getCurrentUser(),
         currentUserStore.getCurrentPermissions(),
       ]);
