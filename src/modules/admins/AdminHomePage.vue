@@ -5,9 +5,9 @@
       <q-breadcrumbs-el :label="$t('admins.title')" icon="widgets" to="/admin" />
     </q-breadcrumbs>
     <q-separator color="black" class="q-mt-sm"/>
-  </div>
-  <div class="row justify-center items-center center">
-    <div class="self-center text-h1">( ｀・ω・´)</div>
+    <div class="row justify-center items-center center">
+      <div class="self-center text-h1">( ｀・ω・´)</div>
+    </div>
   </div>
 </template>
 
