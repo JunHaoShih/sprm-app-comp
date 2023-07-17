@@ -1,5 +1,26 @@
 <template>
-  <div class="main-panel">
+  <div class="main-panel q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el :label="$t('parts.title')" icon="settings" to="/parts" />
+      <q-breadcrumbs-el
+        :label="part.number"
+        icon="settings"
+        :to="`/parts/${routingVersionStore.content.master.partId}/routing`"
+      />
+      <q-breadcrumbs-el
+        :label="routingVersionStore.content.master.name"
+        icon="route"
+        :to="`/routings/version/${id}/info`"
+      />
+      <q-breadcrumbs-el
+        v-if="pageType === 'usages'"
+        :label="$t('parts.routings.process')"
+        icon="list"
+        :to="`/parts/version/${id}/usages`"
+      />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-my-sm"/>
     <RoutingVersionBanner
       :routing-version="routingVersionStore.content"
     >
@@ -51,16 +72,26 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeMount, ref, watch } from 'vue';
+import { onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router';
 import 'src/extensions/date.extensions';
 import RoutingVersionBanner from './components/RoutingVersionBanner.vue';
 import { useRoutingVersionStore } from './stores/RoutingVersionStore';
 import { routingService } from './services/RoutingService';
+import { Part } from '../parts/models/Part';
+import { partService } from '../parts/services/PartService';
+
+const route = useRoute();
 
 const router = useRouter();
 
 const routingVersionStore = useRoutingVersionStore();
+
+type PageType = 'info' | 'usages';
+
+const pageType = ref<PageType>('info');
+
+const part = ref<Part>({} as Part);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -70,6 +101,10 @@ const props = withDefaults(defineProps<{
 
 async function updatePartAndVersion(partVersionId: number) {
   await routingVersionStore.routingVersionInit(partVersionId);
+  const targetPart = await partService.getById(routingVersionStore.content.master.partId);
+  if (targetPart) {
+    part.value = targetPart;
+  }
 }
 
 async function onLatestClicked(masterId: number) {
@@ -90,8 +125,21 @@ watch(() => props.id, async (newValue) => {
   await updatePartAndVersion(Number(newValue));
 });
 
+function decidePageType(path: string) {
+  if (path.includes('/info')) {
+    pageType.value = 'info';
+  } else if (path.includes('/usages')) {
+    pageType.value = 'usages';
+  }
+}
+
+onBeforeRouteUpdate((to) => {
+  decidePageType(to.path);
+});
+
 onBeforeMount(async () => {
   await updatePartAndVersion(Number(props.id));
+  decidePageType(route.path);
 });
 </script>
 

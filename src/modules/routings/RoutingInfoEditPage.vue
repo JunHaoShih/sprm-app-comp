@@ -59,5 +59,5 @@ async function onSaveClicked(): Promise<void> {
 
 <style lang="sass" scoped>
 :deep(.outer-max)
-  height: calc(100vh - 270px)
+  height: calc(100vh - 320px)
 </style>
