@@ -19,6 +19,7 @@
       </template>
       <template v-slot:row-actions="props">
         <q-btn
+          v-if="currentUserStore.hasPermission(partType, 'update')"
           dense
           round
           flat
@@ -28,6 +29,7 @@
           @click="onEditClicked(props.part)"
         />
         <q-btn
+          v-if="currentUserStore.hasPermission(partType, 'delete')"
           dense
           round
           flat
@@ -37,6 +39,7 @@
           @click="onDeleteClicked(props.part)"
         />
         <q-btn
+          v-if="currentUserStore.hasPermission(partType, 'read')"
           dense
           round
           flat
@@ -157,6 +160,8 @@ import { usePartsStore } from './stores/PartsStore';
 import { Part } from './models/Part';
 import 'src/extensions/date.extensions';
 import { partService } from './services/PartService';
+import { useCurrentUserStore } from '../appUsers/stores/CurrentUserStore';
+import { SprmObjectType } from '../objectTypes/models/ObjectType';
 
 const $q = useQuasar();
 
@@ -168,11 +173,15 @@ const router = useRouter();
 
 const partsStore = usePartsStore();
 
+const currentUserStore = useCurrentUserStore();
+
 const pattern = ref('');
 
 const prompt = ref(false);
 
 const selected = ref<Part[]>([]);
+
+const partType = SprmObjectType.PartVersion;
 
 function onInfoClicked(part: Part): void {
   router.push(`/parts/version/${part.version.id}/info`);
