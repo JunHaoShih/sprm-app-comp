@@ -186,6 +186,14 @@ export default {
   permissions: {
     accessDenied: '拒絕訪問',
   },
+  users: {
+    title: '使用者管理',
+    caption: '管理所有使用者',
+  },
+  admins: {
+    title: '管理面板',
+  },
+  home: '首頁',
   quantity: '數量',
   remarks: '備註',
   language: '語言',

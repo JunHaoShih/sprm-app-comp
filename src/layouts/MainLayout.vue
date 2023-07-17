@@ -18,7 +18,7 @@
         </q-toolbar-title>
         <q-btn
           v-if="isAdminPanelDisplay"
-          label="Admin panel"
+          :label="$t('admins.title')"
           to="/admin"
           class="action-btn q-mr-md"
         ></q-btn>
@@ -156,10 +156,10 @@ const mainLinks = computed(
 const adminLinks = computed(
   (): NavNode[] => [
     {
-      title: i18n.t('parts.title'),
-      caption: i18n.t('parts.caption'),
-      icon: 'settings',
-      to: '/parts',
+      title: i18n.t('users.title'),
+      caption: i18n.t('users.caption'),
+      icon: 'person',
+      to: '/admin/users',
     },
   ],
 );
@@ -198,7 +198,7 @@ function drawerClick(): void {
 }
 
 function linksInit(path: string) {
-  if (path === '/admin') {
+  if (path.startsWith('/admin')) {
     rootType.value = 'admin';
   } else {
     rootType.value = 'main';

@@ -210,6 +210,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/MainLayout.vue'),
     children: [
       { path: '', component: () => import('src/modules/admins/AdminHomePage.vue') },
+      { path: '/admin/users', component: () => import('src/modules/admins/users/UsersPage.vue') },
     ],
     meta: {
       isAdmin: true,

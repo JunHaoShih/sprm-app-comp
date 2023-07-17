@@ -185,6 +185,14 @@ export default {
   permissions: {
     accessDenied: 'Access denied',
   },
+  users: {
+    title: 'Users management',
+    caption: 'Manage all users',
+  },
+  admins: {
+    title: 'Admin panel',
+  },
+  home: 'Home',
   quantity: 'Quantity',
   remarks: 'Remarks',
   language: 'Language',
