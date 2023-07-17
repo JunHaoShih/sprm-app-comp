@@ -203,11 +203,17 @@ const routes: RouteRecordRaw[] = [
           ] as RoutePermission[],
         },
       },
-      {
-        path: '/admin',
-        component: () => import('src/modules/admins/AdminHomePage.vue'),
-      },
     ],
+  },
+  {
+    path: '/admin',
+    component: () => import('layouts/MainLayout.vue'),
+    children: [
+      { path: '', component: () => import('src/modules/admins/AdminHomePage.vue') },
+    ],
+    meta: {
+      isAdmin: true,
+    },
   },
   {
     path: '/login',

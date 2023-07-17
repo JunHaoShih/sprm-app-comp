@@ -17,7 +17,7 @@
           {{ $t('title') }}
         </q-toolbar-title>
         <q-btn
-          v-if="currentUserStore.appUser.isAdmin"
+          v-if="isAdminPanelDisplay"
           label="Admin panel"
           to="/admin"
           class="action-btn q-mr-md"
@@ -94,19 +94,29 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, onBeforeMount, ref } from 'vue';
 import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
 import NavItem, { NavNode } from 'src/components/navItem/NavItem.vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 
 const i18n = useI18n();
+
+const route = useRoute();
 
 const router = useRouter();
 
 const currentUserStore = useCurrentUserStore();
 
-const essentialLinks = computed(
+type RootType = 'main' | 'admin';
+
+const rootType = ref<RootType>('main');
+
+const isAdminPanelDisplay = computed(
+  () => currentUserStore.appUser.isAdmin && rootType.value === 'main',
+);
+
+const mainLinks = computed(
   (): NavNode[] => [
     {
       title: i18n.t('parts.title'),
@@ -143,6 +153,26 @@ const essentialLinks = computed(
   ],
 );
 
+const adminLinks = computed(
+  (): NavNode[] => [
+    {
+      title: i18n.t('parts.title'),
+      caption: i18n.t('parts.caption'),
+      icon: 'settings',
+      to: '/parts',
+    },
+  ],
+);
+
+const essentialLinks = computed(
+  () => {
+    if (rootType.value === 'main') {
+      return mainLinks.value;
+    }
+    return adminLinks.value;
+  },
+);
+
 const leftDrawerOpen = ref(true);
 
 const miniState = ref(false);
@@ -165,4 +195,20 @@ function drawerClick(): void {
     miniState.value = false;
   }
 }
+
+function linksInit(path: string) {
+  if (path === '/admin') {
+    rootType.value = 'admin';
+  } else {
+    rootType.value = 'main';
+  }
+}
+
+onBeforeRouteLeave((to) => {
+  linksInit(to.path);
+});
+
+onBeforeMount(() => {
+  linksInit(route.path);
+});
 </script>

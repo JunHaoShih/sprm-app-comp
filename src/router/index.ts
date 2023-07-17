@@ -43,6 +43,10 @@ export default route((/* { store, ssrContext } */) => {
     if (to.path !== '/login' && !token) {
       return '/login';
     }
+    // After token check, login does not need to do any check, just let it pass
+    if (to.path === '/login') {
+      return true;
+    }
     // Step 2: get user info
     const currentUserStore = useCurrentUserStore();
     if (currentUserStore.appUser.id === 0) {
@@ -50,6 +54,14 @@ export default route((/* { store, ssrContext } */) => {
         currentUserStore.getCurrentUser(),
         currentUserStore.getCurrentPermissions(),
       ]);
+    }
+    // If page is admin required
+    if (to.meta.isAdmin) {
+      if (currentUserStore.appUser.isAdmin) {
+        return true;
+      }
+      notifyErrorI18n('permissions.accessDenied');
+      return '/';
     }
     // Step 3: check route permission
     if (!currentUserStore.appUser.isAdmin && to.meta.permissions) {
