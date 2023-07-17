@@ -1,5 +1,10 @@
 <template>
   <div class="q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el :label="$t('parts.title')" icon="settings" to="/parts" />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-my-sm"/>
     <!-- product files table -->
     <PartsSearchPanel
       v-model="pattern"
@@ -319,5 +324,5 @@ onBeforeMount(async () => {
 
 <style lang="sass" scoped>
 :deep(.outer-max)
-  height: calc(100vh - 125px)
+  height: calc(100vh - 155px)
 </style>

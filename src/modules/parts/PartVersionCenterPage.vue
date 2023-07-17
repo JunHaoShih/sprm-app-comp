@@ -1,5 +1,27 @@
 <template>
-  <div class="main-panel">
+  <div class="main-panel q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el :label="$t('parts.title')" icon="settings" to="/parts" />
+      <q-breadcrumbs-el
+        :label="partVersionStore.content.master.number"
+        icon="settings"
+        :to="`/parts/${partVersionStore.content.master.id}/history`"
+      />
+      <q-breadcrumbs-el
+        v-if="pageType === 'info'"
+        :label="$t('info')"
+        icon="info"
+        :to="`/parts/version/${id}/info`"
+      />
+      <q-breadcrumbs-el
+        v-if="pageType === 'bom'"
+        :label="$t('parts.bom')"
+        icon="list"
+        :to="`/parts/version/${id}/usages`"
+      />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-my-sm"/>
     <PartVersionBanner
       :part-version="partVersionStore.content"
     >
@@ -51,22 +73,38 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, watch } from 'vue';
-import { useRouter } from 'vue-router';
+import { onBeforeMount, ref, watch } from 'vue';
+import {
+  onBeforeRouteUpdate, useRoute, useRouter,
+} from 'vue-router';
 import { usePartVersionStore } from './stores/PartVersionStore';
 import PartVersionBanner from './components/PartVersionBanner.vue';
 import 'src/extensions/date.extensions';
 import { partService } from './services/PartService';
 
+const route = useRoute();
+
 const router = useRouter();
 
 const partVersionStore = usePartVersionStore();
+
+type PageType = 'info' | 'bom';
+
+const pageType = ref<PageType>('info');
 
 const props = withDefaults(defineProps<{
   id: string,
 }>(), {
   id: '',
 });
+
+function decidePageType(path: string) {
+  if (path.includes('/info')) {
+    pageType.value = 'info';
+  } else if (path.includes('/usages')) {
+    pageType.value = 'bom';
+  }
+}
 
 async function updatePartAndVersion(partVersionId: number) {
   await partVersionStore.partVersionInit(partVersionId);
@@ -90,8 +128,13 @@ watch(() => props.id, async (newValue) => {
   await updatePartAndVersion(Number(newValue));
 });
 
+onBeforeRouteUpdate((to) => {
+  decidePageType(to.path);
+});
+
 onBeforeMount(async () => {
   await updatePartAndVersion(Number(props.id));
+  decidePageType(route.path);
 });
 </script>
 

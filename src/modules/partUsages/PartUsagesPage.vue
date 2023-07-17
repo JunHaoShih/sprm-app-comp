@@ -57,5 +57,5 @@ const props = withDefaults(defineProps<{
 
 <style lang="sass" scoped>
 .outer-max
-  height: calc(100vh - 190px)
+  height: calc(100vh - 225px)
 </style>

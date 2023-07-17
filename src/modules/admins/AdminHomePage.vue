@@ -1,6 +1,6 @@
 <template>
   <div class="q-pa-sm">
-    <q-breadcrumbs class="text-orange" active-color="secondary">
+    <q-breadcrumbs class="text-primary" active-color="black">
       <q-breadcrumbs-el icon="home" to="/" />
       <q-breadcrumbs-el :label="$t('admins.title')" icon="widgets" to="/admin" />
     </q-breadcrumbs>

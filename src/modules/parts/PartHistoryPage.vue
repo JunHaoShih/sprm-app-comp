@@ -155,5 +155,5 @@ onBeforeMount(async () => {
   cursor: pointer
 
 .outer-max
-  height: calc(100vh - 240px)
+  height: calc(100vh - 290px)
 </style>

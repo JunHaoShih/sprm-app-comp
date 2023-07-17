@@ -405,12 +405,11 @@ function onDiscardClicked(routing: Routing): void {
 }
 
 function onEditClicked(routing: Routing) {
-  router.push(`/routings/version/edit/${routing.id}/info`);
   if (!routing.checkout) {
     $q.dialog({
       dark: true,
       title: i18n.t('actions.checkout'),
-      message: i18n.t('parts.processes.wantToCheckOut'),
+      message: i18n.t('parts.routings.wantToCheckOut'),
       cancel: true,
       persistent: true,
     }).onOk(async () => {
@@ -449,7 +448,7 @@ onBeforeMount(async () => {
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 240px)
+  height: calc(100vh - 290px)
 
 .avatar-color
   background: #FF9933
