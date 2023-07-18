@@ -30,7 +30,7 @@
           flat
           color="grey"
           icon="edit"
-          size="12px"
+          size="sm"
           @click="onEditClicked(props.part)"
         />
         <q-btn
@@ -40,7 +40,7 @@
           flat
           color="grey"
           icon="delete"
-          size="12px"
+          size="sm"
           @click="onDeleteClicked(props.part)"
         />
         <q-btn
@@ -50,7 +50,7 @@
           flat
           color="grey"
           icon="info"
-          size="12px"
+          size="sm"
           @click="onInfoClicked(props.part)"
         />
       </template>

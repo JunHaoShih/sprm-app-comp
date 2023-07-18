@@ -50,7 +50,7 @@
                 flat
                 color="grey"
                 icon="edit"
-                size="12px"
+                size="sm"
                 @click="onEditClicked(props.row as RoutingUsage)"
               />
             </q-td>
