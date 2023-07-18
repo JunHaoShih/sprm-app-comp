@@ -51,6 +51,17 @@
           <slot name="row-actions" :part="(props.row as AppUser)"></slot>
         </q-td>
       </template>
+      <!-- is admin display -->
+      <template v-slot:body-cell-isAdmin="props">
+        <q-td :props="props">
+          <q-icon
+            v-if="(props.row as AppUser).isAdmin"
+            name="check_circle"
+            color="green"
+            size="18px"
+          />
+        </q-td>
+      </template>
       <!-- create date -->
       <template v-slot:body-cell-createDate="props">
         <q-td :props="props">
@@ -184,7 +195,7 @@ const defaultColumns = computed(
       name: 'fullName', required: true, label: i18n.t('users.fullName'), field: 'fullName', align: 'left', sortable: true,
     },
     {
-      name: 'isAdmin', required: true, label: i18n.t('users.isAdmin'), field: 'isAdmin', align: 'left', sortable: true,
+      name: 'isAdmin', required: true, label: i18n.t('users.isAdmin'), field: 'isAdmin', align: 'center', sortable: true,
     },
     {
       name: 'createUser', label: i18n.t('base.creator'), field: 'createUser', align: 'left', sortable: true,
