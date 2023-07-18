@@ -34,7 +34,7 @@ export default route((/* { store, ssrContext } */) => {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
-  Router.beforeEach(async (to) => {
+  Router.beforeEach(async (to, from) => {
     // Step 1: check token
     const token = localStorage.getItem('token');
     if (to.path === '/login' && !!token) {
@@ -61,7 +61,7 @@ export default route((/* { store, ssrContext } */) => {
         return true;
       }
       notifyErrorI18n('permissions.accessDenied');
-      return '/';
+      return from.fullPath;
     }
     // Step 3: check route permission
     if (!currentUserStore.appUser.isAdmin && to.meta.permissions) {
@@ -73,7 +73,7 @@ export default route((/* { store, ssrContext } */) => {
         );
         if (!targetPermission) {
           notifyErrorI18n('permissions.accessDenied');
-          return '/';
+          return from.fullPath;
         }
         const crudsPermission: Record<Crud, boolean> = {
           create: targetPermission.createPermitted,
@@ -89,7 +89,7 @@ export default route((/* { store, ssrContext } */) => {
         });
         if (denied) {
           notifyErrorI18n('permissions.accessDenied');
-          return '/';
+          return from.fullPath;
         }
       }
     }
