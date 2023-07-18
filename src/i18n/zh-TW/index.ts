@@ -189,6 +189,9 @@ export default {
   users: {
     title: '使用者管理',
     caption: '管理所有使用者',
+    username: '使用者名稱',
+    fullName: '全名',
+    isAdmin: '管理員',
   },
   admins: {
     title: '管理面板',

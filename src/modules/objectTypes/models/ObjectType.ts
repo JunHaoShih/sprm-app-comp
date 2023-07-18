@@ -8,6 +8,7 @@ export enum SprmObjectType {
   RoutingUsage = 6,
   CustomValue = 7,
   AttributeLink = 8,
+  AppUser = 9,
 }
 
 export interface ObjectType {

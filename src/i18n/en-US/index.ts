@@ -188,6 +188,9 @@ export default {
   users: {
     title: 'Users management',
     caption: 'Manage all users',
+    username: 'Username',
+    fullName: 'Full name',
+    isAdmin: 'Is admin',
   },
   admins: {
     title: 'Admin panel',
