@@ -36,15 +36,6 @@
           size="12px"
           @click="onDeleteClicked(props.process)"
         />
-        <q-btn
-          dense
-          round
-          flat
-          color="grey"
-          icon="info"
-          size="12px"
-          @click="onInfoClicked(props.process)"
-        />
       </template>
       <template v-slot:cell-after="props">
         <q-menu touch-position context-menu>
@@ -106,10 +97,6 @@ const pattern = ref('');
 const prompt = ref(false);
 
 const selected = ref<Process[]>([]);
-
-function onInfoClicked(process: Process): void {
-  router.push(`/processes/${process.id}/info`);
-}
 
 function onEditClicked(process: Process): void {
   router.push(`/processes/edit/${process.id}/info`);

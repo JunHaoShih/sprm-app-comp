@@ -43,16 +43,6 @@
           size="sm"
           @click="onDeleteClicked(props.part)"
         />
-        <q-btn
-          v-if="currentUserStore.hasPermission(partType, 'read')"
-          dense
-          round
-          flat
-          color="grey"
-          icon="info"
-          size="sm"
-          @click="onInfoClicked(props.part)"
-        />
       </template>
       <template v-slot:cell-after="props">
         <q-menu touch-position context-menu>
@@ -187,10 +177,6 @@ const prompt = ref(false);
 const selected = ref<Part[]>([]);
 
 const partType = SprmObjectType.PartVersion;
-
-function onInfoClicked(part: Part): void {
-  router.push(`/parts/version/${part.version.id}/info`);
-}
 
 function onHistoryClicked(part: Part) {
   router.push(`/parts/${part.id}/history`);

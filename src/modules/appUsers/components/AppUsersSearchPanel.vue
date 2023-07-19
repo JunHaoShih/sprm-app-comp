@@ -48,7 +48,15 @@
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">
-          <slot name="row-actions" :part="(props.row as AppUser)"></slot>
+          <slot name="row-actions" :appUser="(props.row as AppUser)"></slot>
+        </q-td>
+      </template>
+      <!-- username with link -->
+      <template v-slot:body-cell-username="props">
+        <q-td :props="props">
+          <a :href="`/admin/users/${(props.row as AppUser).id}`">
+            {{ (props.row as AppUser).username }}
+          </a>
         </q-td>
       </template>
       <!-- is admin display -->
@@ -86,7 +94,7 @@
         <q-td :props="props">
           {{props.value}}
         </q-td>
-        <slot name="cell-after" :part="(props.row as AppUser)"></slot>
+        <slot name="cell-after" :appUser="(props.row as AppUser)"></slot>
       </template>
       <template v-slot:loading>
         <q-inner-loading showing color="red-7" />
