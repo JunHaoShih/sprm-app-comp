@@ -36,6 +36,11 @@ export function handleGenericResponse<T>(response: AxiosResponse): T {
   return data.content;
 }
 
+export function handleCode(response: AxiosResponse): number {
+  const data = response.data as SPRMResponse<string>;
+  return data.code;
+}
+
 export function handlePaginationResponse<T>(response: AxiosResponse): OffsetPaginationData<T[]> {
   const data = response.data as SPRMResponse<T[]>;
   return {
