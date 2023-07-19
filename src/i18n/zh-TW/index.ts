@@ -184,6 +184,7 @@ export default {
     defaultColumn: '預設欄位',
   },
   permissions: {
+    management: '權限管理',
     accessDenied: '拒絕訪問',
   },
   users: {

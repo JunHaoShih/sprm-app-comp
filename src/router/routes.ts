@@ -217,7 +217,23 @@ const routes: RouteRecordRaw[] = [
         path: '/admin/users',
         component: () => import('src/modules/admins/users/UsersPage.vue'),
       },
-      { path: '/admin/users/:id', component: () => import('src/modules/admins/users/UserPage.vue'), props: true },
+      {
+        path: '/admin/users/:id',
+        component: () => import('src/modules/admins/users/UserPage.vue'),
+        props: true,
+        children: [
+          {
+            path: '/admin/users/:id/info',
+            component: () => import('src/modules/admins/users/UserInfoPage.vue'),
+            props: true,
+          },
+          {
+            path: '/admin/users/:id/permissions',
+            component: () => import('src/modules/admins/users/UserPermissionsPage.vue'),
+            props: true,
+          },
+        ],
+      },
     ],
     meta: {
       isAdmin: true,

@@ -54,7 +54,7 @@
       <!-- username with link -->
       <template v-slot:body-cell-username="props">
         <q-td :props="props">
-          <a :href="`/admin/users/${(props.row as AppUser).id}`">
+          <a :href="`/admin/users/${(props.row as AppUser).id}/info`">
             {{ (props.row as AppUser).username }}
           </a>
         </q-td>

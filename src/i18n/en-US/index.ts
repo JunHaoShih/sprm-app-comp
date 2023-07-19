@@ -183,6 +183,7 @@ export default {
     defaultColumn: 'Default column',
   },
   permissions: {
+    management: 'Permission management',
     accessDenied: 'Access denied',
   },
   users: {

@@ -4,18 +4,47 @@
       <q-breadcrumbs-el icon="home" to="/" />
       <q-breadcrumbs-el :label="$t('admins.title')" icon="widgets" to="/admin" />
       <q-breadcrumbs-el :label="$t('users.title')" icon="widgets" to="/admin/users" />
-      <q-breadcrumbs-el :label="user.username" icon="person" :to="`/admin/users/${id}`" />
+      <q-breadcrumbs-el
+        :label="userStore.appUser.username"
+        icon="person"
+        :to="`/admin/users/${id}`"
+      />
     </q-breadcrumbs>
     <q-separator color="black" class="q-mt-sm"/>
+    <AppUserBanner
+      :appUser="userStore.appUser"
+    />
+    <q-tabs
+      align="justify"
+      inline-label
+      indicator-color="orange"
+      active-bg-color="grey-4"
+      class="q-mx-sm tabs-header"
+    >
+      <q-route-tab
+        icon="info"
+        :label="$t('info')"
+        :to="`/admin/users/${id}/info`"
+        exact
+      />
+      <q-route-tab
+        icon="manage_accounts"
+        :label="$t('permissions.management')"
+        :to="`/admin/users/${id}/permissions`"
+        exact
+      />
+    </q-tabs>
+    <router-view />
   </div>
 </template>
 
 <script setup lang="ts">
-import { AppUser } from 'src/modules/appUsers/models/AppUser';
+import AppUserBanner from 'src/modules/appUsers/components/AppUserBanner.vue';
 import { appUserService } from 'src/modules/appUsers/services/AppUserService';
-import { onBeforeMount, ref } from 'vue';
+import { useUserStore } from 'src/modules/appUsers/stores/AppUserStore';
+import { onBeforeMount } from 'vue';
 
-const user = ref<AppUser>({} as AppUser);
+const userStore = useUserStore();
 
 const props = defineProps<{
   id: string,
@@ -24,7 +53,7 @@ const props = defineProps<{
 onBeforeMount(async () => {
   const targetUser = await appUserService.getById(Number(props.id));
   if (targetUser) {
-    user.value = targetUser;
+    userStore.appUser = targetUser;
   }
 });
 </script>
