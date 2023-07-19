@@ -196,6 +196,10 @@ export default {
   admins: {
     title: '管理面板',
   },
+  sideBars: {
+    expand: '展開側邊欄',
+    collapse: '縮小側邊欄',
+  },
   home: '首頁',
   quantity: '數量',
   remarks: '備註',

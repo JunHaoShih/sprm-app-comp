@@ -195,6 +195,10 @@ export default {
   admins: {
     title: 'Admin panel',
   },
+  sideBars: {
+    expand: 'Expand sidebar',
+    collapse: 'Collapse sidebar',
+  },
   home: 'Home',
   quantity: 'Quantity',
   remarks: 'Remarks',

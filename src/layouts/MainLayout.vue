@@ -58,33 +58,33 @@
       :mini="!leftDrawerOpen || miniState"
       @click.capture="drawerClick"
     >
+      <q-scroll-area style="max-width: 300px; height: calc(100vh - 55px);">
+        <q-list>
+          <q-item-label
+            header
+          >
+          {{ $t('menu') }}
+          </q-item-label>
+          <NavItem
+            v-for="link in essentialLinks"
+            :key="link.title"
+            :navNode="link"
+          />
+        </q-list>
+      </q-scroll-area>
+      <q-separator/>
       <q-list>
-        <q-item-label
-          header
-        >
-        {{ $t('menu') }}
-        </q-item-label>
         <NavItem
-          v-for="link in essentialLinks"
-          :key="link.title"
-          :navNode="link"
+          v-if="miniState === false"
+          :navNode="collapseNode"
+          class="q-mini-drawer-hide"
+          @click="miniState = true"
+        />
+        <NavItem
+          v-else
+          :navNode="expandNode"
         />
       </q-list>
-      <!--
-        in this case, we use a button (can be anything)
-        so that user can switch back
-        to mini-mode
-      -->
-      <div class="q-mini-drawer-hide absolute" style="top: 55px; right: -17px">
-        <q-btn
-          dense
-          round
-          unelevated
-          color="accent"
-          icon="chevron_left"
-          @click="miniState = true"
-        ></q-btn>
-      </div>
     </q-drawer>
 
     <q-page-container>
@@ -114,6 +114,19 @@ const rootType = ref<RootType>('main');
 
 const isAdminPanelDisplay = computed(
   () => currentUserStore.appUser.isAdmin && rootType.value === 'main',
+);
+
+const collapseNode = computed(
+  (): NavNode => ({
+    title: i18n.t('sideBars.collapse'),
+    icon: 'keyboard_double_arrow_left',
+  }),
+);
+const expandNode = computed(
+  (): NavNode => ({
+    title: '',
+    icon: 'keyboard_double_arrow_right',
+  }),
 );
 
 const mainLinks = computed(
