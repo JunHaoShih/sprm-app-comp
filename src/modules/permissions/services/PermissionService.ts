@@ -11,9 +11,9 @@ export const permissionService = {
       .catch(handleGenericError);
     return response;
   },
-  updateByUserId: async (userId: number, dto: UpdatePermissionDto) => {
+  updateByUserId: async (userId: number, dtos: UpdatePermissionDto[]) => {
     const response = await api
-      .put(`/api/AppUser/${userId}/Permission`, dto)
+      .put(`/api/AppUser/${userId}/Permission`, dtos)
       .then(handleCode)
       .catch(handleGenericError);
     return response;

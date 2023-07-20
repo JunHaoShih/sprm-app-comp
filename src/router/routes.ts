@@ -144,7 +144,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('src/modules/customs/CustomAttributesPage.vue'),
             meta: {
               permissions: [
-                { objectType: SprmObjectType.CustomValue, cruds: ['read'] },
+                { objectType: SprmObjectType.CustomAttribute, cruds: ['read'] },
               ] as RoutePermission[],
             },
           },

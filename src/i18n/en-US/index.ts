@@ -17,6 +17,7 @@ export default {
     inserts: {
       success: 'Insert success',
     },
+    update: 'Update',
     updates: {
       success: 'Update success',
     },
@@ -57,9 +58,11 @@ export default {
     title: 'Parts management',
     caption: 'Manage your parts',
     part: 'Part',
+    version: 'Part version',
     routing: 'Routing',
     routings: {
       name: 'Routing name',
+      version: 'Routing version',
       new: 'New routing',
       process: 'Routing process',
       processes: {
@@ -67,6 +70,7 @@ export default {
         edit: 'Edit routing process',
         number: 'Routing process number',
       },
+      usage: 'Routing usage',
       wantToCheckOut: 'Routing does not check out, do you want to check out?',
     },
     number: 'Number',
@@ -183,10 +187,12 @@ export default {
     defaultColumn: 'Default column',
   },
   permissions: {
+    option: 'Option',
     management: 'Permission management',
     accessDenied: 'Access denied',
   },
   users: {
+    user: 'User',
     title: 'Users management',
     caption: 'Manage all users',
     username: 'Username',
@@ -199,6 +205,12 @@ export default {
   sideBars: {
     expand: 'Expand sidebar',
     collapse: 'Collapse sidebar',
+  },
+  cruds: {
+    create: 'Create',
+    read: 'Read',
+    update: 'Update',
+    delete: 'Delete',
   },
   home: 'Home',
   quantity: 'Quantity',

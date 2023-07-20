@@ -17,6 +17,7 @@ export default {
     inserts: {
       success: '新增成功',
     },
+    update: '更新',
     updates: {
       success: '更新成功',
     },
@@ -57,9 +58,11 @@ export default {
     title: '料件管理',
     caption: '管理料件以及其他關連',
     part: '料件',
+    version: '料件版本',
     routing: '工藝路徑',
     routings: {
       name: '工藝路徑名稱',
+      version: '工藝路徑版本',
       new: '新增工藝路徑',
       process: '路徑製程',
       processes: {
@@ -67,6 +70,7 @@ export default {
         edit: '編輯路徑製程',
         number: '路徑製程編號',
       },
+      usage: '工藝路徑使用關係',
       wantToCheckOut: '工藝路徑尚未出庫，是否要出庫?',
     },
     number: '料號',
@@ -184,10 +188,12 @@ export default {
     defaultColumn: '預設欄位',
   },
   permissions: {
+    option: '項目',
     management: '權限管理',
     accessDenied: '拒絕訪問',
   },
   users: {
+    user: '使用者',
     title: '使用者管理',
     caption: '管理所有使用者',
     username: '使用者名稱',
@@ -200,6 +206,12 @@ export default {
   sideBars: {
     expand: '展開側邊欄',
     collapse: '縮小側邊欄',
+  },
+  cruds: {
+    create: '新增',
+    read: '查詢',
+    update: '修改',
+    delete: '刪除',
   },
   home: '首頁',
   quantity: '數量',
