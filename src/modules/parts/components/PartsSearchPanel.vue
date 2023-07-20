@@ -314,6 +314,3 @@ onBeforeMount(async () => {
   });
 });
 </script>
-
-<style lang="sass">
-</style>
