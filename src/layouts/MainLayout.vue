@@ -16,11 +16,22 @@
         <q-toolbar-title>
           {{ $t('title') }}
         </q-toolbar-title>
+        <q-btn
+          v-if="isAdminPanelDisplay"
+          :label="$t('admins.title')"
+          to="/admin"
+          class="action-btn q-mr-md"
+        ></q-btn>
         <q-avatar>
           <img :src="currentUserStore.getGravatar" alt="icon">
           <q-menu>
             <q-item clickable v-close-popup>
-              <q-item-section>{{ currentUserStore.username }}</q-item-section>
+              <q-item-section avatar>
+                <q-avatar>
+                  <img :src="currentUserStore.getGravatar" alt="icon">
+                </q-avatar>
+              </q-item-section>
+              <q-item-section>{{ currentUserStore.appUser.username }}</q-item-section>
             </q-item>
             <q-separator />
             <!-- language -->
@@ -47,33 +58,33 @@
       :mini="!leftDrawerOpen || miniState"
       @click.capture="drawerClick"
     >
+      <q-scroll-area style="max-width: 300px; height: calc(100vh - 55px);">
+        <q-list>
+          <q-item-label
+            header
+          >
+          {{ $t('menu') }}
+          </q-item-label>
+          <NavItem
+            v-for="link in essentialLinks"
+            :key="link.title"
+            :navNode="link"
+          />
+        </q-list>
+      </q-scroll-area>
+      <q-separator/>
       <q-list>
-        <q-item-label
-          header
-        >
-        {{ $t('menu') }}
-        </q-item-label>
         <NavItem
-          v-for="link in essentialLinks"
-          :key="link.title"
-          :navNode="link"
+          v-if="miniState === false"
+          :navNode="collapseNode"
+          class="q-mini-drawer-hide"
+          @click="miniState = true"
+        />
+        <NavItem
+          v-else
+          :navNode="expandNode"
         />
       </q-list>
-      <!--
-        in this case, we use a button (can be anything)
-        so that user can switch back
-        to mini-mode
-      -->
-      <div class="q-mini-drawer-hide absolute" style="top: 55px; right: -17px">
-        <q-btn
-          dense
-          round
-          unelevated
-          color="accent"
-          icon="chevron_left"
-          @click="miniState = true"
-        ></q-btn>
-      </div>
     </q-drawer>
 
     <q-page-container>
@@ -84,18 +95,41 @@
 
 <script setup lang="ts">
 import { computed, onBeforeMount, ref } from 'vue';
-import { CurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
+import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
 import NavItem, { NavNode } from 'src/components/navItem/NavItem.vue';
 import { useI18n } from 'vue-i18n';
-import { useRouter } from 'vue-router';
+import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
 
 const i18n = useI18n();
 
+const route = useRoute();
+
 const router = useRouter();
 
-const currentUserStore = CurrentUserStore();
+const currentUserStore = useCurrentUserStore();
 
-const essentialLinks = computed(
+type RootType = 'main' | 'admin';
+
+const rootType = ref<RootType>('main');
+
+const isAdminPanelDisplay = computed(
+  () => currentUserStore.appUser.isAdmin && rootType.value === 'main',
+);
+
+const collapseNode = computed(
+  (): NavNode => ({
+    title: i18n.t('sideBars.collapse'),
+    icon: 'keyboard_double_arrow_left',
+  }),
+);
+const expandNode = computed(
+  (): NavNode => ({
+    title: '',
+    icon: 'keyboard_double_arrow_right',
+  }),
+);
+
+const mainLinks = computed(
   (): NavNode[] => [
     {
       title: i18n.t('parts.title'),
@@ -132,12 +166,25 @@ const essentialLinks = computed(
   ],
 );
 
-onBeforeMount(async () => {
-  const currentUser = await currentUserStore.getCurrentUser();
-  if (currentUser) {
-    currentUserStore.$state = currentUser;
-  }
-});
+const adminLinks = computed(
+  (): NavNode[] => [
+    {
+      title: i18n.t('users.title'),
+      caption: i18n.t('users.caption'),
+      icon: 'person',
+      to: '/admin/users',
+    },
+  ],
+);
+
+const essentialLinks = computed(
+  () => {
+    if (rootType.value === 'main') {
+      return mainLinks.value;
+    }
+    return adminLinks.value;
+  },
+);
 
 const leftDrawerOpen = ref(true);
 
@@ -153,6 +200,7 @@ function setLanguage(lang: string): void {
 
 function onLogoutClicked(): void {
   localStorage.removeItem('token');
+  currentUserStore.clear();
   router.push('/login');
 }
 
@@ -161,4 +209,20 @@ function drawerClick(): void {
     miniState.value = false;
   }
 }
+
+function linksInit(path: string) {
+  if (path.startsWith('/admin')) {
+    rootType.value = 'admin';
+  } else {
+    rootType.value = 'main';
+  }
+}
+
+onBeforeRouteLeave((to) => {
+  linksInit(to.path);
+});
+
+onBeforeMount(() => {
+  linksInit(route.path);
+});
 </script>

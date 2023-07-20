@@ -1,12 +1,17 @@
 <template>
   <div class="q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el :label="$t('parts.title')" icon="settings" to="/parts" />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-my-sm"/>
     <!-- product files table -->
     <PartsSearchPanel
       v-model="pattern"
       :readonly="true"
       v-model:selected="selected"
       selection="multiple"
-      class="main-panel"
+      class="main-panel sticky-header-table"
       table-class="outer-max"
       @on-search="onSearch"
     >
@@ -19,31 +24,24 @@
       </template>
       <template v-slot:row-actions="props">
         <q-btn
+          v-if="currentUserStore.hasPermission(partType, 'update')"
           dense
           round
           flat
           color="grey"
           icon="edit"
-          size="12px"
+          size="sm"
           @click="onEditClicked(props.part)"
         />
         <q-btn
+          v-if="currentUserStore.hasPermission(partType, 'delete')"
           dense
           round
           flat
           color="grey"
           icon="delete"
-          size="12px"
+          size="sm"
           @click="onDeleteClicked(props.part)"
-        />
-        <q-btn
-          dense
-          round
-          flat
-          color="grey"
-          icon="info"
-          size="12px"
-          @click="onInfoClicked(props.part)"
         />
       </template>
       <template v-slot:cell-after="props">
@@ -157,6 +155,8 @@ import { usePartsStore } from './stores/PartsStore';
 import { Part } from './models/Part';
 import 'src/extensions/date.extensions';
 import { partService } from './services/PartService';
+import { useCurrentUserStore } from '../appUsers/stores/CurrentUserStore';
+import { SprmObjectType } from '../objectTypes/models/ObjectType';
 
 const $q = useQuasar();
 
@@ -168,15 +168,15 @@ const router = useRouter();
 
 const partsStore = usePartsStore();
 
+const currentUserStore = useCurrentUserStore();
+
 const pattern = ref('');
 
 const prompt = ref(false);
 
 const selected = ref<Part[]>([]);
 
-function onInfoClicked(part: Part): void {
-  router.push(`/parts/version/${part.version.id}/info`);
-}
+const partType = SprmObjectType.PartVersion;
 
 function onHistoryClicked(part: Part) {
   router.push(`/parts/${part.id}/history`);
@@ -310,5 +310,5 @@ onBeforeMount(async () => {
 
 <style lang="sass" scoped>
 :deep(.outer-max)
-  height: calc(100vh - 125px)
+  height: calc(100vh - 155px)
 </style>

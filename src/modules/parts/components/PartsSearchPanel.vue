@@ -51,6 +51,14 @@
           <slot name="row-actions" :part="(props.row as Part)"></slot>
         </q-td>
       </template>
+      <!-- number with link -->
+      <template v-slot:body-cell-number="props">
+        <q-td :props="props">
+          <a :href="`/parts/version/${(props.row as Part).version.id}/info`">
+            {{ (props.row as Part).number }}
+          </a>
+        </q-td>
+      </template>
       <!-- is checkout -->
       <template v-slot:body-cell-isCheckout="props">
         <q-td :props="props">
@@ -306,6 +314,3 @@ onBeforeMount(async () => {
   });
 });
 </script>
-
-<style lang="sass">
-</style>

@@ -51,6 +51,14 @@
           <slot name="row-actions" :process="(props.row as Process)"></slot>
         </q-td>
       </template>
+      <!-- number with link -->
+      <template v-slot:body-cell-number="props">
+        <q-td :props="props">
+          <a :href="`/processes/${(props.row as Process).id}/info`">
+            {{ (props.row as Process).number }}
+          </a>
+        </q-td>
+      </template>
       <!-- Process type -->
       <template v-slot:body-cell-processType="props">
         <q-td :props="props">
@@ -326,6 +334,3 @@ onBeforeMount(async () => {
   });
 });
 </script>
-
-<style lang="sass">
-</style>

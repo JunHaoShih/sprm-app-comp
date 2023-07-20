@@ -1,4 +1,22 @@
 <template>
+  <div class="q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el
+        v-if="pageType === 'attributes'"
+        :label="$t('customs.attributes.title')"
+        icon="handyman"
+        :to="'/customizations/attributes'"
+      />
+      <q-breadcrumbs-el
+        v-if="pageType === 'links'"
+        :label="$t('customs.attributeLinks.title')"
+        icon="link"
+        :to="'/customizations/attributeLinks'"
+      />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-my-sm"/>
+  </div>
   <q-tabs
     align="justify"
     inline-label
@@ -23,7 +41,30 @@
 </template>
 
 <script setup lang="ts">
+import { onBeforeMount, ref } from 'vue';
+import { onBeforeRouteUpdate, useRoute } from 'vue-router';
 
+const route = useRoute();
+
+type PageType = 'attributes' | 'links';
+
+const pageType = ref<PageType>('attributes');
+
+function decidePageType(path: string) {
+  if (path.includes('/attributes')) {
+    pageType.value = 'attributes';
+  } else if (path.includes('/attributeLinks')) {
+    pageType.value = 'links';
+  }
+}
+
+onBeforeRouteUpdate((to) => {
+  decidePageType(to.path);
+});
+
+onBeforeMount(() => {
+  decidePageType(route.path);
+});
 </script>
 
 <style lang="sass" scoped>

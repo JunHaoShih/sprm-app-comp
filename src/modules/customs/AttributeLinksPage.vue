@@ -6,7 +6,7 @@
       class="outer-max"
     >
       <template v-slot:before>
-        <div class="q-pa-md">
+        <div class="q-px-md">
           <q-scroll-area
             visible
             class="scroll-max"
@@ -55,7 +55,7 @@ const objectTypes = ref<ObjectType[]>([]);
 const defaultObjectType = ref<ObjectType>({} as ObjectType);
 
 onBeforeMount(async () => {
-  const objTypes = await objectTypeService.getAll();
+  const objTypes = await objectTypeService.getCustomizables();
   if (objTypes) {
     objectTypes.value = objTypes;
     const firstObjType = objectTypes.value[0];
@@ -64,16 +64,16 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .highlight-menu
   color: white
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 100px)
+  height: calc(100vh - 155px)
 
 .scroll-max
-  height: calc(100vh - 135px)
+  height: calc(100vh - 190px)
 
 .avatar-color
   background: #FF9933

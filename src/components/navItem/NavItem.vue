@@ -10,8 +10,15 @@
     </q-item-section>
 
     <q-item-section>
-      <q-item-label>{{ navNode.title }}</q-item-label>
-      <q-item-label caption>{{ navNode.caption }}</q-item-label>
+      <q-item-label>
+        {{ navNode.title }}
+      </q-item-label>
+      <q-item-label
+        v-if="navNode.caption"
+        caption
+      >
+        {{ navNode.caption }}
+      </q-item-label>
     </q-item-section>
   </q-item>
   <q-expansion-item
@@ -38,7 +45,7 @@ import { useRouter } from 'vue-router';
 
 export interface NavNode{
   title: string,
-  caption: string,
+  caption?: string,
   icon?: string,
   to?: string,
   children?: NavNode[],

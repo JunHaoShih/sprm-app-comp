@@ -6,7 +6,7 @@
       dense
       indicator-color="orange"
       active-bg-color="grey-4"
-      class="tabs-font q-ma-sm tabs-header"
+      class="tabs-font tabs-header"
       align="justify"
       narrow-indicator
     >
@@ -24,8 +24,7 @@
           :pagination="pagination"
           row-key="key"
           dense
-          class="outer-max"
-          style="position: sticky; top: 0"
+          class="outer-max sticky-header-table"
         >
           <!-- button at table header -->
           <template v-slot:top>
@@ -50,7 +49,7 @@
                 flat
                 color="grey"
                 icon="edit"
-                size="12px"
+                size="sm"
                 @click="onEditClicked(props.row as RoutingUsage)"
               />
             </q-td>
@@ -277,8 +276,8 @@ onBeforeMount(async () => {
 
 <style lang="sass" scoped>
 :deep(.info-outer-max)
-  height: calc(100vh - 300px)
+  height: calc(100vh - 330px)
 
 .outer-max
-  height: calc(100vh - 270px)
+  height: calc(100vh - 295px)
 </style>

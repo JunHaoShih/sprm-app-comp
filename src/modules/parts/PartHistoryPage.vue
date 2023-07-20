@@ -8,7 +8,7 @@
       dense
       v-model:pagination="pagination"
       hide-pagination
-      class="main-panel outer-max"
+      class="main-panel outer-max sticky-header-table"
     >
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
@@ -155,5 +155,5 @@ onBeforeMount(async () => {
   cursor: pointer
 
 .outer-max
-  height: calc(100vh - 240px)
+  height: calc(100vh - 260px)
 </style>

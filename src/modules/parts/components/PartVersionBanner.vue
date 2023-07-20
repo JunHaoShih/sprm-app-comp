@@ -1,7 +1,8 @@
 <template>
   <div>
     <q-banner
-      class="info-banner q-ma-sm"
+      class="info-banner"
+      style="border-radius: 10px"
     >
       <div class="text-h6 row">
         <slot name="front"></slot>

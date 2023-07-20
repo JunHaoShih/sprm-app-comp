@@ -1,5 +1,15 @@
 <template>
-  <div class="main-panel">
+  <div class="main-panel q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el :label="$t('parts.title')" icon="settings" to="/parts" />
+      <q-breadcrumbs-el
+        :label="part.number"
+        icon="settings"
+        :to="`/parts/${id}/history`"
+      />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-mt-sm"/>
     <PartBanner
       :part="part"
     />
@@ -8,7 +18,7 @@
       inline-label
       indicator-color="orange"
       active-bg-color="grey-4"
-      class="tabs-font q-ma-sm tabs-header"
+      class="tabs-font q-mx-sm tabs-header"
     >
       <q-route-tab
         icon="history"

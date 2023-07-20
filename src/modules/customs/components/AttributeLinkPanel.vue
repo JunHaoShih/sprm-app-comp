@@ -9,7 +9,7 @@
       v-model:selected="selectedAttributes"
       selection="multiple"
       row-key="id"
-      class="center-max outer-max q-pa-sm"
+      class="outer-max q-pa-sm sticky-header-table"
       style="position: sticky; top: 0"
     >
       <!-- button at table header -->
@@ -37,7 +37,7 @@
             flat
             color="grey"
             icon="delete"
-            size="12px"
+            size="sm"
             @click="onSingleDelete(props.row as CustomAttribute)"
           />
           <q-btn
@@ -46,7 +46,7 @@
             flat
             color="grey"
             icon="info"
-            size="12px"
+            size="sm"
             @click="onInfoClicked(props.row as CustomAttribute)" />
         </q-td>
       </template>
@@ -219,6 +219,6 @@ async function onMultiDelete(): Promise<void> {
 </script>
 
 <style lang="sass" scoped>
-.dialog-inner-max
-  height: calc(90vh - 120px)
+.outer-max
+  height: calc(100vh - 155px)
 </style>

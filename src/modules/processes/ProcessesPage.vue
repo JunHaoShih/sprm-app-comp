@@ -7,7 +7,7 @@
       v-model:selected="selected"
       selection="multiple"
       class="main-panel"
-      table-class="outer-max"
+      table-class="outer-max sticky-header-table"
       @on-search="onSearch"
     >
       <template v-slot:table-top>
@@ -24,7 +24,7 @@
           flat
           color="grey"
           icon="edit"
-          size="12px"
+          size="sm"
           @click="onEditClicked(props.process)"
         />
         <q-btn
@@ -33,17 +33,8 @@
           flat
           color="grey"
           icon="delete"
-          size="12px"
+          size="sm"
           @click="onDeleteClicked(props.process)"
-        />
-        <q-btn
-          dense
-          round
-          flat
-          color="grey"
-          icon="info"
-          size="12px"
-          @click="onInfoClicked(props.process)"
         />
       </template>
       <template v-slot:cell-after="props">
@@ -106,10 +97,6 @@ const pattern = ref('');
 const prompt = ref(false);
 
 const selected = ref<Process[]>([]);
-
-function onInfoClicked(process: Process): void {
-  router.push(`/processes/${process.id}/info`);
-}
 
 function onEditClicked(process: Process): void {
   router.push(`/processes/edit/${process.id}/info`);

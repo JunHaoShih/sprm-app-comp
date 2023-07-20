@@ -71,8 +71,11 @@
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { authService } from './services/AuthenticationService';
+import { useCurrentUserStore } from '../appUsers/stores/CurrentUserStore';
 
 const router = useRouter();
+
+const currentUserStore = useCurrentUserStore();
 
 const username = ref('');
 
@@ -81,6 +84,7 @@ const password = ref('');
 async function onSubmit(): Promise<void> {
   const response = await authService.login(username.value, password.value);
   if (response) {
+    currentUserStore.clear();
     router.push('/');
   }
 }

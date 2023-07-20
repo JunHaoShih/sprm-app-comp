@@ -25,7 +25,7 @@
       class="outer-max"
     >
       <template v-slot:before>
-        <div class="q-pa-md">
+        <div class="q-px-md">
           <q-scroll-area
             visible
             class="scroll-max"
@@ -57,7 +57,7 @@
         <CustomAttributeEditPanel
           v-if="defaultAttr && Object.entries(defaultAttr).length > 0 && defaultAttr.id > 0"
           v-model="defaultAttr"
-          class="q-pa-md">
+          class="q-px-md">
         </CustomAttributeEditPanel>
       </template>
 
@@ -165,16 +165,16 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .highlight-menu
   color: white
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 180px)
+  height: calc(100vh - 230px)
 
 .scroll-max
-  height: calc(100vh - 215px)
+  height: calc(100vh - 265px)
 
 .avatar-color
   background: #FF9933

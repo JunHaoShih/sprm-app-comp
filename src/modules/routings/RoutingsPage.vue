@@ -8,7 +8,7 @@
       dense
       v-model:pagination="pagination"
       hide-pagination
-      class="main-panel outer-max"
+      class="main-panel outer-max sticky-header-table"
     >
       <template v-slot:top>
         <div class="q-gutter-xs">
@@ -48,7 +48,7 @@
             flat
             color="grey"
             icon="edit"
-            size="12px"
+            size="sm"
             @click="onEditClicked(props.row as Routing)"
           />
           <q-btn
@@ -57,7 +57,7 @@
             flat
             color="grey"
             icon="delete"
-            size="12px"
+            size="sm"
           />
           <q-btn
             dense
@@ -65,7 +65,7 @@
             flat
             color="grey"
             icon="info"
-            size="12px"
+            size="sm"
             @click="onInfoClicked(props.row as Routing)"
           />
         </q-td>
@@ -405,12 +405,11 @@ function onDiscardClicked(routing: Routing): void {
 }
 
 function onEditClicked(routing: Routing) {
-  router.push(`/routings/version/edit/${routing.id}/info`);
   if (!routing.checkout) {
     $q.dialog({
       dark: true,
       title: i18n.t('actions.checkout'),
-      message: i18n.t('parts.processes.wantToCheckOut'),
+      message: i18n.t('parts.routings.wantToCheckOut'),
       cancel: true,
       persistent: true,
     }).onOk(async () => {
@@ -443,13 +442,13 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .highlight-menu
   color: white
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 240px)
+  height: calc(100vh - 265px)
 
 .avatar-color
   background: #FF9933

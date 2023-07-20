@@ -1,5 +1,20 @@
 <template>
-  <div class="main-panel">
+  <div class="main-panel q-pa-sm">
+    <q-breadcrumbs class="text-primary" active-color="black">
+      <q-breadcrumbs-el icon="home" to="/" />
+      <q-breadcrumbs-el :label="$t('parts.title')" icon="settings" to="/parts" />
+      <q-breadcrumbs-el
+        :label="part.number"
+        icon="settings"
+        :to="`/parts/${routing.partId}/routing`"
+      />
+      <q-breadcrumbs-el
+        :label="routing.name"
+        icon="route"
+        :to="`/routings/${routing.id}/history`"
+      />
+    </q-breadcrumbs>
+    <q-separator color="black" class="q-mt-sm"/>
     <RoutingBanner
       :routing="routing"
     />
@@ -27,8 +42,12 @@ import RoutingBanner from './components/RoutingBanner.vue';
 import 'src/extensions/date.extensions';
 import { Routing } from './models/Routing';
 import { routingService } from './services/RoutingService';
+import { Part } from '../parts/models/Part';
+import { partService } from '../parts/services/PartService';
 
 const routing = ref<Routing>({} as Routing);
+
+const part = ref<Part>({} as Part);
 
 const props = withDefaults(defineProps<{
   id: string,
@@ -37,9 +56,13 @@ const props = withDefaults(defineProps<{
 });
 
 async function updatePartAndVersion(partId: number) {
-  const targetPart = await routingService.getById(partId);
-  if (targetPart) {
-    routing.value = targetPart;
+  const targetRouting = await routingService.getById(partId);
+  if (targetRouting) {
+    routing.value = targetRouting;
+    const targetPart = await partService.getById(targetRouting.partId);
+    if (targetPart) {
+      part.value = targetPart;
+    }
   }
 }
 
