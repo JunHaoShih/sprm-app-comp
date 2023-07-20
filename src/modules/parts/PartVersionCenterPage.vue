@@ -21,7 +21,7 @@
         :to="`/parts/version/${id}/usages`"
       />
     </q-breadcrumbs>
-    <q-separator color="black" class="q-my-sm"/>
+    <q-separator color="black" class="q-mt-sm"/>
     <PartVersionBanner
       :part-version="partVersionStore.content"
     >

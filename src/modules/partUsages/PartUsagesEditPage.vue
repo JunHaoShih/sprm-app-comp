@@ -8,7 +8,7 @@
     >
       <template v-slot:before>
         <PartUsageTreePanel
-          class="q-pa-md q-gutter-xs"
+          class="q-px-md q-pt-sm q-gutter-xs"
           :id="Number(props.id)"
           v-model:selectedNode="selectedNode"
           :is-edit="true"
@@ -68,7 +68,7 @@
       </template>
 
       <template v-slot:after>
-        <div class="q-gutter-sm">
+        <div>
           <PartUsageRightPanel
             :id="selectedParentId"
             :readonly="!isSelectedNodeCheckout"

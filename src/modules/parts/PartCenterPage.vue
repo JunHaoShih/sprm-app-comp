@@ -9,7 +9,7 @@
         :to="`/parts/${id}/history`"
       />
     </q-breadcrumbs>
-    <q-separator color="black" class="q-my-sm"/>
+    <q-separator color="black" class="q-mt-sm"/>
     <PartBanner
       :part="part"
     />
@@ -18,7 +18,7 @@
       inline-label
       indicator-color="orange"
       active-bg-color="grey-4"
-      class="tabs-font q-ma-sm tabs-header"
+      class="tabs-font q-mx-sm tabs-header"
     >
       <q-route-tab
         icon="history"

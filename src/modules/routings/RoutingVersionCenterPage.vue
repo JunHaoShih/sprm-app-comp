@@ -11,16 +11,22 @@
       <q-breadcrumbs-el
         :label="routingVersionStore.content.master.name"
         icon="route"
+        :to="`/routings/${routingVersionStore.content.master.id}/history`"
+      />
+      <q-breadcrumbs-el
+        v-if="pageType === 'info'"
+        :label="$t('info')"
+        icon="info"
         :to="`/routings/version/${id}/info`"
       />
       <q-breadcrumbs-el
-        v-if="pageType === 'usages'"
+        v-else
         :label="$t('parts.routings.process')"
         icon="list"
         :to="`/parts/version/${id}/usages`"
       />
     </q-breadcrumbs>
-    <q-separator color="black" class="q-my-sm"/>
+    <q-separator color="black" class="q-mt-sm"/>
     <RoutingVersionBanner
       :routing-version="routingVersionStore.content"
     >

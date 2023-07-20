@@ -8,7 +8,7 @@
       dense
       v-model:pagination="pagination"
       hide-pagination
-      class="main-panel outer-max"
+      class="main-panel outer-max sticky-header-table"
     >
       <template v-slot:top>
         <div class="q-gutter-xs">
@@ -448,7 +448,7 @@ onBeforeMount(async () => {
   background: #026E81
 
 .outer-max
-  height: calc(100vh - 290px)
+  height: calc(100vh - 265px)
 
 .avatar-color
   background: #FF9933

@@ -11,7 +11,7 @@
       :readonly="true"
       v-model:selected="selected"
       selection="multiple"
-      class="main-panel"
+      class="main-panel sticky-header-table"
       table-class="outer-max"
       @on-search="onSearch"
     >

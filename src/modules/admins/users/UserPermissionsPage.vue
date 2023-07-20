@@ -7,7 +7,7 @@
       row-key="objectType"
       :rows-per-page-options="[0]"
       :loading="loading"
-      class="my-sticky-header-table"
+      class="sticky-header-table"
       table-class="table-max"
     >
       <template v-slot:top>
@@ -32,19 +32,19 @@
           </q-td>
           <!-- display create permission switch -->
           <q-td key="createPermitted" :props="props">
-            <q-toggle v-model="props.row.createPermitted"/>
+            <q-toggle size="sm" v-model="props.row.createPermitted"/>
           </q-td>
           <!-- display read permission switch -->
           <q-td key="readPermitted" :props="props">
-            <q-toggle v-model="props.row.readPermitted"/>
+            <q-toggle size="sm" v-model="props.row.readPermitted"/>
           </q-td>
           <!-- display update permission switch -->
           <q-td key="updatePermitted" :props="props">
-            <q-toggle v-model="props.row.updatePermitted"/>
+            <q-toggle size="sm" v-model="props.row.updatePermitted"/>
           </q-td>
           <!-- display update permission switch -->
           <q-td key="deletePermitted" :props="props">
-            <q-toggle v-model="props.row.deletePermitted"/>
+            <q-toggle size="sm" v-model="props.row.deletePermitted"/>
           </q-td>
         </q-tr>
       </template>
