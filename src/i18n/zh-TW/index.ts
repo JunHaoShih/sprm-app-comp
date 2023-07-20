@@ -181,6 +181,9 @@ export default {
       invalidChar: '不可含有任何非法字元',
     },
     cannotSmallerThan0: '不可小於0',
+    cannotSmallerThan6: '不可小於6',
+    cannotLongerThan20: '字數不可大於20',
+    cannotLongerThan50: '字數不可大於50',
     invalidChar: '不可含有任何非法字元',
   },
   columns: {
@@ -197,6 +200,7 @@ export default {
     title: '使用者管理',
     caption: '管理所有使用者',
     username: '使用者名稱',
+    password: '密碼',
     fullName: '全名',
     isAdmin: '管理員',
   },

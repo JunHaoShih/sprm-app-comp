@@ -3,6 +3,7 @@ import { OffsetPaginationData } from 'src/models/paginations/OffsetPaginationRes
 import { handleGenericError, handleGenericResponse, handlePaginationResponse } from 'src/services/AxiosHandlingService';
 import { api } from 'src/boot/axios';
 import { AppUser } from '../models/AppUser';
+import { CreateAppUserDto } from '../dtos/CreateAppUserDto';
 
 export const appUserService = {
   getByPattern: async (pattern: string, pagination: OffsetPaginationInput):
@@ -25,5 +26,12 @@ export const appUserService = {
       .then(handleGenericResponse<AppUser>)
       .catch(handleGenericError);
     return response;
+  },
+  create: async (createDto: CreateAppUserDto): Promise<AppUser | null> => {
+    const part = await api
+      .post('/api/AppUser', createDto)
+      .then(handleGenericResponse<AppUser>)
+      .catch(handleGenericError);
+    return part;
   },
 };

@@ -180,6 +180,8 @@ export default {
       nameInvalidChar: 'Cannot cantain any invalid characters',
     },
     cannotSmallerThan0: 'Cannot be smaller than 0',
+    cannotSmallerThan6: 'You need at least 6 characters',
+    cannotLongerThan20: 'Cannot more than 2- characters',
     invalidChar: 'Cannot cantain any invalid characters',
   },
   columns: {
@@ -196,6 +198,7 @@ export default {
     title: 'Users management',
     caption: 'Manage all users',
     username: 'Username',
+    password: 'Password',
     fullName: 'Full name',
     isAdmin: 'Is admin',
   },
