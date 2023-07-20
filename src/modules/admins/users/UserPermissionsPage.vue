@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-pa-sm">
     <q-table
       dense
       :rows="updatePermissionDtos"
@@ -7,7 +7,7 @@
       row-key="objectType"
       :rows-per-page-options="[0]"
       :loading="loading"
-      class="sticky-header-table"
+      class="main-panel sticky-header-table"
       table-class="table-max"
     >
       <template v-slot:top>

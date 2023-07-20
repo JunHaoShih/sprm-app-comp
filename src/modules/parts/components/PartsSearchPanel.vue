@@ -13,7 +13,6 @@
       v-model:pagination="pagination"
       hide-pagination
       :loading="loading"
-      style="position: sticky; top: 0"
     >
       <!-- button at table header -->
       <template v-slot:top>
