@@ -14,7 +14,7 @@
 <script setup lang="ts">
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .center
   height: calc( 100vh - 100px )
 </style>

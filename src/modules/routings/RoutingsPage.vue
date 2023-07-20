@@ -442,7 +442,7 @@ onBeforeMount(async () => {
 });
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .highlight-menu
   color: white
   background: #026E81

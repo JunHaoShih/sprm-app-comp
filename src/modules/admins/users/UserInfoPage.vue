@@ -80,7 +80,7 @@ const initializing = ref(false);
 const sprmObjectType = SprmObjectType.AppUser;
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
 .outer-max
   height: calc(100vh - 250px)
 </style>
