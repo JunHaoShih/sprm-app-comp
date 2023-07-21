@@ -85,6 +85,8 @@ async function onSubmit(): Promise<void> {
   const response = await authService.login(username.value, password.value);
   if (response) {
     currentUserStore.clear();
+    currentUserStore.accessToken = response.token;
+    localStorage.setItem('token', response.refreshToken);
     router.push('/');
   }
 }
