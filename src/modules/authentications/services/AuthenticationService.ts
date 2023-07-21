@@ -1,4 +1,5 @@
 import { api } from 'src/boot/axios';
+import axios from 'axios';
 import { handleGenericError, handleGenericResponse } from 'src/services/AxiosHandlingService';
 import { AuthenticationResponse } from '../models/AuthenticationResponse';
 import { AuthenticationDto } from '../dtos/AuthenticationDto';
@@ -19,7 +20,7 @@ export const authService = {
     const refreshDto: RefreshTokenDto = {
       refreshToken,
     };
-    const authResponse = await api.post('/api/Authentication/Refresh', refreshDto)
+    const authResponse = await axios.post('/api/Authentication/Refresh', refreshDto)
       .then(handleGenericResponse<AuthenticationResponse>)
       .catch(handleGenericError);
     return authResponse;
