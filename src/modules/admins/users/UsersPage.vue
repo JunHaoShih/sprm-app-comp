@@ -22,6 +22,17 @@
           @click="prompt = true"
         />
       </template>
+      <template v-slot:row-actions="props">
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="info"
+          size="sm"
+          :to="`/admin/users/${props.appUser.id}/info`"
+        />
+      </template>
     </AppUsersSearchPanel>
     <CreateAppUserDialog
       v-model="prompt"

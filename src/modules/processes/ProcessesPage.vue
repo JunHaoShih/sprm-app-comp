@@ -36,6 +36,15 @@
           size="sm"
           @click="onDeleteClicked(props.process)"
         />
+        <q-btn
+          dense
+          round
+          flat
+          color="grey"
+          icon="info"
+          size="sm"
+          :to="`/processes/${props.process.id}/info`"
+        />
       </template>
       <template v-slot:cell-after="props">
         <q-menu touch-position context-menu>
