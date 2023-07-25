@@ -1,7 +1,7 @@
 /**
  * 登入用DTO
  */
-export interface AuthenticationDTO {
+export interface AuthenticationDto {
   /**
    * 帳號
    */

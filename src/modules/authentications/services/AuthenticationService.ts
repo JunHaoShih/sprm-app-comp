@@ -1,34 +1,28 @@
 import { api } from 'src/boot/axios';
-import { Notify } from 'quasar';
-import { SPRMResponse } from 'src/models/SPRMResponse';
+import axios from 'axios';
+import { handleGenericError, handleGenericResponse } from 'src/services/AxiosHandlingService';
 import { AuthenticationResponse } from '../models/AuthenticationResponse';
-import { AuthenticationDTO } from '../models/AuthenticationDTO';
+import { AuthenticationDto } from '../dtos/AuthenticationDto';
+import { RefreshTokenDto } from '../dtos/RefreshTokenDto';
 
 export const authService = {
-  login: async (username: string, password: string):
-  Promise<SPRMResponse<AuthenticationResponse> | null> => {
-    const loginDTO: AuthenticationDTO = {
+  login: async (username: string, password: string): Promise<AuthenticationResponse | null> => {
+    const loginDTO: AuthenticationDto = {
       username,
       password,
     };
     const authResponse = await api.post('/api/Authentication', loginDTO)
-      .then((response): SPRMResponse<AuthenticationResponse> => {
-        const data = response.data as SPRMResponse<AuthenticationResponse>;
-        localStorage.setItem('token', data.content.token);
-        return data;
-      })
-      .catch((error) => {
-        if (error.response) {
-          const body: SPRMResponse<string> = error.response.data;
-          const message = `Error: ${body.code}, ${body.message}`;
-          Notify.create({
-            message,
-            color: 'red',
-            icon: 'error',
-          });
-        }
-        return null;
-      });
+      .then(handleGenericResponse<AuthenticationResponse>)
+      .catch(handleGenericError);
+    return authResponse;
+  },
+  refreshToken: async (refreshToken: string): Promise<AuthenticationResponse | null> => {
+    const refreshDto: RefreshTokenDto = {
+      refreshToken,
+    };
+    const authResponse = await axios.post('/api/Authentication/Refresh', refreshDto)
+      .then(handleGenericResponse<AuthenticationResponse>)
+      .catch(handleGenericError);
     return authResponse;
   },
 };

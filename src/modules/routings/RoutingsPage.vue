@@ -66,7 +66,7 @@
             color="grey"
             icon="info"
             size="sm"
-            @click="onInfoClicked(props.row as Routing)"
+            :to="`/routings/version/${(props.row as Routing).version.id}/info`"
           />
         </q-td>
       </template>
@@ -344,10 +344,6 @@ function onHistoryClicked(routing: Routing) {
 
 function onRoutingProcessClicked(routing: Routing) {
   router.push(`/routings/version/${routing.id}/usages`);
-}
-
-function onInfoClicked(routing: Routing) {
-  router.push(`/routings/version/${routing.version.id}/info`);
 }
 
 async function onCheckInClicked(routing: Routing): Promise<void> {

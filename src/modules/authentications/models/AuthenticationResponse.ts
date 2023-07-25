@@ -3,7 +3,11 @@
  */
 export interface AuthenticationResponse {
   /**
-   * JWT
+   * JWT access token
    */
   token: string,
+  /**
+   * Refresh token
+   */
+  refreshToken: string,
 }

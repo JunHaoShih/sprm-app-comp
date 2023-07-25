@@ -43,6 +43,16 @@
           size="sm"
           @click="onDeleteClicked(props.part)"
         />
+        <q-btn
+          v-if="currentUserStore.hasPermission(partType, 'read')"
+          dense
+          round
+          flat
+          color="grey"
+          icon="info"
+          size="sm"
+          :to="`/parts/version/${props.part.version.id}/info`"
+        />
       </template>
       <template v-slot:cell-after="props">
         <q-menu touch-position context-menu>

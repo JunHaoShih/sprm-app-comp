@@ -7,6 +7,7 @@ import {
 } from 'vue-router';
 import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
 import { Crud, RoutePermission } from 'src/modules/permissions/models/Permission';
+import { authService } from 'src/modules/authentications/services/AuthenticationService';
 import routes from './routes';
 import { notifyErrorI18n } from '../services/NotifyService';
 
@@ -47,8 +48,17 @@ export default route((/* { store, ssrContext } */) => {
     if (to.path === '/login') {
       return true;
     }
-    // Step 2: get user info
+    // Use refresh token to get access token if possible
     const currentUserStore = useCurrentUserStore();
+    if (!currentUserStore.accessToken) {
+      if (token) {
+        const response = await authService.refreshToken(token);
+        if (response) {
+          currentUserStore.accessToken = response.token;
+        }
+      }
+    }
+    // Step 2: get user info
     if (currentUserStore.appUser.id === 0) {
       await Promise.all([
         currentUserStore.getCurrentUser(),

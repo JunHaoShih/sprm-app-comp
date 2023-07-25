@@ -9,6 +9,7 @@ import { AppUser } from '../models/AppUser';
 export interface AppUserContainer {
   appUser: AppUser,
   permissions: Permission[],
+  accessToken: string,
 }
 
 export const useCurrentUserStore = defineStore('currentUser', {
@@ -18,8 +19,15 @@ export const useCurrentUserStore = defineStore('currentUser', {
       username: '00000000000000000000000000000000',
       fullName: '',
       isAdmin: false,
+      createUser: '',
+      createDate: new Date(),
+      updateUser: '',
+      updateDate: new Date(),
+      customValues: {},
+      remarks: '',
     },
     permissions: [],
+    accessToken: '',
   }),
   getters: {
     getGravatar(state): string {
@@ -68,8 +76,15 @@ export const useCurrentUserStore = defineStore('currentUser', {
         username: '00000000000000000000000000000000',
         fullName: '',
         isAdmin: false,
+        createUser: '',
+        createDate: new Date(),
+        updateUser: '',
+        updateDate: new Date(),
+        customValues: {},
+        remarks: '',
       };
       this.permissions.length = 0;
+      this.accessToken = '';
     },
   },
 });

@@ -1,6 +1,8 @@
 import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { Notify } from 'quasar';
+import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
+import { authService } from 'src/modules/authentications/services/AuthenticationService';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -31,7 +33,8 @@ export default boot(({ app, router }) => {
 
   api.interceptors.request.use((config) => {
     // Add token to header if exist
-    const token = localStorage.getItem('token');
+    const currentUserStore = useCurrentUserStore();
+    const token = currentUserStore.accessToken;
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -39,8 +42,19 @@ export default boot(({ app, router }) => {
   }, (error) => Promise.reject(error));
 
   api.interceptors.response.use((response) => response, async (error) => {
-    // Remove token and redirect to login page if unauthorized
     if (error.response.status === 401) {
+      // Try refresh token
+      const refreshToken = localStorage.getItem('token');
+      if (refreshToken) {
+        const authDto = await authService.refreshToken(refreshToken);
+        if (authDto) {
+          const currentUserStore = useCurrentUserStore();
+          currentUserStore.accessToken = authDto.token;
+          const originalRequest = error.config;
+          return api(originalRequest);
+        }
+      }
+      // Remove token and redirect to login page if unauthorized
       localStorage.removeItem('token');
       await router.push('/login');
       return Promise.reject(error);

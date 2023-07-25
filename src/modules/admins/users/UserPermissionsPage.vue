@@ -83,7 +83,7 @@ const permissibles = ref<ObjectType[]>([]);
 const objectTypeNames = objectTypeI18n;
 
 const props = defineProps<{
-  id: number,
+  id: string,
 }>();
 
 const defaultColumns = computed(
@@ -108,7 +108,7 @@ const defaultColumns = computed(
 
 async function savePermissions() {
   saving.value = true;
-  const code = await permissionService.updateByUserId(props.id, updatePermissionDtos.value);
+  const code = await permissionService.updateByUserId(Number(props.id), updatePermissionDtos.value);
   if (code === 0) {
     $q.notify({
       message: i18n.t('actions.updates.success'),
@@ -158,7 +158,7 @@ onBeforeRouteUpdate(async (to) => {
 onBeforeMount(async () => {
   loading.value = true;
   await Promise.all([
-    getPermissions(props.id),
+    getPermissions(Number(props.id)),
     getPermissibles(),
   ]);
   refreshData();
