@@ -7,7 +7,7 @@
       <q-breadcrumbs-el
         :label="userStore.appUser.username"
         icon="person"
-        :to="`/admin/users/${id}`"
+        :to="`/admin/users/${id}/info`"
       />
     </q-breadcrumbs>
     <q-separator color="black" class="q-mt-sm"/>
