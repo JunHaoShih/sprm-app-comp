@@ -55,10 +55,11 @@
     <q-drawer
       v-model="leftDrawerOpen"
       bordered
+      :width="drawerWidth"
       :mini="!leftDrawerOpen || miniState"
       @click.capture="drawerClick"
     >
-      <q-scroll-area style="max-width: 300px; height: calc(100vh - 55px);">
+      <q-scroll-area style="width: inherit; height: calc(100vh - 55px);">
         <q-list>
           <q-item-label
             header
@@ -85,6 +86,12 @@
           :navNode="expandNode"
         />
       </q-list>
+      <!-- drawer resizer -->
+      <!-- https://github.com/quasarframework/quasar/issues/7099 -->
+      <div
+        v-touch-pan.preserveCursor.prevent.mouse.horizontal="resizeDrawer"
+        class="q-drawer__resizer"
+      ></div>
     </q-drawer>
 
     <q-page-container>
@@ -107,6 +114,12 @@ const route = useRoute();
 const router = useRouter();
 
 const currentUserStore = useCurrentUserStore();
+
+let initialDrawerWidth = 0;
+
+const drawerMaxWidth = 600;
+
+const drawerWidth = ref(300);
 
 type RootType = 'main' | 'admin';
 
@@ -218,6 +231,19 @@ function linksInit(path: string) {
   }
 }
 
+function resizeDrawer(details: {
+  isFirst: boolean,
+  offset: {
+    x: number,
+    y: number,
+  },
+}) {
+  if (details.isFirst) {
+    initialDrawerWidth = drawerWidth.value;
+  }
+  drawerWidth.value = Math.min(initialDrawerWidth + details.offset.x, drawerMaxWidth);
+}
+
 onBeforeRouteLeave((to) => {
   linksInit(to.path);
 });
@@ -226,3 +252,25 @@ onBeforeMount(() => {
   linksInit(route.path);
 });
 </script>
+
+<style lang="sass" scoped>
+.q-drawer__resizer
+  position: absolute
+  top: 0
+  bottom: 0
+  right: -2px
+  width: 1px
+  background-color: $grey-5
+  cursor: ew-resize
+
+  &:after
+    content: ''
+    position: absolute
+    top: 50%
+    height: 30px
+    left: -2px
+    right: -2px
+    transform: translateY(-50%)
+    background-color: $accent
+    border-radius: 4px
+</style>
