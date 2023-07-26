@@ -10,7 +10,7 @@ const routes: RouteRecordRaw[] = [
       { path: '', component: () => import('pages/IndexPage.vue') },
       {
         path: '/parts',
-        component: () => import('src/modules/parts/PartsPage.vue'),
+        component: () => import('pages/PartsPage.vue'),
         meta: {
           permissions: [
             { objectType: SprmObjectType.PartVersion, cruds: ['read'] },
@@ -19,12 +19,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/parts/:id',
-        component: () => import('src/modules/parts/PartCenterPage.vue'),
+        component: () => import('pages/parts/IdPage.vue'),
         props: true,
         children: [
           {
             path: '/parts/:id/history',
-            component: () => import('src/modules/parts/PartHistoryPage.vue'),
+            component: () => import('pages/parts/{id}/PartHistoryPage.vue'),
             props: true,
             meta: {
               permissions: [
@@ -34,7 +34,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: '/parts/:id/routing',
-            component: () => import('src/modules/routings/RoutingsPage.vue'),
+            component: () => import('pages/parts/{id}/RoutingsPage.vue'),
             props: true,
             meta: {
               permissions: [
@@ -46,12 +46,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/routings/:id',
-        component: () => import('src/modules/routings/RoutingCenterPage.vue'),
+        component: () => import('pages/routings/RoutingIdPage.vue'),
         props: true,
         children: [
           {
             path: '/routings/:id/history',
-            component: () => import('src/modules/routings/RoutingHistoryPage.vue'),
+            component: () => import('pages/routings/{routingId}/RoutingHistoryPage.vue'),
             props: true,
           },
         ],
@@ -63,11 +63,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/routings/version/edit/:id',
-        component: () => import('src/modules/routings/RoutingVersionEditCenterPage.vue'),
+        component: () => import('pages/routings/version/edit/RoutingVersionIdEditPage.vue'),
         props: true,
         children: [
-          { path: '/routings/version/edit/:id/info', component: () => import('src/modules/routings/RoutingInfoEditPage.vue') },
-          { path: '/routings/version/edit/:id/usages', component: () => import('src/modules/routingUsages/RoutingUsagesEditPage.vue'), props: true },
+          { path: '/routings/version/edit/:id/info', component: () => import('pages/routings/version/edit/{versionId}/RoutingInfoEditPage.vue') },
+          { path: '/routings/version/edit/:id/usages', component: () => import('pages/routings/version/edit/{versionId}/RoutingUsagesEditPage.vue'), props: true },
         ],
         meta: {
           permissions: [
@@ -77,11 +77,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/routings/version/:id',
-        component: () => import('src/modules/routings/RoutingVersionCenterPage.vue'),
+        component: () => import('pages/routings/version/RoutingVersionIdPage.vue'),
         props: true,
         children: [
-          { path: '/routings/version/:id/info', component: () => import('src/modules/routings/RoutingInfoPage.vue') },
-          { path: '/routings/version/:id/usages', component: () => import('src/modules/routingUsages/RoutingUsagesPage.vue'), props: true },
+          { path: '/routings/version/:id/info', component: () => import('pages/routings/version/{versionId}/RoutingInfoPage.vue') },
+          { path: '/routings/version/:id/usages', component: () => import('pages/routings/version/{versionId}/RoutingUsagesPage.vue'), props: true },
         ],
         meta: {
           permissions: [
@@ -91,11 +91,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/parts/version/:id',
-        component: () => import('src/modules/parts/PartVersionCenterPage.vue'),
+        component: () => import('pages/parts/version/VersionIdPage.vue'),
         props: true,
         children: [
-          { path: '/parts/version/:id/info', component: () => import('src/modules/parts/PartInfoPage.vue') },
-          { path: '/parts/version/:id/usages', component: () => import('src/modules/partUsages/PartUsagesPage.vue'), props: true },
+          { path: '/parts/version/:id/info', component: () => import('pages/parts/version/{versionId}/PartInfoPage.vue') },
+          { path: '/parts/version/:id/usages', component: () => import('pages/parts/version/{versionId}/PartUsagesPage.vue'), props: true },
         ],
         meta: {
           permissions: [
@@ -105,12 +105,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/parts/version/edit/:id',
-        component: () => import('src/modules/parts/PartVersionEditCenterPage.vue'),
+        component: () => import('pages/parts/version/edit/VersionIdEditPage.vue'),
         props: true,
         children: [
           {
             path: '/parts/version/edit/:id/info',
-            component: () => import('src/modules/parts/PartInfoEditPage.vue'),
+            component: () => import('pages/parts/version/edit/{versionId}/PartInfoEditPage.vue'),
             props: true,
             meta: {
               permissions: [
@@ -120,7 +120,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: '/parts/version/edit/:id/usages',
-            component: () => import('src/modules/partUsages/PartUsagesEditPage.vue'),
+            component: () => import('pages/parts/version/edit/{versionId}/PartUsagesEditPage.vue'),
             props: true,
             meta: {
               permissions: [
@@ -137,11 +137,11 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/customizations',
-        component: () => import('src/modules/customs/CustomPage.vue'),
+        component: () => import('pages/CustomizationsPage.vue'),
         children: [
           {
             path: '/customizations/attributes',
-            component: () => import('src/modules/customs/CustomAttributesPage.vue'),
+            component: () => import('pages/customizations/CustomAttributesPage.vue'),
             meta: {
               permissions: [
                 { objectType: SprmObjectType.CustomAttribute, cruds: ['read'] },
@@ -150,7 +150,7 @@ const routes: RouteRecordRaw[] = [
           },
           {
             path: '/customizations/attributeLinks',
-            component: () => import('src/modules/customs/AttributeLinksPage.vue'),
+            component: () => import('pages/customizations/AttributeLinksPage.vue'),
             meta: {
               permissions: [
                 { objectType: SprmObjectType.AttributeLink, cruds: ['read'] },
@@ -161,7 +161,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/processes',
-        component: () => import('src/modules/processes/ProcessesPage.vue'),
+        component: () => import('pages/ProcessesPage.vue'),
         meta: {
           permissions: [
             { objectType: SprmObjectType.Process, cruds: ['read'] },
@@ -170,12 +170,12 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/processes/:id',
-        component: () => import('src/modules/processes/ProcessCenterPage.vue'),
+        component: () => import('pages/processes/ProcessIdPage.vue'),
         props: true,
         children: [
           {
             path: '/processes/:id/info',
-            component: () => import('src/modules/processes/ProcessPage.vue'),
+            component: () => import('pages/processes/{processId}/ProcessInfoPage.vue'),
             props: true,
             meta: {
               permissions: [
@@ -192,10 +192,10 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: '/processes/edit/:id',
-        component: () => import('src/modules/processes/ProcessEditCenterPage.vue'),
+        component: () => import('pages/processes/edit/ProcessIdEditPage.vue'),
         props: true,
         children: [
-          { path: '/processes/edit/:id/info', component: () => import('src/modules/processes/ProcessEditPage.vue'), props: true },
+          { path: '/processes/edit/:id/info', component: () => import('pages/processes/edit/{processId}/ProcessInfoEditPage.vue'), props: true },
         ],
         meta: {
           permissions: [
@@ -211,25 +211,25 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: () => import('src/modules/admins/AdminHomePage.vue'),
+        component: () => import('pages/admin/AdminHomePage.vue'),
       },
       {
         path: '/admin/users',
-        component: () => import('src/modules/admins/users/UsersPage.vue'),
+        component: () => import('pages/admin/UsersPage.vue'),
       },
       {
         path: '/admin/users/:id',
-        component: () => import('src/modules/admins/users/UserPage.vue'),
+        component: () => import('pages/admin/users/UserIdPage.vue'),
         props: true,
         children: [
           {
             path: '/admin/users/:id/info',
-            component: () => import('src/modules/admins/users/UserInfoPage.vue'),
+            component: () => import('pages/admin/users/{userId}/UserInfoPage.vue'),
             props: true,
           },
           {
             path: '/admin/users/:id/permissions',
-            component: () => import('src/modules/admins/users/UserPermissionsPage.vue'),
+            component: () => import('pages/admin/users/{userId}/UserPermissionsPage.vue'),
             props: true,
           },
         ],
@@ -241,7 +241,7 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/login',
-    component: () => import('src/modules/authentications/LoginPage.vue'),
+    component: () => import('pages/LoginPage.vue'),
   },
 
   // Always leave this as last one,
