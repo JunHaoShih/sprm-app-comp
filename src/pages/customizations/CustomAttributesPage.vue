@@ -109,9 +109,8 @@ function onAddClicked(): void {
 function onDeleteClicked(): void {
   if (!defaultAttr.value || Object.entries(defaultAttr.value).length === 0) {
     $q.notify({
+      type: 'error',
       message: `${i18n.t('actions.deletes.atLeastOne')}`,
-      color: 'red',
-      icon: 'error',
     });
     return;
   }
@@ -124,9 +123,8 @@ function onDeleteClicked(): void {
     const code = await customAttributeService.remove(defaultAttr.value.id);
     if (code === 0) {
       $q.notify({
+        type: 'success',
         message: `${defaultAttr.value.number}: ${i18n.t('actions.deletes.success')}`,
-        color: 'secondary',
-        icon: 'check_circle',
       });
       customAttributesStore.removeAttribute(defaultAttr.value.id);
     }

@@ -109,9 +109,8 @@ async function editAttribute(): Promise<void> {
     inputAttr.value.updateDate = defaultAttr.value.updateDate;
     readonly.value = true;
     $q.notify({
+      type: 'success',
       message: `${inputAttr.value.number}: ${i18n.t('actions.updates.success')}`,
-      color: 'secondary',
-      icon: 'check_circle',
     });
   }
 }

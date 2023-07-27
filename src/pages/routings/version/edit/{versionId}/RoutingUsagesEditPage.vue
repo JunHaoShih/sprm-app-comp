@@ -93,9 +93,8 @@ async function onDeleteButtonClicked() {
         targetUsageId,
       );
       $q.notify({
+        type: 'success',
         message: i18n.t('actions.deletes.success'),
-        color: 'secondary',
-        icon: 'check_circle',
       });
     }
   }

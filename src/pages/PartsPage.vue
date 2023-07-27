@@ -201,9 +201,8 @@ async function onCheckInClicked(part: Part): Promise<void> {
   if (checkinPart) {
     partsStore.updatePart(checkinPart);
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.checkins.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
   }
 }
@@ -213,9 +212,8 @@ async function onCheckOutClicked(part: Part): Promise<Part | null> {
   if (checkoutPart) {
     partsStore.updatePart(checkoutPart);
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.checkouts.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
     return checkoutPart;
   }
@@ -229,9 +227,8 @@ function onRoutingClicked(part: Part): void {
 function onDiscardClicked(part: Part): void {
   if (part.draftId === part.version.id) {
     $q.notify({
+      type: 'error',
       message: i18n.t('actions.discards.cannotDiscardFirstVersion'),
-      color: 'red',
-      icon: 'error',
     });
     return;
   }
@@ -246,9 +243,8 @@ function onDiscardClicked(part: Part): void {
     if (discardPart) {
       partsStore.updatePart(discardPart);
       $q.notify({
+        type: 'success',
         message: i18n.t('actions.discards.success'),
-        color: 'secondary',
-        icon: 'check_circle',
       });
     }
   });
@@ -283,9 +279,8 @@ function onDeleteClicked(part: Part): void {
     const success = await partService.remove(part.id);
     if (success) {
       $q.notify({
+        type: 'success',
         message: `${part.number}: ${i18n.t('actions.deletes.success')}`,
-        color: 'secondary',
-        icon: 'check_circle',
       });
       partsStore.removePart(part);
     }

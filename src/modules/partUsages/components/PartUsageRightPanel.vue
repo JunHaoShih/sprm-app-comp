@@ -248,9 +248,8 @@ async function updateUsage() {
       modifiedUsage.value,
     );
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.updates.success'),
-      icon: 'check_circle',
-      color: 'secondary',
     });
     prompt.value = false;
   }

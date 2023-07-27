@@ -121,9 +121,8 @@ function onDeleteClicked(process: Process): void {
     const success = await processService.remove(process.id);
     if (success) {
       $q.notify({
+        type: 'success',
         message: `${process.number}: ${i18n.t('actions.deletes.success')}`,
-        color: 'secondary',
-        icon: 'check_circle',
       });
       processesStore.removeProcess(process);
     }

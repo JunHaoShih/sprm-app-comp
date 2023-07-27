@@ -32,7 +32,6 @@
 import { useI18n } from 'vue-i18n';
 import { useQuasar } from 'quasar';
 import ProcessForm from './ProcessForm.vue';
-import { Process } from '../models/Process';
 import { useProcessStore } from '../stores/ProcessStore';
 import { processService } from '../services/ProcessService';
 
@@ -43,18 +42,22 @@ const $q = useQuasar();
 const processStore = useProcessStore();
 
 async function onSaveClicked(): Promise<void> {
-  console.log(processStore.content);
-  /* const code = await processService.update(partVersionStore.content.id, {
-    customValues: partVersionStore.content.customValues,
-    remarks: partVersionStore.content.remarks,
+  const code = await processService.update(processStore.content.id, {
+    number: processStore.content.number,
+    name: processStore.content.name,
+    processTypeId: processStore.content.processType.id,
+    defaultMakeTypeId: processStore.content.defaultMakeType.id,
+    defaultImportTime: processStore.content.defaultImportTime,
+    defaultExportTime: processStore.content.defaultExportTime,
+    customValues: processStore.content.customValues,
+    remarks: processStore.content.remarks,
   });
   if (code === 0) {
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.updates.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
-  } */
+  }
 }
 </script>
 

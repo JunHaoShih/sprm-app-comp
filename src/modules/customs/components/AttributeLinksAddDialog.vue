@@ -138,9 +138,8 @@ async function onConfirm(): Promise<void> {
   }
   newLinks.attributes.forEach((newLink) => attrLinksStore.addLink(newLink, props.objectTypeId));
   $q.notify({
+    type: 'success',
     message: `${i18n.t('actions.inserts.success')}`,
-    color: 'secondary',
-    icon: 'check_circle',
   });
   prompt.value = false;
 }

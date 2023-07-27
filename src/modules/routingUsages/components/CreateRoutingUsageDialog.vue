@@ -152,9 +152,8 @@ watch(prompt, () => {
 async function onSelectDone(): Promise<void> {
   if (selected.value.length !== 1) {
     $q.notify({
+      type: 'error',
       message: i18n.t('parts.mustSelectOne'),
-      color: 'red',
-      icon: 'error',
     });
     return;
   }
@@ -173,9 +172,8 @@ async function onNextStep(): Promise<void> {
 async function usageCreated(usages: RoutingUsage) {
   routingUsagesMapStore.addUses([usages]);
   $q.notify({
+    type: 'success',
     message: i18n.t('actions.inserts.success'),
-    color: 'secondary',
-    icon: 'check_circle',
   });
   prompt.value = false;
 }

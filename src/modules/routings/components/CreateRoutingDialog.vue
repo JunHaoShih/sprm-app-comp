@@ -54,9 +54,8 @@ function submit() {
 async function onDialogConfirm(newRouting: Routing): Promise<void> {
   emit('onRoutingCreated', newRouting);
   $q.notify({
+    type: 'success',
     message: `${newRouting.name} ${i18n.t('actions.inserts.success')}`,
-    color: 'secondary',
-    icon: 'check_circle',
   });
   prompt.value = false;
 }

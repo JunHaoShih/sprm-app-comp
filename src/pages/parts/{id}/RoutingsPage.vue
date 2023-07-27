@@ -351,9 +351,8 @@ async function onCheckInClicked(routing: Routing): Promise<void> {
   if (checkinRouting) {
     routingsStore.updateRouting(checkinRouting);
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.checkins.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
   }
 }
@@ -363,9 +362,8 @@ async function onCheckOutClicked(routing: Routing): Promise<Routing | null> {
   if (checkoutRouting) {
     routingsStore.updateRouting(checkoutRouting);
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.checkouts.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
     return checkoutRouting;
   }
@@ -375,9 +373,8 @@ async function onCheckOutClicked(routing: Routing): Promise<Routing | null> {
 function onDiscardClicked(routing: Routing): void {
   if (routing.draftId === routing.version.id) {
     $q.notify({
+      type: 'error',
       message: i18n.t('actions.discards.cannotDiscardFirstVersion'),
-      color: 'red',
-      icon: 'error',
     });
     return;
   }
@@ -392,9 +389,8 @@ function onDiscardClicked(routing: Routing): void {
     if (discardRouting) {
       routingsStore.updateRouting(discardRouting);
       $q.notify({
+        type: 'success',
         message: i18n.t('actions.discards.success'),
-        color: 'secondary',
-        icon: 'check_circle',
       });
     }
   });

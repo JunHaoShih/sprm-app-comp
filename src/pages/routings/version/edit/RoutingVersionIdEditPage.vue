@@ -105,9 +105,8 @@ async function updatePartAndVersion(partVersionId: number) {
   }
   if (!routingVersionStore.content.isDraft) {
     $q.notify({
+      type: 'error',
       message: i18n.t('parts.versionMustCheckout'),
-      color: 'red',
-      icon: 'error',
     });
     router.back();
     return;

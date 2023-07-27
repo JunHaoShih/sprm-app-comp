@@ -49,9 +49,8 @@ async function onSaveClicked(): Promise<void> {
   });
   if (code === 0) {
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.updates.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
   }
 }

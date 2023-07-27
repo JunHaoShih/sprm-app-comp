@@ -57,9 +57,8 @@ function submit() {
 async function onDialogConfirm(newPart: Part): Promise<void> {
   emit('onPartCreated', newPart);
   $q.notify({
+    type: 'success',
     message: `${newPart.number} ${i18n.t('actions.inserts.success')}`,
-    color: 'secondary',
-    icon: 'check_circle',
   });
   prompt.value = false;
 }
