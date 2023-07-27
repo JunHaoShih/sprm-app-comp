@@ -99,9 +99,8 @@ async function addAttribute(): Promise<void> {
 
   customAttributesStore.addAttribute(newAttr);
   $q.notify({
+    type: 'success',
     message: `${newAttr.number} ${i18n.t('actions.inserts.success')}`,
-    color: 'secondary',
-    icon: 'check_circle',
   });
   prompt.value = false;
 }

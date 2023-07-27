@@ -124,9 +124,8 @@ async function createAppUser() {
   if (newUser) {
     emit('onAppUserCreated', newUser);
     $q.notify({
+      type: 'success',
       message: `${newUser.username} ${i18n.t('actions.inserts.success')}`,
-      color: 'secondary',
-      icon: 'check_circle',
     });
     prompt.value = false;
   }

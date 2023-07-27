@@ -148,9 +148,8 @@ function onSearchClicked() {
 function onConfirm() {
   if (selectedProcesses.value.length !== 1) {
     $q.notify({
+      type: 'error',
       message: i18n.t('parts.mustSelectOne'),
-      color: 'red',
-      icon: 'error',
     });
     return;
   }

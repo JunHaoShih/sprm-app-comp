@@ -111,9 +111,8 @@ async function savePermissions() {
   const code = await permissionService.updateByUserId(Number(props.id), updatePermissionDtos.value);
   if (code === 0) {
     $q.notify({
+      type: 'success',
       message: i18n.t('actions.updates.success'),
-      color: 'secondary',
-      icon: 'check_circle',
     });
   }
   saving.value = false;

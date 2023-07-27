@@ -178,9 +178,8 @@ async function onSingleDelete(attribute: CustomAttribute) {
     if (code === 0) {
       attrLinksStore.deleteLinks([attribute], props.objectTypeId);
       $q.notify({
+        type: 'success',
         message: i18n.t('actions.deletes.success'),
-        color: 'secondary',
-        icon: 'check_circle',
       });
     }
   });
@@ -189,9 +188,8 @@ async function onSingleDelete(attribute: CustomAttribute) {
 async function onMultiDelete(): Promise<void> {
   if (selectedAttributes.value.length === 0) {
     $q.notify({
+      type: 'error',
       message: i18n.t('actions.deletes.atLeastOne'),
-      color: 'red',
-      icon: 'error',
     });
     return;
   }
@@ -209,9 +207,8 @@ async function onMultiDelete(): Promise<void> {
       attrLinksStore.deleteLinks(selectedAttributes.value, props.objectTypeId);
       selectedAttributes.value.length = 0;
       $q.notify({
+        type: 'success',
         message: i18n.t('actions.deletes.success'),
-        color: 'secondary',
-        icon: 'check_circle',
       });
     }
   });
