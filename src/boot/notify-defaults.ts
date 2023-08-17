@@ -6,6 +6,16 @@ Notify.registerType('success', {
   icon: 'check_circle',
 });
 
+Notify.registerType('info', {
+  color: 'primary',
+  icon: 'info',
+});
+
+Notify.registerType('warning', {
+  color: 'amber',
+  icon: 'warning',
+});
+
 Notify.registerType('error', {
   color: 'red',
   icon: 'error',

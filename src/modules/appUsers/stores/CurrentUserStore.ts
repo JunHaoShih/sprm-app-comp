@@ -1,7 +1,10 @@
 import { defineStore } from 'pinia';
 import { Md5 } from 'ts-md5';
 import { api } from 'src/boot/axios';
+import { Notify } from 'quasar';
+import { HttpTransportType, HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
 import { handleGenericError, handleGenericResponse } from 'src/services/AxiosHandlingService';
+import { authService } from 'src/modules/authentications/services/AuthenticationService';
 import { Crud, Permission } from 'src/modules/permissions/models/Permission';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
 import { AppUser } from '../models/AppUser';
@@ -10,6 +13,50 @@ export interface AppUserContainer {
   appUser: AppUser,
   permissions: Permission[],
   accessToken: string,
+  connection?: HubConnection,
+}
+
+function signalrInit(accessToken: string): HubConnection {
+  const connection = new HubConnectionBuilder()
+    .withUrl('/notifier', {
+      accessTokenFactory: () => accessToken,
+    })
+    .withAutomaticReconnect()
+    .build();
+
+  connection.on('notify', (data) => {
+    Notify.create({
+      type: 'info',
+      message: 'Yeah',
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          color: 'white',
+          round: true,
+          handler: () => { /* ... */ },
+        },
+      ],
+    });
+  });
+
+  connection.on('error', (data: string) => {
+    Notify.create({
+      type: 'error',
+      message: `${data}`,
+      position: 'top',
+      actions: [
+        {
+          icon: 'close',
+          color: 'white',
+          round: true,
+          handler: () => { /* ... */ },
+        },
+      ],
+    });
+  });
+
+  return connection;
 }
 
 export const useCurrentUserStore = defineStore('currentUser', {
@@ -52,6 +99,36 @@ export const useCurrentUserStore = defineStore('currentUser', {
     },
   },
   actions: {
+    async login(username: string, password: string): Promise<boolean> {
+      const response = await authService.login(username, password);
+      if (!response) {
+        return false;
+      }
+      await this.clear();
+      this.accessToken = response.token;
+      localStorage.setItem('token', response.refreshToken);
+      this.connection = signalrInit(this.accessToken);
+      this.connection.start();
+      return true;
+    },
+
+    async tryRefreshAccessToken(refreshToken: string) {
+      const authDto = await authService.refreshToken(refreshToken);
+      if (!authDto) {
+        return false;
+      }
+      this.connection?.stop();
+      this.accessToken = authDto.token;
+      this.connection = signalrInit(this.accessToken);
+      this.connection.start();
+      return true;
+    },
+
+    async logout() {
+      localStorage.removeItem('token');
+      await this.clear();
+    },
+
     async getCurrentUser(): Promise<AppUser | null> {
       const appUser = await api.get('/api/AppUser/Me')
         .then(handleGenericResponse<AppUser>)
@@ -61,6 +138,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       }
       return appUser;
     },
+
     async getCurrentPermissions(): Promise<Permission[] | null> {
       const permissions = await api.get('/api/AppUser/Me/Permission')
         .then(handleGenericResponse<Permission[]>)
@@ -70,7 +148,8 @@ export const useCurrentUserStore = defineStore('currentUser', {
       }
       return permissions;
     },
-    clear() {
+
+    async clear() {
       this.appUser = {
         id: 0,
         username: '00000000000000000000000000000000',
@@ -85,6 +164,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
       };
       this.permissions.length = 0;
       this.accessToken = '';
+      await this.connection?.stop();
     },
   },
 });

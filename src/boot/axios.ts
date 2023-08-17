@@ -2,7 +2,6 @@ import { boot } from 'quasar/wrappers';
 import axios, { AxiosInstance } from 'axios';
 import { Notify } from 'quasar';
 import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
-import { authService } from 'src/modules/authentications/services/AuthenticationService';
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
@@ -46,10 +45,9 @@ export default boot(({ app, router }) => {
       // Try refresh token
       const refreshToken = localStorage.getItem('token');
       if (refreshToken) {
-        const authDto = await authService.refreshToken(refreshToken);
-        if (authDto) {
-          const currentUserStore = useCurrentUserStore();
-          currentUserStore.accessToken = authDto.token;
+        const currentUserStore = useCurrentUserStore();
+        const success = await currentUserStore.tryRefreshAccessToken(refreshToken);
+        if (success) {
           const originalRequest = error.config;
           return api(originalRequest);
         }
