@@ -1,4 +1,4 @@
-import { HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnection, HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import { Notify } from 'quasar';
 import { i18n } from 'src/boot/i18n';
 import { NotifyLevel, NotifyPayload, NotifyType } from '../models/notifyPayload';
@@ -36,6 +36,7 @@ export function signalrInit(accessToken: string): HubConnection {
     .withUrl('/notifier', {
       accessTokenFactory: () => accessToken,
     })
+    .configureLogging(LogLevel.Error)
     .withAutomaticReconnect()
     .build();
 
