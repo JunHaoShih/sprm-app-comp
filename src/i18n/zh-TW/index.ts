@@ -231,4 +231,7 @@ export default {
   errors: {
     unknown: '不明錯誤',
   },
+  notifications: {
+    permissionChangedPleaseRefresh: '您的權限已經被修改，請重新整理網頁',
+  },
 };

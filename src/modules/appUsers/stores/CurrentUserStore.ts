@@ -1,12 +1,12 @@
 import { defineStore } from 'pinia';
 import { Md5 } from 'ts-md5';
 import { api } from 'src/boot/axios';
-import { Notify } from 'quasar';
-import { HttpTransportType, HubConnection, HubConnectionBuilder } from '@microsoft/signalr';
+import { HubConnection } from '@microsoft/signalr';
 import { handleGenericError, handleGenericResponse } from 'src/services/AxiosHandlingService';
 import { authService } from 'src/modules/authentications/services/AuthenticationService';
 import { Crud, Permission } from 'src/modules/permissions/models/Permission';
 import { SprmObjectType } from 'src/modules/objectTypes/models/ObjectType';
+import { signalrInit } from 'src/modules/signalr/services/signalrService';
 import { AppUser } from '../models/AppUser';
 
 export interface AppUserContainer {
@@ -14,49 +14,6 @@ export interface AppUserContainer {
   permissions: Permission[],
   accessToken: string,
   connection?: HubConnection,
-}
-
-function signalrInit(accessToken: string): HubConnection {
-  const connection = new HubConnectionBuilder()
-    .withUrl('/notifier', {
-      accessTokenFactory: () => accessToken,
-    })
-    .withAutomaticReconnect()
-    .build();
-
-  connection.on('notify', (data) => {
-    Notify.create({
-      type: 'info',
-      message: 'Yeah',
-      position: 'top',
-      actions: [
-        {
-          icon: 'close',
-          color: 'white',
-          round: true,
-          handler: () => { /* ... */ },
-        },
-      ],
-    });
-  });
-
-  connection.on('error', (data: string) => {
-    Notify.create({
-      type: 'error',
-      message: `${data}`,
-      position: 'top',
-      actions: [
-        {
-          icon: 'close',
-          color: 'white',
-          round: true,
-          handler: () => { /* ... */ },
-        },
-      ],
-    });
-  });
-
-  return connection;
 }
 
 export const useCurrentUserStore = defineStore('currentUser', {

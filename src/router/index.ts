@@ -7,7 +7,6 @@ import {
 } from 'vue-router';
 import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
 import { Crud, RoutePermission } from 'src/modules/permissions/models/Permission';
-import { authService } from 'src/modules/authentications/services/AuthenticationService';
 import routes from './routes';
 import { notifyErrorI18n } from '../services/NotifyService';
 
