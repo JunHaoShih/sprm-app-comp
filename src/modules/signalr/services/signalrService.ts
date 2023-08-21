@@ -32,11 +32,15 @@ function getTranslationByType(type: NotifyType) {
 }
 
 export function signalrInit(accessToken: string): HubConnection {
+  const logLevel = process.env.NODE_ENV === 'development'
+    ? LogLevel.Information
+    : LogLevel.None;
+
   const connection = new HubConnectionBuilder()
     .withUrl('/notifier', {
       accessTokenFactory: () => accessToken,
     })
-    .configureLogging(LogLevel.Error)
+    .configureLogging(logLevel)
     .withAutomaticReconnect()
     .build();
 
