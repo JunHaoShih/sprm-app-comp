@@ -7,7 +7,6 @@ import {
 } from 'vue-router';
 import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
 import { Crud, RoutePermission } from 'src/modules/permissions/models/Permission';
-import { authService } from 'src/modules/authentications/services/AuthenticationService';
 import routes from './routes';
 import { notifyErrorI18n } from '../services/NotifyService';
 
@@ -37,11 +36,11 @@ export default route((/* { store, ssrContext } */) => {
 
   Router.beforeEach(async (to, from) => {
     // Step 1: check token
-    const token = localStorage.getItem('token');
-    if (to.path === '/login' && !!token) {
+    const refreshToken = localStorage.getItem('token');
+    if (to.path === '/login' && !!refreshToken) {
       return '/';
     }
-    if (to.path !== '/login' && !token) {
+    if (to.path !== '/login' && !refreshToken) {
       return '/login';
     }
     // After token check, login does not need to do any check, just let it pass
@@ -51,11 +50,8 @@ export default route((/* { store, ssrContext } */) => {
     // Use refresh token to get access token if possible
     const currentUserStore = useCurrentUserStore();
     if (!currentUserStore.accessToken) {
-      if (token) {
-        const response = await authService.refreshToken(token);
-        if (response) {
-          currentUserStore.accessToken = response.token;
-        }
+      if (refreshToken) {
+        await currentUserStore.tryRefreshAccessToken(refreshToken);
       }
     }
     // Step 2: get user info

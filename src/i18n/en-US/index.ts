@@ -229,4 +229,7 @@ export default {
   errors: {
     unknown: 'Something went wrong',
   },
+  notifications: {
+    permissionChangedPleaseRefresh: 'Your permissions have been changed, please refresh your web page',
+  },
 };

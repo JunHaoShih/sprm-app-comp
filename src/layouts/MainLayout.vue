@@ -211,9 +211,8 @@ function setLanguage(lang: string): void {
   i18n.locale.value = lang;
 }
 
-function onLogoutClicked(): void {
-  localStorage.removeItem('token');
-  currentUserStore.clear();
+async function onLogoutClicked(): Promise<void> {
+  await currentUserStore.logout();
   router.push('/login');
 }
 

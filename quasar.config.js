@@ -100,6 +100,10 @@ module.exports = configure((/* ctx */) => ({
   devServer: {
     proxy: {
       '/api': 'http://localhost:8080',
+      '/notifier': {
+        target: 'http://localhost:8090',
+        ws: true,
+      },
     },
     // https: true
     open: true, // opens browser window automatically
