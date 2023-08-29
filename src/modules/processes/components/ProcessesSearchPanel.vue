@@ -51,6 +51,16 @@
           <slot name="row-actions" :process="(props.row as Process)"></slot>
         </q-td>
       </template>
+      <!-- number -->
+      <template v-slot:body-cell-number="props">
+        <q-td :props="props">
+          <router-link
+            :to="`/processes/${(props.row as Process).id}/info`"
+          >
+            {{ (props.row as Process).number }}
+          </router-link>
+        </q-td>
+      </template>
       <!-- Process type -->
       <template v-slot:body-cell-processType="props">
         <q-td :props="props">

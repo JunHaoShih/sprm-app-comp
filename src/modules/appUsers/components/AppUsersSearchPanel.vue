@@ -45,6 +45,14 @@
           v-on:keydown.enter.prevent="onSearchEnter"
         />
       </template>
+      <!-- username -->
+      <template v-slot:body-cell-username="props">
+        <q-td :props="props">
+          <router-link :to="`/admin/users/${(props.row as AppUser).id}/info`">
+            {{ (props.row as AppUser).username }}
+          </router-link>
+        </q-td>
+      </template>
       <!-- action buttons -->
       <template v-slot:body-cell-actions="props">
         <q-td :props="props">

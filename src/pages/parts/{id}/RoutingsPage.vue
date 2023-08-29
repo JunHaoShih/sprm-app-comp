@@ -70,6 +70,17 @@
           />
         </q-td>
       </template>
+      <!-- name -->
+      <template v-slot:body-cell-name="props">
+        <q-td :props="props">
+          <router-link
+            :to="`/routings/version/${(props.row as Routing).version.id}/info`"
+          >
+            {{ (props.row as Routing).name }}
+          </router-link>
+        </q-td>
+      </template>
+      <!-- version -->
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
           <q-badge

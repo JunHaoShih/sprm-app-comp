@@ -62,10 +62,25 @@
           </q-badge>
         </q-td>
       </template>
+      <!-- number -->
+      <template v-slot:body-cell-number="props">
+        <q-td :props="props">
+          <router-link
+            :to="`/parts/version/${(props.row as Part).id}/info`"
+          >
+            {{ (props.row as Part).number }}
+          </router-link>
+        </q-td>
+      </template>
       <!-- version -->
       <template v-slot:body-cell-version="props">
         <q-td :props="props">
-          {{ partsStore.getVersion(props.row.version) }}
+          <q-badge
+            color="primary"
+            class="q-ml-sm"
+          >
+            v. {{ partsStore.getVersion(props.row.version) }}
+          </q-badge>
         </q-td>
       </template>
       <!-- view -->
