@@ -1,6 +1,6 @@
 import { api } from 'src/boot/axios';
 import axios from 'axios';
-import { handleGenericError, handleGenericResponse } from 'src/services/AxiosHandlingService';
+import { handleGenericError, handleGenericResponse, handleRefreshError } from 'src/services/AxiosHandlingService';
 import { AuthenticationResponse } from '../models/AuthenticationResponse';
 import { AuthenticationDto } from '../dtos/AuthenticationDto';
 import { RefreshTokenDto } from '../dtos/RefreshTokenDto';
@@ -22,7 +22,7 @@ export const authService = {
     };
     const authResponse = await axios.post('/api/Authentication/Refresh', refreshDto)
       .then(handleGenericResponse<AuthenticationResponse>)
-      .catch(handleGenericError);
+      .catch(handleRefreshError);
     return authResponse;
   },
 };
