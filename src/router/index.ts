@@ -89,7 +89,11 @@ export default route((/* { store, ssrContext } */) => {
     const currentUserStore = useCurrentUserStore();
     if (!currentUserStore.accessToken) {
       if (refreshToken) {
-        await currentUserStore.tryRefreshAccessToken(refreshToken);
+        const success = await currentUserStore.tryRefreshAccessToken(refreshToken);
+        if (!success) {
+          currentUserStore.logout();
+          return '/login';
+        }
       }
     }
     // Step 2: get user info
