@@ -74,6 +74,9 @@ export const partService = {
     const success = await api.delete(`/api/Part/${id}`)
       .then((): boolean => true)
       .catch((error: AxiosBaseError): false => selfManageError<string>((body) => {
+        if (body.code === 401) {
+          return;
+        }
         let bodyMessage = '';
         if (body.code === 302) {
           bodyMessage = i18n.global.t('processes.notExist');
