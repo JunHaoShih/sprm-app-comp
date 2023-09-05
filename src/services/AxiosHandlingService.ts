@@ -16,23 +16,6 @@ function displayUnknownErrorNotify() {
 
 export function handleGenericError(error: AxiosBaseError) {
   if (axios.isAxiosError(error)) {
-    if (error.response) {
-      const body: SPRMResponse<string> = error.response.data;
-      const message = `Error: ${body.code}, ${body.message}`;
-      Notify.create({
-        message,
-        color: 'red',
-        icon: 'error',
-      });
-    }
-  } else {
-    displayUnknownErrorNotify();
-  }
-  return null;
-}
-
-export function handleRefreshError(error: AxiosBaseError) {
-  if (axios.isAxiosError(error)) {
     if (error.response?.status === 401) {
       // Do not display any message on 401
       return null;
