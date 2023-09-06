@@ -6,7 +6,7 @@ import {
   createWebHistory,
 } from 'vue-router';
 import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStore';
-import { Crud, RoutePermission } from 'src/modules/permissions/models/Permission';
+import { Crud, Permission, RoutePermission } from 'src/modules/permissions/models/Permission';
 import routes from './routes';
 import { notifyErrorI18n } from '../services/NotifyService';
 
@@ -34,6 +34,44 @@ export default route((/* { store, ssrContext } */) => {
     history: createHistory(process.env.VUE_ROUTER_BASE),
   });
 
+  /**
+   * Check if user has reuqired permission
+   * @param permissions The permissions this route needs
+   * @param userPermissions User's permissions
+   * @returns If user has required permission in this route
+   */
+  function hasPermission(
+    permissions: RoutePermission[],
+    userPermissions: Permission[],
+  ) {
+    for (let i = 0; i < permissions.length; i += 1) {
+      const permission = permissions[i];
+      const targetPermission = userPermissions.find(
+        (p) => p.objectType === permission.objectType,
+      );
+      if (!targetPermission) {
+        return false;
+      }
+      const crudsPermission: Record<Crud, boolean> = {
+        create: targetPermission.createPermitted,
+        read: targetPermission.readPermitted,
+        update: targetPermission.updatePermitted,
+        delete: targetPermission.deletePermitted,
+      };
+      let denied = false;
+      permission.cruds.forEach((crud) => {
+        if (!crudsPermission[crud]) {
+          denied = true;
+        }
+      });
+      if (denied) {
+        notifyErrorI18n('permissions.accessDenied');
+        return false;
+      }
+    }
+    return true;
+  }
+
   Router.beforeEach(async (to, from) => {
     // Step 1: check token
     const refreshToken = localStorage.getItem('token');
@@ -51,7 +89,11 @@ export default route((/* { store, ssrContext } */) => {
     const currentUserStore = useCurrentUserStore();
     if (!currentUserStore.accessToken) {
       if (refreshToken) {
-        await currentUserStore.tryRefreshAccessToken(refreshToken);
+        const success = await currentUserStore.tryRefreshAccessToken(refreshToken);
+        if (!success) {
+          currentUserStore.logout();
+          return '/login';
+        }
       }
     }
     // Step 2: get user info
@@ -72,31 +114,10 @@ export default route((/* { store, ssrContext } */) => {
     // Step 3: check route permission
     if (!currentUserStore.appUser.isAdmin && to.meta.permissions) {
       const permissions = to.meta.permissions as RoutePermission[];
-      for (let i = 0; i < permissions.length; i += 1) {
-        const permission = permissions[i];
-        const targetPermission = currentUserStore.permissions.find(
-          (p) => p.objectType === permission.objectType,
-        );
-        if (!targetPermission) {
-          notifyErrorI18n('permissions.accessDenied');
-          return from.fullPath;
-        }
-        const crudsPermission: Record<Crud, boolean> = {
-          create: targetPermission.createPermitted,
-          read: targetPermission.readPermitted,
-          update: targetPermission.updatePermitted,
-          delete: targetPermission.deletePermitted,
-        };
-        let denied = false;
-        permission.cruds.forEach((crud) => {
-          if (!crudsPermission[crud]) {
-            denied = true;
-          }
-        });
-        if (denied) {
-          notifyErrorI18n('permissions.accessDenied');
-          return from.fullPath;
-        }
+      const hasAccess = hasPermission(permissions, currentUserStore.permissions);
+      if (!hasAccess) {
+        notifyErrorI18n('permissions.accessDenied');
+        return from.fullPath;
       }
     }
     return true;

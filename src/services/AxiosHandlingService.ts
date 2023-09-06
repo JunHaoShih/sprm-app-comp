@@ -16,6 +16,10 @@ function displayUnknownErrorNotify() {
 
 export function handleGenericError(error: AxiosBaseError) {
   if (axios.isAxiosError(error)) {
+    if (error.response?.status === 401) {
+      // Do not display any message on 401
+      return null;
+    }
     if (error.response) {
       const body: SPRMResponse<string> = error.response.data;
       const message = `Error: ${body.code}, ${body.message}`;
