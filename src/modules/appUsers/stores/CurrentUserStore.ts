@@ -82,8 +82,10 @@ export const useCurrentUserStore = defineStore('currentUser', {
     },
 
     async logout() {
+      const token = localStorage.getItem('token');
       localStorage.removeItem('token');
       await this.clear();
+      return token;
     },
 
     async getCurrentUser(): Promise<AppUser | null> {
