@@ -94,6 +94,7 @@ export default route((/* { store, ssrContext } */) => {
           currentUserStore.logout();
           return '/login';
         }
+        currentUserStore.setRefreshInterval();
       }
     }
     // Step 2: get user info

@@ -14,6 +14,7 @@ export interface AppUserContainer {
   permissions: Permission[],
   accessToken: string,
   connection?: HubConnection,
+  intervalId?: number | null,
 }
 
 export const useCurrentUserStore = defineStore('currentUser', {
@@ -66,7 +67,21 @@ export const useCurrentUserStore = defineStore('currentUser', {
       localStorage.setItem('token', response.refreshToken);
       this.connection = signalrInit(this.accessToken);
       this.connection.start();
+      this.setRefreshInterval();
       return true;
+    },
+
+    setRefreshInterval() {
+      this.intervalId = window.setInterval(async () => {
+        const token = localStorage.getItem('token');
+        if (!token || !await this.tryRefreshAccessToken(token)) {
+          localStorage.removeItem('token');
+          if (this.intervalId) {
+            clearInterval(this.intervalId);
+            this.intervalId = null;
+          }
+        }
+      }, 1700000);
     },
 
     async tryRefreshAccessToken(refreshToken: string) {
@@ -75,6 +90,7 @@ export const useCurrentUserStore = defineStore('currentUser', {
         return false;
       }
       this.connection?.stop();
+      localStorage.setItem('token', authDto.refreshToken);
       this.accessToken = authDto.token;
       this.connection = signalrInit(this.accessToken);
       this.connection.start();
@@ -82,10 +98,16 @@ export const useCurrentUserStore = defineStore('currentUser', {
     },
 
     async logout() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId);
+        this.intervalId = null;
+      }
       const token = localStorage.getItem('token');
+      if (token) {
+        await authService.logout(token);
+      }
       localStorage.removeItem('token');
       await this.clear();
-      return token;
     },
 
     async getCurrentUser(): Promise<AppUser | null> {

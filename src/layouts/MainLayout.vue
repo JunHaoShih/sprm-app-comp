@@ -106,7 +106,6 @@ import { useCurrentUserStore } from 'src/modules/appUsers/stores/CurrentUserStor
 import NavItem, { NavNode } from 'src/components/navItem/NavItem.vue';
 import { useI18n } from 'vue-i18n';
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router';
-import { authService } from 'src/modules/authentications/services/AuthenticationService';
 
 const i18n = useI18n();
 
@@ -213,10 +212,7 @@ function setLanguage(lang: string): void {
 }
 
 async function onLogoutClicked(): Promise<void> {
-  const token = await currentUserStore.logout();
-  if (token) {
-    await authService.logout(token);
-  }
+  await currentUserStore.logout();
   router.push('/login');
 }
 
