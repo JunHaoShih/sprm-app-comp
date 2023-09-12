@@ -43,15 +43,19 @@ export default boot(({ app, router }) => {
   api.interceptors.response.use((response) => response, async (error) => {
     if (error.response.status === 401) {
       // Try refresh token
-      const refreshToken = localStorage.getItem('token');
+      /* const refreshToken = localStorage.getItem('token');
       if (refreshToken) {
         const currentUserStore = useCurrentUserStore();
         const success = await currentUserStore.tryRefreshAccessToken(refreshToken);
+        const originalRequest = error.config;
         if (success) {
-          const originalRequest = error.config;
           return api(originalRequest);
         }
-      }
+        // If token is changed, it means it is already refreshed
+        if (refreshToken !== localStorage.getItem('token')) {
+          return api(originalRequest);
+        }
+      } */
       // Remove token and redirect to login page if unauthorized
       localStorage.removeItem('token');
       await router.push('/login');
